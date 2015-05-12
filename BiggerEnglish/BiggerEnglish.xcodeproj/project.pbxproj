@@ -45,6 +45,7 @@
 		4204C92B1B02088400169446 /* BiggerEnglishTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BiggerEnglishTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4204C9301B02088400169446 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4204C9311B02088400169446 /* BiggerEnglishTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BiggerEnglishTests.m; sourceTree = "<group>"; };
+		4204C93B1B0208F200169446 /* Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +98,7 @@
 				4204C9241B02088400169446 /* LaunchScreen.xib */,
 				4204C9161B02088400169446 /* BiggerEnglish.xcdatamodeld */,
 				4204C90F1B02088400169446 /* Supporting Files */,
+				4204C93B1B0208F200169446 /* Header.h */,
 			);
 			path = BiggerEnglish;
 			sourceTree = "<group>";
@@ -428,6 +430,7 @@
 				4204C9371B02088400169446 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4204C9381B02088400169446 /* Build configuration list for PBXNativeTarget "BiggerEnglishTests" */ = {
 			isa = XCConfigurationList;
@@ -436,6 +439,7 @@
 				4204C93A1B02088400169446 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
