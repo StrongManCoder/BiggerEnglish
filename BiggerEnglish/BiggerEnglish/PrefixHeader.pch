@@ -1,0 +1,13 @@
+//
+//  PrefixHeader.pch
+//  BiggerEnglish
+//
+//  Created by 陈大捷 on 15/5/13.
+//  Copyright (c) 2015年 etonetech. All rights reserved.
+//
+
+#ifndef BiggerEnglish_PrefixHeader_pch
+#define BiggerEnglish_PrefixHeader_pch
+
+
+#endif
