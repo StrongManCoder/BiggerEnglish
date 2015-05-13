@@ -8,6 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BEMenuView : UIViewController
+@interface BEMenuView : UIView
+
+@property (nonatomic, copy) void (^didSelectedIndexBlock)(NSInteger index);
+
+- (void)setDidSelectedIndexBlock:(void (^)(NSInteger index))didSelectedIndexBlock;
+
+
+
+@property (nonatomic, strong) UIImage *blurredImage;
+
+- (void)setOffsetProgress:(CGFloat)progress;
 
 @end

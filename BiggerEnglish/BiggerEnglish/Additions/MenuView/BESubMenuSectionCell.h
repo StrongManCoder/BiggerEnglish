@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BESubMenuSectionCell : UIViewController
+@interface BESubMenuSectionCell : UITableViewCell
+
+@property (nonatomic, copy) NSString *title;
+
++ (CGFloat)getCellHeight;
 
 @end

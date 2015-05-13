@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BEMenuSectionView : UIViewController
+@interface BEMenuSectionView : UIView
+
+@property (nonatomic, assign) NSInteger selectedIndex;
+@property (nonatomic, copy) void (^didSelectedIndexBlock)(NSInteger index);
+
+- (void)setDidSelectedIndexBlock:(void (^)(NSInteger index))didSelectedIndexBlock;
 
 @end

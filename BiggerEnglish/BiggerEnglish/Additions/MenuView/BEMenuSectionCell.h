@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BEMenuSectionCell : UIViewController
+@interface BEMenuSectionCell : UITableViewCell
+
+@property (nonatomic, copy) NSString *imageName;
+@property (nonatomic, copy) NSString *title;
+
+@property (nonatomic, copy) NSString *badge;
+
++ (CGFloat)getCellHeight;
 
 @end

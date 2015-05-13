@@ -14,9 +14,9 @@
 
 - (UIImage *)imageForCurrentTheme {
     UIImage *image = self;
-    if (kCurrentTheme == V2ThemeNight) {
-        image = [image imageWithTintColor:[UIColor whiteColor]];
-    }
+//    if (kCurrentTheme == V2ThemeNight) {
+//        image = [image imageWithTintColor:[UIColor whiteColor]];
+//    }
     return image;
 }
 
