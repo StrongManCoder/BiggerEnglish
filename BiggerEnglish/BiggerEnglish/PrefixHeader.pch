@@ -16,14 +16,16 @@
 #import <BlocksKit.h>
 #import <BlocksKit+UIKit.h>
 
+#import "CustomColor.h"
+
 #endif
 
 
 #ifndef BiggerEnglish_PrefixHeader_pch
 #define BiggerEnglish_PrefixHeader_pch
 
-#define kScreenHeight ([UIScreen mainScreen].bounds.size.height)
-#define kScreenWidth ([UIScreen mainScreen].bounds.size.width)
+#define ScreenHeight ([UIScreen mainScreen].bounds.size.height)
+#define ScreenWidth ([UIScreen mainScreen].bounds.size.width)
 
 
 static NSString * const kShowMenuNotification = @"ShowMenuNotificaion";

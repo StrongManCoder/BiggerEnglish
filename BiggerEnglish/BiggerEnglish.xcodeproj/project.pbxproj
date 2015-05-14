@@ -18,12 +18,12 @@
 		429575721B02E2660064FC69 /* BEMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575711B02E2660064FC69 /* BEMenuView.m */; };
 		429575751B02E2EB0064FC69 /* BEMenuSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575741B02E2EB0064FC69 /* BEMenuSectionView.m */; };
 		429575781B02E3D90064FC69 /* BEMenuSectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575771B02E3D90064FC69 /* BEMenuSectionCell.m */; };
-		4295757B1B02E4340064FC69 /* BESubMenuSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295757A1B02E4340064FC69 /* BESubMenuSectionView.m */; };
-		4295757E1B02E4750064FC69 /* BESubMenuSectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295757D1B02E4750064FC69 /* BESubMenuSectionCell.m */; };
 		4295758B1B02EB1E0064FC69 /* EXTScope.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575891B02EB1E0064FC69 /* EXTScope.m */; };
 		429575911B02EC620064FC69 /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295758E1B02EC620064FC69 /* UIImage+Tint.m */; };
 		429575951B02F7EE0064FC69 /* BEDailyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575941B02F7EE0064FC69 /* BEDailyViewController.m */; };
 		429575991B0335840064FC69 /* SettingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575981B0335840064FC69 /* SettingManager.m */; };
+		4297EC051B04425100CBD8CD /* BEFavouriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4297EC041B04425100CBD8CD /* BEFavouriteViewController.m */; };
+		4297EC081B04427000CBD8CD /* BEWordBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4297EC071B04427000CBD8CD /* BEWordBookViewController.m */; };
 		57492EC90559B49F47308340 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBE0D67444874CF4C3F471BE /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -60,10 +60,6 @@
 		429575741B02E2EB0064FC69 /* BEMenuSectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMenuSectionView.m; sourceTree = "<group>"; };
 		429575761B02E3D90064FC69 /* BEMenuSectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMenuSectionCell.h; sourceTree = "<group>"; };
 		429575771B02E3D90064FC69 /* BEMenuSectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMenuSectionCell.m; sourceTree = "<group>"; };
-		429575791B02E4340064FC69 /* BESubMenuSectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BESubMenuSectionView.h; sourceTree = "<group>"; };
-		4295757A1B02E4340064FC69 /* BESubMenuSectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BESubMenuSectionView.m; sourceTree = "<group>"; };
-		4295757C1B02E4750064FC69 /* BESubMenuSectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BESubMenuSectionCell.h; sourceTree = "<group>"; };
-		4295757D1B02E4750064FC69 /* BESubMenuSectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BESubMenuSectionCell.m; sourceTree = "<group>"; };
 		429575861B02E7230064FC69 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		429575881B02EB1E0064FC69 /* EXTScope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EXTScope.h; sourceTree = "<group>"; };
 		429575891B02EB1E0064FC69 /* EXTScope.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EXTScope.m; sourceTree = "<group>"; };
@@ -74,6 +70,11 @@
 		429575941B02F7EE0064FC69 /* BEDailyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEDailyViewController.m; sourceTree = "<group>"; };
 		429575971B0335840064FC69 /* SettingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingManager.h; sourceTree = "<group>"; };
 		429575981B0335840064FC69 /* SettingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingManager.m; sourceTree = "<group>"; };
+		4297EC031B04425100CBD8CD /* BEFavouriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEFavouriteViewController.h; sourceTree = "<group>"; };
+		4297EC041B04425100CBD8CD /* BEFavouriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEFavouriteViewController.m; sourceTree = "<group>"; };
+		4297EC061B04427000CBD8CD /* BEWordBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEWordBookViewController.h; sourceTree = "<group>"; };
+		4297EC071B04427000CBD8CD /* BEWordBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEWordBookViewController.m; sourceTree = "<group>"; };
+		4297EC0A1B04871B00CBD8CD /* CustomColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomColor.h; sourceTree = "<group>"; };
 		8897E0F5A25496989256BDC0 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		EBE0D67444874CF4C3F471BE /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -129,6 +130,7 @@
 		4204C90E1B02088400169446 /* BiggerEnglish */ = {
 			isa = PBXGroup;
 			children = (
+				4297EC091B04868900CBD8CD /* Resources */,
 				429575961B0335690064FC69 /* Managers */,
 				4295756E1B02E1DB0064FC69 /* Additions */,
 				4295755B1B02DD250064FC69 /* Controllers */,
@@ -186,6 +188,10 @@
 				4295756C1B02DF690064FC69 /* BETranslateViewController.m */,
 				429575931B02F7EE0064FC69 /* BEDailyViewController.h */,
 				429575941B02F7EE0064FC69 /* BEDailyViewController.m */,
+				4297EC031B04425100CBD8CD /* BEFavouriteViewController.h */,
+				4297EC041B04425100CBD8CD /* BEFavouriteViewController.m */,
+				4297EC061B04427000CBD8CD /* BEWordBookViewController.h */,
+				4297EC071B04427000CBD8CD /* BEWordBookViewController.m */,
 			);
 			path = Sections;
 			sourceTree = "<group>";
@@ -209,10 +215,6 @@
 				429575741B02E2EB0064FC69 /* BEMenuSectionView.m */,
 				429575761B02E3D90064FC69 /* BEMenuSectionCell.h */,
 				429575771B02E3D90064FC69 /* BEMenuSectionCell.m */,
-				429575791B02E4340064FC69 /* BESubMenuSectionView.h */,
-				4295757A1B02E4340064FC69 /* BESubMenuSectionView.m */,
-				4295757C1B02E4750064FC69 /* BESubMenuSectionCell.h */,
-				4295757D1B02E4750064FC69 /* BESubMenuSectionCell.m */,
 			);
 			path = MenuView;
 			sourceTree = "<group>";
@@ -243,6 +245,14 @@
 				429575981B0335840064FC69 /* SettingManager.m */,
 			);
 			path = Managers;
+			sourceTree = "<group>";
+		};
+		4297EC091B04868900CBD8CD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4297EC0A1B04871B00CBD8CD /* CustomColor.h */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		CDFE109D945B2180FAD8D1DD /* Frameworks */ = {
@@ -389,13 +399,13 @@
 			files = (
 				4204C9151B02088400169446 /* AppDelegate.m in Sources */,
 				429575751B02E2EB0064FC69 /* BEMenuSectionView.m in Sources */,
-				4295757B1B02E4340064FC69 /* BESubMenuSectionView.m in Sources */,
+				4297EC081B04427000CBD8CD /* BEWordBookViewController.m in Sources */,
 				429575621B02DE830064FC69 /* BERootViewController.m in Sources */,
-				4295757E1B02E4750064FC69 /* BESubMenuSectionCell.m in Sources */,
 				429575721B02E2660064FC69 /* BEMenuView.m in Sources */,
 				4295758B1B02EB1E0064FC69 /* EXTScope.m in Sources */,
 				429575911B02EC620064FC69 /* UIImage+Tint.m in Sources */,
 				429575951B02F7EE0064FC69 /* BEDailyViewController.m in Sources */,
+				4297EC051B04425100CBD8CD /* BEFavouriteViewController.m in Sources */,
 				4204C9121B02088400169446 /* main.m in Sources */,
 				429575991B0335840064FC69 /* SettingManager.m in Sources */,
 				4204C9181B02088400169446 /* BiggerEnglish.xcdatamodeld in Sources */,
@@ -451,6 +461,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Wei Feng Hou (MCDSJY34TT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -470,7 +481,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -495,6 +506,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Wei Feng Hou (MCDSJY34TT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -508,7 +520,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -526,6 +538,7 @@
 				INFOPLIST_FILE = BiggerEnglish/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -539,6 +552,7 @@
 				INFOPLIST_FILE = BiggerEnglish/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

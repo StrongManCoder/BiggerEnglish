@@ -9,10 +9,6 @@
 
 
 #import "BEMenuSectionView.h"
-
-//#import "SCActionSheet.h"
-//#import "SCActionSheetButton.h"
-
 #import "BEMenuSectionCell.h"
 
 static CGFloat const kAvatarHeight = 70.0f;
@@ -23,8 +19,6 @@ static CGFloat const kAvatarHeight = 70.0f;
 @property (nonatomic, strong) UIButton    *avatarButton;
 @property (nonatomic, strong) UIImageView *divideImageView;
 @property (nonatomic, strong) UILabel     *usernameLabel;
-
-//@property (nonatomic, strong) SCActionSheet      *actionSheet;
 
 @property (nonatomic, strong) UITableView *tableView;
 
@@ -40,18 +34,12 @@ static CGFloat const kAvatarHeight = 70.0f;
     self = [super initWithFrame:frame];
     if (self) {
         
-        
-        self.sectionImageNameArray = @[@"section_latest", @"section_categories", @"section_nodes", @"section_fav", @"section_notification", @"section_profile"];
-        //        self.sectionTitleArray = @[@"Latest", @"Categories", @"Nodes", @"Favorite", @"Notification", @"Profile"];
-        self.sectionTitleArray = @[@"翻译", @"每日一句"];
+        self.sectionImageNameArray = @[@"section_latest", @"section_nodes", @"section_fav", @"section_categories"];
+        self.sectionTitleArray = @[@"翻译", @"每日一句", @"收藏", @"生词本"];
         
         [self configureTableView];
         [self configureProfileView];
-        [self configureSearchView];
         [self configureNotifications];
-        
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveThemeChangeNotification) name:kThemeDidChangeNotification object:nil];
-        //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveUpdateCheckInBadgeNotification) name:kUpdateCheckInBadgeNotification object:nil];
         
     }
     return self;
@@ -68,10 +56,9 @@ static CGFloat const kAvatarHeight = 70.0f;
     self.tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;
     self.tableView.delegate        = self;
     self.tableView.dataSource      = self;
-    //    self.tableView.contentInsetTop = (kScreenHeight - 44 * self.sectionTitleArray.count) / 2;
+    //    self.tableView.contentInsetTop = (ScreenHeight - 44 * self.sectionTitleArray.count) / 2;
     self.tableView.contentInsetTop = 120;
     [self addSubview:self.tableView];
-    
 }
 
 - (void)configureProfileView {
@@ -103,11 +90,10 @@ static CGFloat const kAvatarHeight = 70.0f;
     [self addSubview:self.avatarButton];
     
     self.divideImageView = [[UIImageView alloc] init];
-//    self.divideImageView.backgroundColor = kLineColorBlackDark;
+    self.divideImageView.backgroundColor = [UIColor BEFrenchGrayColor];
     self.divideImageView.backgroundColor = [UIColor blackColor];
-
     self.divideImageView.contentMode = UIViewContentModeScaleAspectFill;
-    //    self.divideImageView.image = [UIImage imageNamed:@"section_divide"];
+        self.divideImageView.image = [UIImage imageNamed:@"section_divide"];
     self.divideImageView.clipsToBounds = YES;
     [self addSubview:self.divideImageView];
     
@@ -149,15 +135,7 @@ static CGFloat const kAvatarHeight = 70.0f;
     
 }
 
-- (void)configureSearchView {
-    
-    
-    
-    
-}
-
 - (void)configureNotifications {
-    
     /*
     
     @weakify(self);
@@ -178,7 +156,6 @@ static CGFloat const kAvatarHeight = 70.0f;
     }];
     
      */
-    
 }
 
 #pragma mark - Layout
@@ -193,9 +170,7 @@ static CGFloat const kAvatarHeight = 70.0f;
     self.tableView.frame = (CGRect){0, 0, self.width, self.height};
     
     
-    /*
-    [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:[V2SettingManager manager].selectedSectionIndex inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
-     */
+    [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:[SettingManager manager].selectedSectionIndex inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
 }
 
 #pragma mark - Setters
@@ -206,9 +181,7 @@ static CGFloat const kAvatarHeight = 70.0f;
         _selectedIndex = selectedIndex;
         
         [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:selectedIndex inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
-        
     }
-    
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -220,8 +193,6 @@ static CGFloat const kAvatarHeight = 70.0f;
     self.avatarButton.frame = self.avatarImageView.frame;
     
     self.divideImageView.y = self.avatarImageView.y + kAvatarHeight + (offsetY - (self.avatarImageView.y + kAvatarHeight)) / 2.0 + fabsf(offsetY - self.tableView.contentInsetTop)/self.tableView.contentInsetTop * 8.0 + 10;
-    
-    
 }
 
 #pragma mark - TableViewDelegate
@@ -250,12 +221,9 @@ static CGFloat const kAvatarHeight = 70.0f;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    //    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
     if (self.didSelectedIndexBlock) {
         self.didSelectedIndexBlock(indexPath.row);
     }
-    
 }
 
 #pragma mark - Configure TableCell
@@ -263,46 +231,15 @@ static CGFloat const kAvatarHeight = 70.0f;
 - (CGFloat)heightCellForIndexPath:(NSIndexPath *)indexPath {
     
     return [BEMenuSectionCell getCellHeight];
-    
 }
 
 - (BEMenuSectionCell *)configureWithCell:(BEMenuSectionCell *)cell IndexPath:(NSIndexPath *)indexPath {
     
     cell.imageName = self.sectionImageNameArray[indexPath.row];
     cell.title     = self.sectionTitleArray[indexPath.row];
-    
     cell.badge = nil;
-    
-    //    if (indexPath.row == 5) {
-    //        if ([V2CheckInManager manager].isExpired && kSetting.checkInNotiticationOn) {
-    //            cell.badge = @"";
-    //        }
-    //    }
-    
+    //cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;
-    
-}
-
-
-#pragma mark - Notifications
-
-- (void)didReceiveThemeChangeNotification {
-    
-    [self.tableView reloadData];
-    
-    
-    /*
-    [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:[V2SettingManager manager].selectedSectionIndex inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
-    self.avatarImageView.alpha = kSetting.imageViewAlphaForCurrentTheme;
-    self.divideImageView.alpha = kSetting.imageViewAlphaForCurrentTheme;
-    */
-}
-
-- (void)didReceiveUpdateCheckInBadgeNotification {
-    
-    [self.tableView reloadData];
-    //    [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:self.sectionTitleArray.count - 1 inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
-    
 }
 
 @end

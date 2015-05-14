@@ -32,9 +32,6 @@
         
         [self configureViews];
         [self configureShadowViews];
-        
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveThemeChangeNotification) name:kThemeDidChangeNotification object:nil];
-        
     }
     return self;
 }
@@ -63,9 +60,7 @@
         if (self.didSelectedIndexBlock) {
             self.didSelectedIndexBlock(index);
         }
-        
     }];
-    
 }
 
 - (void)configureShadowViews {
@@ -81,23 +76,21 @@
     self.leftShadowImageView.transform = CGAffineTransformMakeRotation(M_PI);
     self.leftShadowImageView.alpha     = 0.0;
     [self.leftShdowImageMaskView addSubview:self.leftShadowImageView];
-    
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
     
 //    self.backgroundColor = kBackgroundColorWhiteDark;
-        self.backgroundColor = [UIColor blueColor];
+        self.backgroundColor = [UIColor whiteColor];
     
-    self.backgroundContainView.frame  = (CGRect){0, 0, self.width, kScreenHeight};
-    self.backgroundImageView.frame    = (CGRect){kScreenWidth, 0, kScreenWidth, kScreenHeight};
+    self.backgroundContainView.frame  = (CGRect){0, 0, self.width, ScreenHeight};
+    self.backgroundImageView.frame    = (CGRect){ScreenWidth, 0, ScreenWidth, ScreenHeight};
     
-    self.leftShdowImageMaskView.frame = (CGRect){self.width, 0, 10, kScreenHeight};
-    self.leftShadowImageView.frame    = (CGRect){-5, 0, 10, kScreenHeight};
+    self.leftShdowImageMaskView.frame = (CGRect){self.width, 0, 10, ScreenHeight};
+    self.leftShadowImageView.frame    = (CGRect){-5, 0, 10, ScreenHeight};
     
-    self.sectionView.frame  = (CGRect){0, 0, self.width, kScreenHeight};
-    
+    self.sectionView.frame  = (CGRect){0, 0, self.width, ScreenHeight};
 }
 
 #pragma mark - Public Methods
@@ -106,18 +99,16 @@
     
     progress = MIN(MAX(progress, 0.0), 1.0);
     
-    self.backgroundImageView.x     = self.width - kScreenWidth/2 * progress;
+    self.backgroundImageView.x     = self.width - ScreenWidth/2 * progress;
     
     self.leftShadowImageView.alpha = progress;
     self.leftShadowImageView.x     = -5 + progress * 5;
-    
 }
 
 - (void)setBlurredImage:(UIImage *)blurredImage {
     _blurredImage = blurredImage;
     
     self.backgroundImageView.image = self.blurredImage;
-    
 }
 
 #pragma mark - Notifications
@@ -131,7 +122,6 @@
     
     self.leftShadowImageView.image = shadowImage;
     self.backgroundImageView.image = nil;
-    
 }
 
 @end

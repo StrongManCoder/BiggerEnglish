@@ -9,24 +9,27 @@
 #import "BERootViewController.h"
 #import "BETranslateViewController.h"
 #import "BEDailyViewController.h"
+#import "BEFavouriteViewController.h"
+#import "BEWordBookViewController.h"
 #import "BEMenuView.h"
 
-static CGFloat const kMenuWidth = 240.0;
+//static CGFloat const kMenuWidth = 200.0;
 
 @interface BERootViewController () <UIGestureRecognizerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, strong) BETranslateViewController       *translateViewController;
 @property (nonatomic, strong) BEDailyViewController       *dailyViewController;
+@property (nonatomic, strong) BEFavouriteViewController       *favouriteViewController;
+@property (nonatomic, strong) BEWordBookViewController       *wordBookViewController;
 
 @property (nonatomic, strong) UINavigationController       *translateNavigationController;
 @property (nonatomic, strong) UINavigationController       *dailyNavigationController;
+@property (nonatomic, strong) UINavigationController       *favouriteNavigationController;
+@property (nonatomic, strong) UINavigationController       *wordBookNavigationController;
 
-@property (nonatomic, strong) BEMenuView *menuView;
 @property (nonatomic, strong) UIView *viewControllerContainView;
-
+@property (nonatomic, strong) BEMenuView *menuView;
 @property (nonatomic, strong) UIButton   *rootBackgroundButton;
-@property (nonatomic, strong) UIImageView *rootBackgroundBlurView;
-//@property (nonatomic, strong) UIView     *naviBottomLineView;
 
 @property (nonatomic, strong) UIScreenEdgePanGestureRecognizer *edgePanRecognizer;
 
@@ -37,16 +40,16 @@ static CGFloat const kMenuWidth = 240.0;
 
 @implementation BERootViewController
 
+CGFloat sildeMenuWidth;
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         
+        sildeMenuWidth = ScreenWidth / 2;
         self.currentSelectedIndex = 0;
-        
-//        [V2SettingManager manager];
-        
+        //[SettingManager manager];
     }
     return self;
 }
@@ -56,25 +59,16 @@ static CGFloat const kMenuWidth = 240.0;
     
     [self configureViewControllers];
     [self configureViews];
-    
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     [self configureGestures];
     [self configureNotifications];
     
-    
-    //    [UINavigationBar appearance].tintColor = [UIColor blackColor];
-    //    [UINavigationBar appearance].titleTextAttributes = @{
-    //                                                         NSForegroundColorAttributeName:[UIColor blackColor],
-    //                                                         NSFontAttributeName:[UIFont systemFontOfSize:17]};
-    self.edgesForExtendedLayout = UIRectEdgeAll;
+    self.edgesForExtendedLayout               = UIRectEdgeAll;
     self.automaticallyAdjustsScrollViewInsets = NO;
-    
-    
 }
 
 #pragma mark - Life Cycle
@@ -85,20 +79,15 @@ static CGFloat const kMenuWidth = 240.0;
     self.edgePanRecognizer.delegate                                    = self;
     self.navigationController.delegate                                 = self;
     self.navigationController.interactivePopGestureRecognizer.delegate = self;
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    //    [self setBlurredScreenShoot];
-    
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Layouts
@@ -108,33 +97,21 @@ static CGFloat const kMenuWidth = 240.0;
     
     self.viewControllerContainView.frame = self.view.frame;
     self.rootBackgroundButton.frame = self.view.frame;
-    self.rootBackgroundBlurView.frame = self.view.frame;
-    
 }
 
 #pragma mark - Configure Views
 
 - (void)configureViews {
-    
-    // NaviButtonBorder
-    //    self.naviBottomLineView                 = [[UIView alloc] init];
-    //    self.naviBottomLineView.backgroundColor = [UIColor colorWithWhite:0.98 alpha:0.50];
-    //    self.naviBottomLineView.frame           = (CGRect){0, 64, 320, 0.5};
-    ////    self.naviBottomLineView.hidden = YES;
-    //    [self.view addSubview:self.naviBottomLineView];
-    
-    self.rootBackgroundButton               = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.rootBackgroundButton.alpha = 0.0;
+    self.rootBackgroundButton                 = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.rootBackgroundButton.alpha           = 0.0;
     self.rootBackgroundButton.backgroundColor = [UIColor blackColor];
-    self.rootBackgroundButton.hidden = YES;
+    self.rootBackgroundButton.hidden          = YES;
     [self.view addSubview:self.rootBackgroundButton];
     
-    self.menuView                           = [[BEMenuView alloc] initWithFrame:(CGRect){-kMenuWidth, 0, kMenuWidth, kScreenHeight}];
+    self.menuView = [[BEMenuView alloc] initWithFrame:(CGRect){-sildeMenuWidth, 0, sildeMenuWidth, ScreenHeight}];
     [self.view addSubview:self.menuView];
     
-    
-    
-    // Handles
+    //灰色部分点击
     @weakify(self);
     [self.rootBackgroundButton bk_whenTapped:^{
         @strongify(self);
@@ -144,82 +121,49 @@ static CGFloat const kMenuWidth = 240.0;
         }];
     }];
     
-
-    
-    
+    //侧边栏切换
     [self.menuView setDidSelectedIndexBlock:^(NSInteger index) {
         @strongify(self);
         
         [self showViewControllerAtIndex:index animated:YES];
-        
         [SettingManager manager].selectedSectionIndex = index;
-        
     }];
-    
 }
 
 - (void)configureViewControllers {
     
-    self.viewControllerContainView          = [[UIView alloc] initWithFrame:(CGRect){0, 0, kScreenWidth, kScreenHeight}];
+    self.viewControllerContainView = [[UIView alloc] initWithFrame:(CGRect){0, 0, ScreenWidth, ScreenHeight}];
     [self.view addSubview:self.viewControllerContainView];
     
-    
-    self.translateViewController       = [[BETranslateViewController alloc] init];
+    self.translateViewController = [[BETranslateViewController alloc] init];
     self.translateNavigationController = [[UINavigationController alloc] initWithRootViewController:self.translateViewController];
     
     self.dailyViewController = [[BEDailyViewController alloc] init];
     self.dailyNavigationController = [[UINavigationController alloc] initWithRootViewController:self.dailyViewController];
     
-    /*
-    self.nodesViewController        = [[V2NodesViewController alloc] init];
-    self.nodesNavigationController = [[SCNavigationController alloc] initWithRootViewController:self.nodesViewController];
-    
-    self.favouriteViewController      = [[V2CategoriesViewController alloc] init];
-    self.favouriteViewController.favorite = YES;
-    self.favoriteNavigationController = [[SCNavigationController alloc] initWithRootViewController:self.favouriteViewController];
-    
-    self.notificationViewController = [[V2NotificationViewController alloc] init];
-    self.nofificationNavigationController = [[SCNavigationController alloc] initWithRootViewController:self.notificationViewController];
-    
-    self.profileViewController      = [[V2ProfileViewController alloc] init];
-    self.profileViewController.isSelf = YES;
-    self.profilenavigationController = [[SCNavigationController alloc] initWithRootViewController:self.profileViewController];
-    */
-    
+    self.favouriteViewController = [[BEFavouriteViewController alloc] init];
+    self.favouriteNavigationController = [[UINavigationController alloc] initWithRootViewController:self.favouriteViewController];
+
+    self.wordBookViewController = [[BEWordBookViewController alloc] init];
+    self.wordBookNavigationController = [[UINavigationController alloc] initWithRootViewController:self.wordBookViewController];
     
     [self.viewControllerContainView addSubview:[self viewControllerForIndex:[SettingManager manager].selectedSectionIndex].view];
     self.currentSelectedIndex = [SettingManager manager].selectedSectionIndex;
-    
-    
-    self.rootBackgroundBlurView = [[UIImageView alloc] init];
-    self.rootBackgroundBlurView.userInteractionEnabled = NO;
-    self.rootBackgroundBlurView.alpha = 0.0;
-    [self.viewControllerContainView addSubview:self.rootBackgroundBlurView];
-    
-    
 }
 
 - (void)configureNotifications {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveShowMenuNotification) name:kShowMenuNotification object:nil];
     /*
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveCancelInactiveDelegateNotifacation) name:kRootViewControllerCancelDelegateNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveResetInactiveDelegateNotification) name:kRootViewControllerResetDelegateNotification object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveCancelInactiveDelegateNotifacation) name:kRootViewControllerCancelDelegateNotification object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveResetInactiveDelegateNotification) name:kRootViewControllerResetDelegateNotification object:nil];
      */
     
-    /*
-    @weakify(self);
-    [[NSNotificationCenter defaultCenter] addObserverForName:kShowLoginVCNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-        @strongify(self);
-        
-        V2LoginViewController *loginViewController = [[V2LoginViewController alloc] init];
-        [self presentViewController:loginViewController animated:YES completion:^{
-            ;
-        }];
-        
-    }];
-    */
-    
+//     @weakify(self);
+     [[NSNotificationCenter defaultCenter] addObserverForName:kShowLoginVCNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+//     @strongify(self);
+     
+     }];
 }
 
 - (void)configureGestures {
@@ -230,9 +174,8 @@ static CGFloat const kMenuWidth = 240.0;
     [self.view addGestureRecognizer:self.edgePanRecognizer];
     
     UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanRecognizer:)];
-    panRecognizer.delegate = self;
+    panRecognizer.delegate                = self;
     [self.rootBackgroundButton addGestureRecognizer:panRecognizer];
-    
 }
 
 #pragma mark - Private Methods
@@ -240,7 +183,6 @@ static CGFloat const kMenuWidth = 240.0;
 - (void)showViewControllerAtIndex:(NSInteger)index animated:(BOOL)animated {
     
     if (self.currentSelectedIndex != index) {
-        
         @weakify(self);
         void (^showBlock)() = ^{
             @strongify(self);
@@ -249,7 +191,6 @@ static CGFloat const kMenuWidth = 240.0;
             UIViewController *willShowViewController = [self viewControllerForIndex:index];
             
             if (willShowViewController) {
-                
                 BOOL isViewInRootView = NO;
                 for (UIView *subView in self.view.subviews) {
                     if ([subView isEqual:willShowViewController.view]) {
@@ -267,10 +208,7 @@ static CGFloat const kMenuWidth = 240.0;
                 if (animated) {
                     [UIView animateWithDuration:0.2 animations:^{
                         previousViewController.view.x += 20;
-                        
-                    } completion:^(BOOL finished) {
-                        
-                    }];
+                    } completion:nil];
                     
                     [UIView animateWithDuration:0.6 delay:0 usingSpringWithDamping:1 initialSpringVelocity:1.2 options:UIViewAnimationOptionCurveLinear animations:^{
                         willShowViewController.view.x = 0;
@@ -286,39 +224,36 @@ static CGFloat const kMenuWidth = 240.0;
                 }
                 
                 self.currentSelectedIndex = index;
-                
             }
-            
         };
-        
         showBlock();
         
     } else {
-        
         UIViewController *willShowViewController = [self viewControllerForIndex:index];
-        
         [UIView animateWithDuration:0.4 animations:^{
             willShowViewController.view.x = 0;
-        } completion:^(BOOL finished) {
-        }];
+        } completion:nil];
         [UIView animateWithDuration:0.5 animations:^{
             [self setMenuOffset:0.0f];
         }];
-        
     }
-    
 }
 
 - (UIViewController *)viewControllerForIndex:(NSInteger)index {
     
     UIViewController *viewController;
-    
     switch (index) {
         case 0:
             viewController = self.translateNavigationController;
             break;
         case 1:
             viewController = self.dailyNavigationController;
+            break;
+        case 2:
+            viewController = self.favouriteNavigationController;
+            break;
+        case 3:
+            viewController = self.wordBookNavigationController;
             break;
         default:
             break;
@@ -329,62 +264,25 @@ static CGFloat const kMenuWidth = 240.0;
 
 - (void)setMenuOffset:(CGFloat)offset {
     
-    self.menuView.x = offset - kMenuWidth;
-    [self.menuView setOffsetProgress:offset/kMenuWidth];
-    self.rootBackgroundButton.alpha = offset/kMenuWidth * 0.3;
+    self.menuView.x = offset - sildeMenuWidth;
+    [self.menuView setOffsetProgress:offset/sildeMenuWidth];
+    self.rootBackgroundButton.alpha = offset/sildeMenuWidth * 0.3;
     
     UIViewController *previousViewController = [self viewControllerForIndex:self.currentSelectedIndex];
-    
-    previousViewController.view.x       = offset/8.0;
-    //    self.categoriesNavigationController.view.x   = offset/8.0;
-    //    self.favoriteNavigationController.view.x     = offset/8.0;
-    //    self.nofificationNavigationController.view.x = offset/8.0;
-    
-}
-
-- (void)setBlurredScreenShoot {
-    /*
-//    __block UIImage *screenShoot = [self.view re_screenshot];
-    */
-    
-    
-    
-    @weakify(self);
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
-        UIColor *blurColor = [UIColor colorWithWhite:0.970 alpha:0.50];
-        /*
-        if (kCurrentTheme == V2ThemeNight) {
-            blurColor = [UIColor colorWithWhite:0.028 alpha:0.50];
-        }
-        */
-        
-//        screenShoot = [screenShoot re_applyBlurWithRadius:12.0 tintColor:blurColor saturationDeltaFactor:1.0 maskImage:nil];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            @strongify(self);
-            
-//            self.menuView.blurredImage = screenShoot;
-//            self.rootBackgroundBlurView.image = screenShoot;
-            
-        });
-        
-    });
-    
+    previousViewController.view.x            = offset/8.0;
 }
 
 #pragma mark - Gestures
+
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     
     if ([gestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]]) {
         if ([otherGestureRecognizer.view isKindOfClass:[UIScrollView class]]) {
             return YES;
         }
-        
         if ([otherGestureRecognizer.view isKindOfClass:[UITableView class]]) {
             return YES;
         }
-        
     }
     return NO;
 }
@@ -394,36 +292,29 @@ static CGFloat const kMenuWidth = 240.0;
     CGFloat progress = [recognizer translationInView:self.rootBackgroundButton].x / (self.rootBackgroundButton.bounds.size.width * 0.5);
     progress = - MIN(progress, 0);
     
-    [self setMenuOffset:kMenuWidth - kMenuWidth * progress];
+    [self setMenuOffset:sildeMenuWidth - sildeMenuWidth * progress];
     
     static CGFloat sumProgress = 0;
     static CGFloat lastProgress = 0;
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
-        
         sumProgress = 0;
         lastProgress = 0;
-        
     }
-    
     if (recognizer.state == UIGestureRecognizerStateChanged) {
-        
         if (progress > lastProgress) {
             sumProgress += progress;
         } else {
             sumProgress -= progress;
         }
         lastProgress = progress;
-        
     }
-    
     if (recognizer.state == UIGestureRecognizerStateEnded) {
-        
         [UIView animateWithDuration:0.3 animations:^{
             if (sumProgress > 0.1) {
                 [self setMenuOffset:0];
             } else {
-                [self setMenuOffset:kMenuWidth];
+                [self setMenuOffset:sildeMenuWidth];
             }
         } completion:^(BOOL finished) {
             if (sumProgress > 0.1) {
@@ -433,36 +324,25 @@ static CGFloat const kMenuWidth = 240.0;
             }
         }];
     }
-    
 }
 
 - (void)handleEdgePanRecognizer:(UIScreenEdgePanGestureRecognizer *)recognizer {
-    CGFloat progress = [recognizer translationInView:self.view].x / kMenuWidth;
+    CGFloat progress = [recognizer translationInView:self.view].x / sildeMenuWidth;
     progress = MIN(1.0, MAX(0.0, progress));
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
-        
-        //        [self setBlurredScreenShoot];
         self.rootBackgroundButton.hidden = NO;
-        
     }
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        
-        [self setMenuOffset:kMenuWidth * progress];
-        
+        [self setMenuOffset:sildeMenuWidth * progress];
     }
     else if (recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
-        
-        
         CGFloat velocity = [recognizer velocityInView:self.view].x;
         
         if (velocity > 20 || progress > 0.5) {
-            
             [UIView animateWithDuration:(1-progress)/1.5 delay:0 usingSpringWithDamping:1 initialSpringVelocity:3.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-                [self setMenuOffset:kMenuWidth];
-            } completion:^(BOOL finished) {
-                ;
-            }];
+                [self setMenuOffset:sildeMenuWidth];
+            } completion:nil];
         }
         else {
             [UIView animateWithDuration:progress/3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -472,39 +352,28 @@ static CGFloat const kMenuWidth = 240.0;
                 self.rootBackgroundButton.alpha = 0.0;
             }];
         }
-        
     }
-    
 }
 
 #pragma mark - Notifications
 
+//弹出侧边栏
 - (void)didReceiveShowMenuNotification {
     
-    //    [self setBlurredScreenShoot];
-    
-    
     [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:1.0 initialSpringVelocity:3.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-        [self setMenuOffset:kMenuWidth];
+        [self setMenuOffset:sildeMenuWidth];
         self.rootBackgroundButton.hidden = NO;
     } completion:nil];
-    
 }
 
 - (void)didReceiveResetInactiveDelegateNotification {
     
-    //    self.latestNavigationController.delegate = nil;
-    //    self.edgePanRecognizer.delegate = nil;
     self.edgePanRecognizer.enabled = YES;
-    
 }
-
 
 - (void)didReceiveCancelInactiveDelegateNotifacation {
     
     self.edgePanRecognizer.enabled = NO;
-    
 }
-
 
 @end

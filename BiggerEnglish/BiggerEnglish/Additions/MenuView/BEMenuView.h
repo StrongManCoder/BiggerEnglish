@@ -14,8 +14,6 @@
 
 - (void)setDidSelectedIndexBlock:(void (^)(NSInteger index))didSelectedIndexBlock;
 
-
-
 @property (nonatomic, strong) UIImage *blurredImage;
 
 - (void)setOffsetProgress:(CGFloat)progress;
