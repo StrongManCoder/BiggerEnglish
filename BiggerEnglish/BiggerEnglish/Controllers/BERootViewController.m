@@ -47,7 +47,7 @@ CGFloat sildeMenuWidth;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         
-        sildeMenuWidth = ScreenWidth / 2;
+        sildeMenuWidth = 220;
         self.currentSelectedIndex = 0;
         //[SettingManager manager];
     }

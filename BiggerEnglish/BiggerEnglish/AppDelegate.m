@@ -21,8 +21,9 @@
     self.window.backgroundColor = [UIColor grayColor];
     self.rootViewController = [[BERootViewController alloc] init];
     self.window.rootViewController = self.rootViewController;
-    
     [self.window makeKeyAndVisible];
+ 
+    [self initAppearance];
     
     return YES;
 }
@@ -50,6 +51,23 @@
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
+
+//初始化全局样式
+- (void) initAppearance {
+    //导航条颜色
+    [[UINavigationBar appearance] setBarTintColor:[UIColor whiteColor]];
+//    //导航条标题颜色
+//    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName]];
+//    //导航条左右按钮颜色
+//    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    
+    //导航返回按钮背景图
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[UIImage imageNamed:@"navi_back"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    //隐藏文字
+    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-500, 0)
+                                                         forBarMetrics:UIBarMetricsDefault];
+}
+
 
 #pragma mark - Split view
 

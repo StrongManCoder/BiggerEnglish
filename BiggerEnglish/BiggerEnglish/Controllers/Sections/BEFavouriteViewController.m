@@ -13,22 +13,25 @@
 - (void)loadView {
     [super loadView];
     
+    [self configureLeftButton];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor blueColor];
-    
-    
-    UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    leftButton.frame = CGRectMake(0, 0, 30, 30);
-    
+    self.view.backgroundColor = [UIColor whiteColor];
+}
+
+-(void)configureLeftButton {
+    UIButton *leftButton   = [UIButton buttonWithType:UIButtonTypeCustom];
+    leftButton.frame       = CGRectMake(0, 0, 25, 25);
+    [leftButton setAdjustsImageWhenHighlighted:YES];
+    UIImage *image = [UIImage imageNamed:@"navi_menu"];
+    [leftButton setImage:[image imageWithTintColor:[UIColor BEDeepFontColor]] forState:UIControlStateNormal];
+    [leftButton setImage:[image imageWithTintColor:[UIColor BEHighLightFontColor]] forState:UIControlStateHighlighted];
     [leftButton addTarget:self action:@selector(navigateSetting) forControlEvents:UIControlEventTouchUpInside];
-    //设置leftBarButtonItem
-    UIBarButtonItem  *barItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
-    barItem.title = @"123";
-    self.navigationItem.rightBarButtonItem = barItem;
+    UIBarButtonItem *barItem              = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+    self.navigationItem.leftBarButtonItem = barItem;
 }
 
 - (void)navigateSetting {

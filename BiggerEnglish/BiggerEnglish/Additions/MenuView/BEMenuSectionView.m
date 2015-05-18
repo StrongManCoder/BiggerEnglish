@@ -63,98 +63,83 @@ static CGFloat const kAvatarHeight = 70.0f;
 
 - (void)configureProfileView {
     
-    self.avatarImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"avatar_default"]];
-    self.avatarImageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.avatarImageView.clipsToBounds = YES;
-    self.avatarImageView.layer.cornerRadius = 5; //kAvatarHeight / 2.0;
-//    self.avatarImageView.layer.borderColor = RGB(0x8a8a8a, 1.0).CGColor;
-    
-    /*
-    self.avatarImageView.layer.borderColor = RGB(0x8a8a8a, 1.0).CGColor;
-     */
-    
-    self.avatarImageView.layer.borderWidth = 1.0f;
+    self.avatarImageView                    = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"avatar_default"]];
+    self.avatarImageView.contentMode        = UIViewContentModeScaleAspectFill;
+    self.avatarImageView.clipsToBounds      = YES;
+    self.avatarImageView.layer.cornerRadius = kAvatarHeight / 2;
+    self.avatarImageView.layer.borderWidth  = 1.0f;
+    self.avatarImageView.layer.borderColor  = [UIColor grayColor].CGColor;
+    self.avatarImageView.alpha              = 0.8;
     [self addSubview:self.avatarImageView];
-    
-//    self.avatarImageView.alpha = kSetting.imageViewAlphaForCurrentTheme;
-    self.avatarImageView.alpha = 0.4;
-
-    /*
-    if ([V2DataManager manager].user.isLogin) {
-        [self.avatarImageView setImageWithURL:[NSURL URLWithString:[V2DataManager manager].user.member.memberAvatarLarge] placeholderImage:[UIImage imageNamed:@"avatar_default"]];
-        self.avatarImageView.layer.borderColor = RGB(0x8a8a8a, 0.1).CGColor;
-    }
-     */
     
     self.avatarButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self addSubview:self.avatarButton];
     
     self.divideImageView = [[UIImageView alloc] init];
-    self.divideImageView.backgroundColor = [UIColor BEFrenchGrayColor];
-    self.divideImageView.backgroundColor = [UIColor blackColor];
+    self.divideImageView.backgroundColor = [UIColor grayColor];
     self.divideImageView.contentMode = UIViewContentModeScaleAspectFill;
-        self.divideImageView.image = [UIImage imageNamed:@"section_divide"];
+    self.divideImageView.image = [UIImage imageNamed:@"section_divide"];
     self.divideImageView.clipsToBounds = YES;
     [self addSubview:self.divideImageView];
     
     /*
-    // Handles
-    [self.avatarButton bk_addEventHandler:^(id sender) {
-        
-        if (![V2DataManager manager].user.isLogin) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:kShowLoginVCNotification object:nil];
-        } else {
-            
-            self.actionSheet = [[SCActionSheet alloc] sc_initWithTitles:@[@"是否注销？"] customViews:nil buttonTitles:@"注销", nil];
-            
-            [self.actionSheet sc_configureButtonWithBlock:^(SCActionSheetButton *button) {
-                button.type = SCActionSheetButtonTypeRed;
-            } forIndex:0];
-            
-            [self.actionSheet sc_setButtonHandler:^{
-                
-                [[V2DataManager manager] UserLogout];
-                
-            } forIndex:0];
-            
-            [self.actionSheet sc_show:YES];
-            
-            //            UIAlertView *alertView = [[UIAlertView alloc] bk_initWithTitle:@"是否注销？" message:nil];
-            //            [alertView bk_addButtonWithTitle:@"注销" handler:^{
-            //                [[V2DataManager manager] UserLogout];
-            //            }];
-            //            [alertView bk_setCancelButtonWithTitle:@"取消" handler:^{
-            //                ;
-            //            }];
-            //            [alertView show];
-            
-        }
-        
-    } forControlEvents:UIControlEventTouchUpInside];
-    */
+     // Handles
+     [self.avatarButton bk_addEventHandler:^(id sender) {
+     
+     if (![V2DataManager manager].user.isLogin) {
+     [[NSNotificationCenter defaultCenter] postNotificationName:kShowLoginVCNotification object:nil];
+     } else {
+     
+     self.actionSheet = [[SCActionSheet alloc] sc_initWithTitles:@[@"是否注销？"] customViews:nil buttonTitles:@"注销", nil];
+     
+     [self.actionSheet sc_configureButtonWithBlock:^(SCActionSheetButton *button) {
+     button.type = SCActionSheetButtonTypeRed;
+     } forIndex:0];
+     
+     [self.actionSheet sc_setButtonHandler:^{
+     
+     [[V2DataManager manager] UserLogout];
+     
+     } forIndex:0];
+     
+     [self.actionSheet sc_show:YES];
+     
+     //            UIAlertView *alertView = [[UIAlertView alloc] bk_initWithTitle:@"是否注销？" message:nil];
+     //            [alertView bk_addButtonWithTitle:@"注销" handler:^{
+     //                [[V2DataManager manager] UserLogout];
+     //            }];
+     //            [alertView bk_setCancelButtonWithTitle:@"取消" handler:^{
+     //                ;
+     //            }];
+     //            [alertView show];
+     
+     }
+     
+     } forControlEvents:UIControlEventTouchUpInside];
+     */
     
 }
 
 - (void)configureNotifications {
     /*
-    
-    @weakify(self);
-    [[NSNotificationCenter defaultCenter] addObserverForName:kLoginSuccessNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-        @strongify(self);
-        
-        [self.avatarImageView setImageWithURL:[NSURL URLWithString:[V2DataManager manager].user.member.memberAvatarLarge] placeholderImage:[UIImage imageNamed:@"avatar_default"]];
-        self.avatarImageView.layer.borderColor = RGB(0x8a8a8a, 0.1).CGColor;
-        
-    }];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:kLogoutSuccessNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-        @strongify(self);
-        
-        [self.avatarImageView setImageWithURL:[NSURL URLWithString:[V2DataManager manager].user.member.memberAvatarLarge] placeholderImage:[UIImage imageNamed:@"avatar_default"]];
-        self.avatarImageView.layer.borderColor = RGB(0x8a8a8a, 1.0).CGColor;
-        
-    }];
-    
+     
+     @weakify(self);
+     [[NSNotificationCenter defaultCenter] addObserverForName:kLoginSuccessNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+     @strongify(self);
+     
+     [self.avatarImageView setImageWithURL:[NSURL URLWithString:[V2DataManager manager].user.member.memberAvatarLarge] placeholderImage:[UIImage imageNamed:@"avatar_default"]];
+     self.avatarImageView.layer.borderColor = RGB(0x8a8a8a, 0.1).CGColor;
+     
+     }];
+     
+     [[NSNotificationCenter defaultCenter] addObserverForName:kLogoutSuccessNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+     @strongify(self);
+     
+     [self.avatarImageView setImageWithURL:[NSURL URLWithString:[V2DataManager manager].user.member.memberAvatarLarge] placeholderImage:[UIImage imageNamed:@"avatar_default"]];
+     self.avatarImageView.layer.borderColor = RGB(0x8a8a8a, 1.0).CGColor;
+     
+     }];
+     
      */
 }
 

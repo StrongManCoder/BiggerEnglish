@@ -81,8 +81,7 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-//    self.backgroundColor = kBackgroundColorWhiteDark;
-        self.backgroundColor = [UIColor whiteColor];
+    self.backgroundColor = [UIColor whiteColor];
     
     self.backgroundContainView.frame  = (CGRect){0, 0, self.width, ScreenHeight};
     self.backgroundImageView.frame    = (CGRect){ScreenWidth, 0, ScreenWidth, ScreenHeight};
