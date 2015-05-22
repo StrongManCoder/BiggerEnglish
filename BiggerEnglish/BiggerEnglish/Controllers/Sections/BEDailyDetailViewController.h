@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "BEDailyModel.h"
 
-@interface BEDailyDetailViewController : UITableViewController
+@interface BEDailyDetailViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
 //@property (nonatomic, copy) NSString *datetime;
 
-//@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UITableView *tableView;
 
 @property (nonatomic, copy) NSString *date;
 

@@ -20,11 +20,13 @@
     UILabel *labelContent;
     UILabel *labelNote;
     UILabel *labelTranslation;
-
 }
 @end
 
 @implementation BEDailyDetailViewController
+
+@synthesize dailyModel;
+@synthesize tableView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -101,6 +103,12 @@
 }
 
 - (void)configureHeaderView {
+    
+    self.tableView =[[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight) style:UITableViewStylePlain];
+    [self.view addSubview:tableView];
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+
     
     self.tableView.showsVerticalScrollIndicator = NO;
     
