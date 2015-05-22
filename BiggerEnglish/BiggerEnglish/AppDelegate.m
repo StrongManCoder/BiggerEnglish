@@ -56,6 +56,8 @@
 - (void) initAppearance {
     //导航条颜色
     [[UINavigationBar appearance] setBarTintColor:[UIColor whiteColor]];
+    [[UINavigationBar appearance] setTranslucent:NO];
+
 //    //导航条标题颜色
 //    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName]];
 //    //导航条左右按钮颜色

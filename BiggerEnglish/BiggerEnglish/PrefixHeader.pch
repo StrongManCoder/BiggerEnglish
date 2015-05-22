@@ -15,6 +15,7 @@
 #import "SettingManager.h"
 #import <BlocksKit.h>
 #import <BlocksKit+UIKit.h>
+#import "AFNetworking.h"
 
 #import "CustomColor.h"
 
@@ -41,6 +42,8 @@ static NSString * const kUpdateCheckInBadgeNotification = @"UpdateCheckInBadgeNo
 static NSString * const kUpdateNotificationBadgeNotification = @"UpdateNotificationBadgeNotification";
 
 static NSString * const kIgnoreTopicSuccessNotification = @"IgnoreTopicSuccessNotification";
+
+static NSString * const DailyWordUrl = @"http://open.iciba.com/dsapi/?date=";
 
 
 #endif
