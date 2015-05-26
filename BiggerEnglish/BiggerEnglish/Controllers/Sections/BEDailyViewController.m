@@ -10,30 +10,51 @@
 #import "BEDailyDetailViewController.h"
 #import "BELazyScrollView.h"
 #import "BEDailyModel.h"
+#import <CoreData/CoreData.h>
+#import "FavourModel.h"
+#import "LoveModel.h"
 
 typedef NS_ENUM(NSInteger, DirectionMode) {
     ForwardDirection,
     BackwardDirection,
 };
 
-
 @interface BEDailyViewController() <BELazyScrollViewDelegate> {
     
     BELazyScrollView *lazyScrollView;
     NSMutableArray *viewControllerArray;
-    NSMutableDictionary *dataArray;
 }
 @end
-
 
 @implementation BEDailyViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        dataArray = [NSMutableDictionary dictionary];
+        [self initCacheData];
     }
     return self;
+}
+
+- (void)initCacheData {
+    NSFetchRequest *request=[[NSFetchRequest alloc] init];
+    id delegate = [[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *managedObjectContext = [delegate managedObjectContext];
+    NSEntityDescription *entity=[NSEntityDescription entityForName:@"FavourModel" inManagedObjectContext:managedObjectContext];
+    [request setEntity:entity];
+    NSArray *favourResults=[[managedObjectContext executeFetchRequest:request error:nil] copy];
+    
+    for (FavourModel *favour in favourResults) {
+        [[CacheManager manager].arrayFavour addObject:favour.date];
+    }
+
+    entity=[NSEntityDescription entityForName:@"LoveModel" inManagedObjectContext:managedObjectContext];
+    [request setEntity:entity];
+    NSArray *loveResults=[[managedObjectContext executeFetchRequest:request error:nil] copy];
+    for (LoveModel *love in loveResults) {
+        [[CacheManager manager].arrayLove addObject:love.date];
+    }
+    
 }
 
 - (void)loadView {
@@ -84,26 +105,28 @@ typedef NS_ENUM(NSInteger, DirectionMode) {
     BEDailyDetailViewController *controller = [viewControllerArray objectAtIndex:index % 3];
     
     NSString *date = [self getPredate:[self getDate] dateCount:index];
-    controller.date = date;
-    NSObject *object = [dataArray objectForKey:date];
-    if (object == nil) {
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
-        [manager GET:[DailyWordUrl stringByAppendingString:date] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            //json转换model
-            BEDailyModel *model = [BEDailyModel jsonToObject:operation.responseString];
-            controller.dailyModel = model;
-            //加入缓存字典
-            [dataArray setObject:model forKey:date];
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Error: %@", error);
-        }];
-    }
-    else
-    {
-        BEDailyModel *model = (BEDailyModel*)object;
-        controller.dailyModel = model;
-    }
+    [controller loadData:date];
+//    controller.date = date;
+//    NSObject *object = [dataArray objectForKey:date];
+//    if (object == nil) {
+//        [controller showLoadingView];
+//        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+//        [manager GET:[DailyWordUrl stringByAppendingString:date] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//            //json转换model
+//            BEDailyModel *model = [BEDailyModel jsonToObject:operation.responseString];
+//            controller.dailyModel = model;
+//            //加入缓存字典
+//            [dataArray setObject:model forKey:date];
+//        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//            NSLog(@"Error: %@", error);
+//        }];
+//    }
+//    else
+//    {
+//        BEDailyModel *model = (BEDailyModel*)object;
+//        controller.dailyModel = model;
+//    }
     
     return controller;
 }
@@ -112,7 +135,7 @@ typedef NS_ENUM(NSInteger, DirectionMode) {
     UIButton *leftButton                  = [UIButton buttonWithType:UIButtonTypeCustom];
     leftButton.frame                      = CGRectMake(0, 0, 25, 25);
     [leftButton setAdjustsImageWhenHighlighted:YES];
-    UIImage *image                        = [UIImage imageNamed:@"navi_menu"];
+    UIImage *image                        = [UIImage imageNamed:@"icon_hamberger"];
     [leftButton setImage:[image imageWithTintColor:[UIColor BEDeepFontColor]] forState:UIControlStateNormal];
     [leftButton setImage:[image imageWithTintColor:[UIColor BEHighLightFontColor]] forState:UIControlStateHighlighted];
     [leftButton addTarget:self action:@selector(navigateSetting) forControlEvents:UIControlEventTouchUpInside];

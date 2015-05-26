@@ -26,4 +26,7 @@
 @property (copy, nonatomic) NSString *tags;
 @property (copy, nonatomic) NSString *fenxiang_img;
 
+@property (copy, nonatomic) NSString *status;
+@property (copy, nonatomic) NSString *message;
+
 @end

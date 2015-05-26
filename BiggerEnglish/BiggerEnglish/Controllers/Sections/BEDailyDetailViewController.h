@@ -21,4 +21,7 @@
 
 - (void)reloadData;
 
+- (void)loadData:(NSString *)date;
+
+
 @end

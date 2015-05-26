@@ -10,4 +10,12 @@
 
 @interface CacheManager : NSObject
 
++ (instancetype)manager;
+
+@property (nonatomic, strong) NSMutableDictionary *arrayData;
+
+@property (nonatomic, strong) NSMutableArray *arrayLove;
+
+@property (nonatomic, strong) NSMutableArray *arrayFavour;
+
 @end

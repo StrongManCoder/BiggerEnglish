@@ -49,7 +49,8 @@ CGFloat sildeMenuWidth;
         
         sildeMenuWidth = 220;
         self.currentSelectedIndex = 0;
-        //[SettingManager manager];
+        [SettingManager manager];
+        [CacheManager manager];
     }
     return self;
 }

@@ -68,7 +68,7 @@ static CGFloat const kAvatarHeight = 70.0f;
     self.avatarImageView.clipsToBounds      = YES;
     self.avatarImageView.layer.cornerRadius = kAvatarHeight / 2;
     self.avatarImageView.layer.borderWidth  = 1.0f;
-    self.avatarImageView.layer.borderColor  = [UIColor grayColor].CGColor;
+    self.avatarImageView.layer.borderColor  = [UIColor BEHighLightFontColor].CGColor;
     self.avatarImageView.alpha              = 0.8;
     [self addSubview:self.avatarImageView];
     
@@ -76,7 +76,7 @@ static CGFloat const kAvatarHeight = 70.0f;
     [self addSubview:self.avatarButton];
     
     self.divideImageView = [[UIImageView alloc] init];
-    self.divideImageView.backgroundColor = [UIColor grayColor];
+    self.divideImageView.backgroundColor = [UIColor BEHighLightFontColor];
     self.divideImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.divideImageView.image = [UIImage imageNamed:@"section_divide"];
     self.divideImageView.clipsToBounds = YES;
