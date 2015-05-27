@@ -40,8 +40,9 @@
 		42BA9D8D1B13180B00FB55BF /* UIScrollView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BA9D7F1B13180B00FB55BF /* UIScrollView+MJExtension.m */; };
 		42BA9D8E1B13180B00FB55BF /* UIScrollView+MJRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BA9D811B13180B00FB55BF /* UIScrollView+MJRefresh.m */; };
 		42BA9D8F1B13180B00FB55BF /* UIView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BA9D831B13180B00FB55BF /* UIView+MJExtension.m */; };
-		42E52F031B1426FD00DAADF8 /* LoveModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42E52F021B1426FD00DAADF8 /* LoveModel.m */; };
-		42E52F061B1426FE00DAADF8 /* FavourModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42E52F051B1426FE00DAADF8 /* FavourModel.m */; };
+		42DED92B1B159C82005A5A0A /* BEDailyDetailModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DED92A1B159C82005A5A0A /* BEDailyDetailModel.m */; };
+		42DED92E1B159DC7005A5A0A /* LoveModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DED92D1B159DC7005A5A0A /* LoveModel.m */; };
+		42DED9311B159DC8005A5A0A /* FavourModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DED9301B159DC8005A5A0A /* FavourModel.m */; };
 		42E52F091B1449CB00DAADF8 /* CacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 42E52F081B1449CB00DAADF8 /* CacheManager.m */; };
 		57492EC90559B49F47308340 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBE0D67444874CF4C3F471BE /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -127,10 +128,12 @@
 		42BA9D811B13180B00FB55BF /* UIScrollView+MJRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+MJRefresh.m"; sourceTree = "<group>"; };
 		42BA9D821B13180B00FB55BF /* UIView+MJExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MJExtension.h"; sourceTree = "<group>"; };
 		42BA9D831B13180B00FB55BF /* UIView+MJExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MJExtension.m"; sourceTree = "<group>"; };
-		42E52F011B1426FD00DAADF8 /* LoveModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoveModel.h; sourceTree = "<group>"; };
-		42E52F021B1426FD00DAADF8 /* LoveModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoveModel.m; sourceTree = "<group>"; };
-		42E52F041B1426FE00DAADF8 /* FavourModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavourModel.h; sourceTree = "<group>"; };
-		42E52F051B1426FE00DAADF8 /* FavourModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavourModel.m; sourceTree = "<group>"; };
+		42DED9291B159C82005A5A0A /* BEDailyDetailModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEDailyDetailModel.h; sourceTree = "<group>"; };
+		42DED92A1B159C82005A5A0A /* BEDailyDetailModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEDailyDetailModel.m; sourceTree = "<group>"; };
+		42DED92C1B159DC7005A5A0A /* LoveModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoveModel.h; sourceTree = "<group>"; };
+		42DED92D1B159DC7005A5A0A /* LoveModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoveModel.m; sourceTree = "<group>"; };
+		42DED92F1B159DC8005A5A0A /* FavourModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavourModel.h; sourceTree = "<group>"; };
+		42DED9301B159DC8005A5A0A /* FavourModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavourModel.m; sourceTree = "<group>"; };
 		42E52F071B1449CB00DAADF8 /* CacheManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheManager.h; sourceTree = "<group>"; };
 		42E52F081B1449CB00DAADF8 /* CacheManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CacheManager.m; sourceTree = "<group>"; };
 		8897E0F5A25496989256BDC0 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -235,12 +238,14 @@
 			children = (
 				421B7E3C1B09F0E5009FB3F7 /* BEDailyModel.h */,
 				421B7E3D1B09F0E5009FB3F7 /* BEDailyModel.m */,
+				42DED9291B159C82005A5A0A /* BEDailyDetailModel.h */,
+				42DED92A1B159C82005A5A0A /* BEDailyDetailModel.m */,
 				42B57F691B0D874600E85DD6 /* ResponseSuper.h */,
 				42B57F6A1B0D874600E85DD6 /* ResponseSuper.m */,
-				42E52F041B1426FE00DAADF8 /* FavourModel.h */,
-				42E52F051B1426FE00DAADF8 /* FavourModel.m */,
-				42E52F011B1426FD00DAADF8 /* LoveModel.h */,
-				42E52F021B1426FD00DAADF8 /* LoveModel.m */,
+				42DED92C1B159DC7005A5A0A /* LoveModel.h */,
+				42DED92D1B159DC7005A5A0A /* LoveModel.m */,
+				42DED92F1B159DC8005A5A0A /* FavourModel.h */,
+				42DED9301B159DC8005A5A0A /* FavourModel.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -532,14 +537,13 @@
 				42BA9D851B13180B00FB55BF /* MJRefreshComponent.m in Sources */,
 				421B7E3E1B09F0E5009FB3F7 /* BEDailyModel.m in Sources */,
 				429575621B02DE830064FC69 /* BERootViewController.m in Sources */,
+				42DED92E1B159DC7005A5A0A /* LoveModel.m in Sources */,
 				42BA9D8B1B13180B00FB55BF /* MJRefreshLegendFooter.m in Sources */,
 				429575721B02E2660064FC69 /* BEMenuView.m in Sources */,
-				42E52F031B1426FD00DAADF8 /* LoveModel.m in Sources */,
 				42BA9D8F1B13180B00FB55BF /* UIView+MJExtension.m in Sources */,
 				42908FBA1B0C8CA1000F29FB /* BELazyScrollView.m in Sources */,
 				4295758B1B02EB1E0064FC69 /* EXTScope.m in Sources */,
 				429575911B02EC620064FC69 /* UIImage+Tint.m in Sources */,
-				42E52F061B1426FE00DAADF8 /* FavourModel.m in Sources */,
 				429575951B02F7EE0064FC69 /* BEDailyViewController.m in Sources */,
 				4297EC051B04425100CBD8CD /* BEFavouriteViewController.m in Sources */,
 				42BA9D8C1B13180B00FB55BF /* MJRefreshLegendHeader.m in Sources */,
@@ -548,8 +552,10 @@
 				429575991B0335840064FC69 /* SettingManager.m in Sources */,
 				42BA9D8A1B13180B00FB55BF /* MJRefreshHeader.m in Sources */,
 				4204C9181B02088400169446 /* BiggerEnglish.xcdatamodeld in Sources */,
+				42DED9311B159DC8005A5A0A /* FavourModel.m in Sources */,
 				4295756D1B02DF690064FC69 /* BETranslateViewController.m in Sources */,
 				429575781B02E3D90064FC69 /* BEMenuSectionCell.m in Sources */,
+				42DED92B1B159C82005A5A0A /* BEDailyDetailModel.m in Sources */,
 				42BA9D871B13180B00FB55BF /* MJRefreshFooter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

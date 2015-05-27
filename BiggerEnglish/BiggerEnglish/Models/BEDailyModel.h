@@ -7,26 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ResponseSuper.h"   
+#import "ResponseSuper.h"  
+#import "BEDailyDetailModel.h"
 
 @interface BEDailyModel : ResponseSuper
 
-@property (copy, nonatomic) NSString *sid;
-@property (copy, nonatomic) NSString *tts;
-@property (copy, nonatomic) NSString *content;
-@property (copy, nonatomic) NSString *note;
-@property (copy, nonatomic) NSString *love;
-@property (copy, nonatomic) NSString *translation;
-@property (copy, nonatomic) NSString *picture;
-@property (copy, nonatomic) NSString *picture2;
-@property (copy, nonatomic) NSString *caption;
-@property (copy, nonatomic) NSString *dateline;
-@property (copy, nonatomic) NSString *s_pv;
-@property (copy, nonatomic) NSString *sp_pv;
-@property (copy, nonatomic) NSString *tags;
-@property (copy, nonatomic) NSString *fenxiang_img;
-
 @property (copy, nonatomic) NSString *status;
-@property (copy, nonatomic) NSString *message;
+@property (retain, nonatomic) BEDailyDetailModel *message;
 
 @end

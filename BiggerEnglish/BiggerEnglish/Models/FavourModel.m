@@ -2,7 +2,7 @@
 //  FavourModel.m
 //  BiggerEnglish
 //
-//  Created by 陈大捷 on 15/5/26.
+//  Created by 陈大捷 on 15/5/27.
 //  Copyright (c) 2015年 etonetech. All rights reserved.
 //
 
@@ -11,20 +11,14 @@
 
 @implementation FavourModel
 
-@dynamic caption;
+@dynamic title;
 @dynamic content;
-@dynamic date;
-@dynamic dateline;
-@dynamic fenxiang_img;
-@dynamic love;
 @dynamic note;
-@dynamic picture;
-@dynamic picture2;
-@dynamic s_pv;
-@dynamic sid;
-@dynamic sp_pv;
-@dynamic tags;
 @dynamic translation;
+@dynamic picture2;
+@dynamic love;
 @dynamic tts;
+@dynamic url;
+@dynamic sid;
 
 @end

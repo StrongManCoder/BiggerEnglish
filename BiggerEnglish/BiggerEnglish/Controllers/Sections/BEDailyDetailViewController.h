@@ -7,21 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BEDailyModel.h"
 
 @interface BEDailyDetailViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
-//@property (nonatomic, copy) NSString *datetime;
-
-@property (nonatomic, strong) UITableView *tableView;
-
 @property (nonatomic, copy) NSString *date;
 
-@property (nonatomic, retain) BEDailyModel *dailyModel;
-
-- (void)reloadData;
-
 - (void)loadData:(NSString *)date;
-
 
 @end

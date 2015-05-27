@@ -44,7 +44,7 @@ static NSString * const kUpdateNotificationBadgeNotification = @"UpdateNotificat
 
 static NSString * const kIgnoreTopicSuccessNotification = @"IgnoreTopicSuccessNotification";
 
-static NSString * const DailyWordUrl = @"http://open.iciba.com/dsapi/?date=";
+static NSString * const DailyWordUrl = @"http://dict-mobile.iciba.com/interface/index.php?client=4&type=1&timestamp=1432707139&c=sentence&m=getSentence&sign=55cfb0ee62705ca3&field=1,2,3,4,5,7,8,9,10,11,12,13&date=";
 static NSString * const DailyWordLoveUrl = @"http://dict-mobile.iciba.com/interface/index.php?client=4&type=1&timestamp=1432539881&c=sentence&m=praise&sign=88d15e95e1b89e58&uid=&id=";
 
 
