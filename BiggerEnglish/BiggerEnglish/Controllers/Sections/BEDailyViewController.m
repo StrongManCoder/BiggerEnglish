@@ -60,6 +60,13 @@ static int const MaxPage = 100;
 
 - (void)loadView {
     [super loadView];
+
+//    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+//        self.edgesForExtendedLayout = UIRectEdgeNone;
+//    }
+//    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.automaticallyAdjustsScrollViewInsets = NO;
+//    self.extendedLayoutIncludesOpaqueBars = NO;
     
     [self configureLeftButton];
     
@@ -68,10 +75,11 @@ static int const MaxPage = 100;
         [viewControllerArray addObject:[[BEDailyDetailViewController alloc] init]];
     }
 
-    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    CGRect rect = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height);
     lazyScrollView = [[BELazyScrollView alloc] initWithFrame:rect];
     lazyScrollView.enableCircularScroll = NO;
     lazyScrollView.autoPlay = NO;
+    
     @weakify(self);
     lazyScrollView.dataSource = ^(NSUInteger index) {
         @strongify(self);
@@ -91,8 +99,9 @@ static int const MaxPage = 100;
     }
     BEDailyDetailViewController *controller = [viewControllerArray objectAtIndex:index % 3];
     NSString *date = [self getPredate:[self getDate] dateCount:index];
-    [controller loadData:date];
-    
+    if (![controller.date  isEqual: date]) {
+        [controller loadData:date];
+    }
     return controller;
 }
 

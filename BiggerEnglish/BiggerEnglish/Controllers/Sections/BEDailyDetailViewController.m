@@ -41,6 +41,9 @@
     AVAudioPlayer *player;
     
     NSMutableArray *commentArray;
+    
+    NSInteger pageIndex;//评论页数索引
+    NSInteger pageSize;//评论每页条数
 }
 
 @end
@@ -52,6 +55,9 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         dictionaryMonth = @{ @"01": @"January", @"02": @"February", @"03": @"March", @"04": @"April", @"05": @"May", @"06": @"June", @"07": @"July", @"08": @"August", @"09": @"September", @"10": @"October", @"11": @"November", @"12": @"December" };
+        commentArray = [NSMutableArray array];
+        pageIndex = 0;
+        pageSize = 10;
     }
     return self;
 }
@@ -99,10 +105,15 @@
     [tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
     imageLoading.hidden = YES;
     imageError.hidden = YES;
+    
+//    [tableView.footer beginRefreshing];
+//    [self loadCommentData];
 }
 
 - (void)loadData:(NSString *)date {
     self.date = date;
+//    [commentArray removeAllObjects];
+//    [tableView reloadData];
     [tableView.header endRefreshing];
     NSObject *object = [[CacheManager manager].arrayData objectForKey:date];
     if (object == nil) {
@@ -114,31 +125,17 @@
     }
 }
 
-- (void)networkRequest {
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:[DailyWordUrl stringByAppendingString:self.date] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        //json转换model
-        BEDailyModel *model = [BEDailyModel jsonToObject:operation.responseString];
-        BEDailyDetailModel *detailModel = (BEDailyDetailModel *)model.message;
-        self.dailyModel = detailModel;
-        //加入缓存字典
-        [[CacheManager manager].arrayData setObject:detailModel forKey:self.date];
-        [tableView.header endRefreshing];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        imageLoading.hidden = YES;
-        imageError.hidden = NO;
-        [tableView.header endRefreshing];
-    }];
-}
-
 #pragma mark - Private Method
 
 - (void)configureHeaderView {
     
-    tableView =[[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight) style:UITableViewStylePlain];
+    tableView =[[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64) style:UITableViewStylePlain];
     tableView.showsVerticalScrollIndicator = NO;
+    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+//    cell.selectionStytle = UITableViewCellSelectionStyleNone；
     tableView.dataSource = self;
     tableView.delegate = self;
+
     [self.view addSubview:tableView];
     //下拉刷新
     @weakify(self);
@@ -146,6 +143,9 @@
         @strongify(self);
         [self networkRequest];
     }];
+    //上拉加载评论
+    [tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadCommentData)];
+    tableView.footer.automaticallyRefresh = NO;
     
     headerView = [[UIView alloc] initWithFrame:CGRectZero];
     headerView.backgroundColor       = [UIColor whiteColor];
@@ -276,28 +276,41 @@
     [tableView reloadData];
 }
 
-//- (void)updateData {
-//    [self loadData:self.date];
-//}
-
-- (void)loadMoreData {
+- (void)loadCommentData {
     // 1.添加假数据
     for (int i = 0; i<5; i++) {
         [commentArray addObject: [NSString stringWithFormat:@"%d", i]];
     }
     
     [[AFHTTPRequestOperationManager manager] GET:@"http://dict-mobile.iciba.com/interface/index.php?client=4&type=1&timestamp=1432540461&c=discuss&m=getlist&sign=6829bd45117bde5e&field=1,3,4,5&wid=1300&page=3&size=10&zid=14" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-//        [tableView reloadData];
-        [tableView.header endRefreshing];
+
+        [tableView reloadData];
+        [tableView.footer endRefreshing];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
+        NSLog(@"loadCommentData Error: %@", error);
     }];
 }
 
 - (void)reloadData {
     
+}
+
+- (void)networkRequest {
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager GET:[DailyWordUrl stringByAppendingString:self.date] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        //json转换model
+        BEDailyModel *model = [BEDailyModel jsonToObject:operation.responseString];
+        BEDailyDetailModel *detailModel = (BEDailyDetailModel *)model.message;
+        self.dailyModel = detailModel;
+        //加入缓存字典
+        [[CacheManager manager].arrayData setObject:detailModel forKey:self.date];
+        [tableView.header endRefreshing];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        imageLoading.hidden = YES;
+        imageError.hidden = NO;
+        [tableView.header endRefreshing];
+    }];
 }
 
 //点赞
@@ -343,7 +356,7 @@
         
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         [fetchRequest setEntity:[NSEntityDescription entityForName:@"FavourModel" inManagedObjectContext:managedObjectContext]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"date==%@", self.date]];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", self.date]];
         NSArray* results = [managedObjectContext executeFetchRequest:fetchRequest error:nil];
         if ([results count] > 0) {
             [managedObjectContext deleteObject:[results objectAtIndex:0]];
