@@ -12,6 +12,6 @@
 @interface BEDiscussMessageModel : NSObject
 
 @property (copy, nonatomic) NSString *count;
-@property (retain, nonatomic) BEDiscussDetailModel *data;
+@property (strong, nonatomic) NSArray *data;
 
 @end

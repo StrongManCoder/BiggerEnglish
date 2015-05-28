@@ -6,16 +6,19 @@
 //  Copyright (c) 2015年 etonetech. All rights reserved.
 //
 
-#import "BEDailyDetailViewController.h"
 #import <SDWebImageManager.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <AVFoundation/AVFoundation.h>
+#import <CoreData/CoreData.h>
+
+#import "BEDailyDetailViewController.h"
 #import "MJRefresh.h"
 #import "FavourModel.h"
 #import "LoveModel.h"
 #import "BEDailyModel.h"
 #import "BEDailyDetailModel.h"
-#import <CoreData/CoreData.h>
+#import "BEDiscussModel.h"
+#import "BEDailyCommentCell.h"
 
 @interface BEDailyDetailViewController() {
     
@@ -28,12 +31,13 @@
     UILabel *labelDate;
     UILabel *labelContent;
     UILabel *labelNote;
-    UILabel *labelTranslation;
     UIImageView *imageLove;
     UILabel * labelLoveCount;
     UIImageView *imageFavour;
     UIImageView *imageShare;
     UIImageView *imagePlay;
+    UIImageView *imageDivideLine;
+    UILabel *labelTranslation;
     
     UIImageView *imageError;
     UIImageView *imageLoading;
@@ -44,6 +48,9 @@
     
     NSInteger pageIndex;//评论页数索引
     NSInteger pageSize;//评论每页条数
+    
+    NSString *textStyle;
+    NSString *textStyleWithNoReplyName;
 }
 
 @end
@@ -58,6 +65,9 @@
         commentArray = [NSMutableArray array];
         pageIndex = 0;
         pageSize = 10;
+        
+        textStyle = @"<p><font color=#93B4DA>%@</font> <font color=#333333>回复: %@</font></p>";
+        textStyleWithNoReplyName = @"<p><font color=#93B4DA>%@</font> <font color=#333333>回复</font> <font color=#93B4DA>%@</font><font color=#333333>: %@</font></p>";
     }
     return self;
 }
@@ -105,15 +115,15 @@
     [tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
     imageLoading.hidden = YES;
     imageError.hidden = YES;
-    
-//    [tableView.footer beginRefreshing];
-//    [self loadCommentData];
+    //加栽评论
+    pageIndex = 0;
+    [tableView.footer beginRefreshing];
 }
 
 - (void)loadData:(NSString *)date {
     self.date = date;
-//    [commentArray removeAllObjects];
-//    [tableView reloadData];
+    [commentArray removeAllObjects];
+    [tableView reloadData];
     [tableView.header endRefreshing];
     NSObject *object = [[CacheManager manager].arrayData objectForKey:date];
     if (object == nil) {
@@ -132,10 +142,9 @@
     tableView =[[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64) style:UITableViewStylePlain];
     tableView.showsVerticalScrollIndicator = NO;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-//    cell.selectionStytle = UITableViewCellSelectionStyleNone；
+    //    cell.selectionStytle = UITableViewCellSelectionStyleNone；
     tableView.dataSource = self;
     tableView.delegate = self;
-
     [self.view addSubview:tableView];
     //下拉刷新
     @weakify(self);
@@ -146,62 +155,73 @@
     //上拉加载评论
     [tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadCommentData)];
     tableView.footer.automaticallyRefresh = NO;
+    tableView.footer.textColor = [UIColor BEDeepFontColor];
+    [tableView.footer setTitle:@"点击或上拉加载更多评论！" forState:MJRefreshFooterStateIdle];
+    [tableView.footer setTitle:@"正在加载中 ..." forState:MJRefreshFooterStateRefreshing];
+    [tableView.footer setTitle:@"No more data" forState:MJRefreshFooterStateNoMoreData];
     
-    headerView = [[UIView alloc] initWithFrame:CGRectZero];
+
+    headerView = [[UIView alloc] init];
     headerView.backgroundColor       = [UIColor whiteColor];
     
-    imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    imageView = [[UIImageView alloc] init];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     
-    labelDate = [[UILabel alloc] initWithFrame:CGRectZero];
+    labelDate = [[UILabel alloc] init];
     labelDate.textAlignment = NSTextAlignmentLeft;
     labelDate.textColor = [UIColor BEHighLightFontColor];
     labelDate.font = [UIFont boldSystemFontOfSize:20];
     
-    labelContent = [[UILabel alloc] initWithFrame:CGRectZero];
+    labelContent = [[UILabel alloc] init];
     labelContent.textAlignment = NSTextAlignmentLeft;
     labelContent.textColor = [UIColor BEFontColor];
     labelContent.font = [UIFont systemFontOfSize:16];
     labelContent.numberOfLines = 0;
     
-    labelNote = [[UILabel alloc] initWithFrame:CGRectZero];
+    labelNote = [[UILabel alloc] init];
     labelNote.textAlignment = NSTextAlignmentLeft;
     labelNote.textColor = [UIColor BEDeepFontColor];
     labelNote.font = [UIFont systemFontOfSize:16];
     labelNote.numberOfLines = 0;
     
-    imageLove  = [[UIImageView alloc] initWithFrame:CGRectZero];
+    imageLove  = [[UIImageView alloc] init];
     imageLove.image = [[UIImage imageNamed:@"icon_love"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     imageLove.userInteractionEnabled = YES;
     UITapGestureRecognizer *imageLoveSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageLoveClick)];
     [imageLove addGestureRecognizer:imageLoveSingleTap];
     
-    labelLoveCount = [[UILabel alloc] initWithFrame:CGRectZero];
+    labelLoveCount = [[UILabel alloc] init];
     labelLoveCount.textAlignment = NSTextAlignmentLeft;
     labelLoveCount.textColor = [UIColor BEHighLightFontColor];
     labelLoveCount.font = [UIFont systemFontOfSize:14];
     labelLoveCount.numberOfLines = 0;
     
-    imageFavour = [[UIImageView alloc] initWithFrame:CGRectZero];
+    imageFavour = [[UIImageView alloc] init];
     imageFavour.image = [[UIImage imageNamed:@"icon_favour"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     
     imageFavour.userInteractionEnabled = YES;
     UITapGestureRecognizer *imageFavourSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageFavourClick)];
     [imageFavour addGestureRecognizer:imageFavourSingleTap];
     
-    imageShare = [[UIImageView alloc] initWithFrame:CGRectZero];
+    imageShare = [[UIImageView alloc] init];
     imageShare.image = [[UIImage imageNamed:@"icon_share"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     imageShare.userInteractionEnabled = YES;
     UITapGestureRecognizer *imageShareSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageShareClick)];
     [imageShare addGestureRecognizer:imageShareSingleTap];
     
-    imagePlay = [[UIImageView alloc] initWithFrame:CGRectZero];
+    imagePlay = [[UIImageView alloc] init];
     imagePlay.image = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     imagePlay.userInteractionEnabled = YES;
     UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
     [imagePlay addGestureRecognizer:imagePlaySingleTap];
     
-    labelTranslation = [[UILabel alloc] initWithFrame:CGRectZero];
+    imageDivideLine = [[UIImageView alloc] init];
+    imageDivideLine.backgroundColor = [UIColor BEHighLightFontColor];
+    imageDivideLine.contentMode = UIViewContentModeScaleAspectFill;
+    imageDivideLine.image = [UIImage imageNamed:@"section_divide"];
+    imageDivideLine.clipsToBounds = YES;
+
+    labelTranslation = [[UILabel alloc] init];
     labelTranslation.textAlignment = NSTextAlignmentLeft;
     labelTranslation.textColor = [UIColor BEFontColor];
     labelTranslation.font = [UIFont systemFontOfSize:14];
@@ -228,6 +248,7 @@
     [headerView addSubview:imageFavour];
     [headerView addSubview:imageShare];
     [headerView addSubview:imagePlay];
+    [headerView addSubview:imageDivideLine];
     [headerView addSubview:labelTranslation];
     [self.view addSubview:imageError];
     [self.view addSubview:imageLoading];
@@ -261,9 +282,11 @@
     imageShare.frame               = CGRectMake(((ScreenWidth - 140) / 3) * 2 + 70, height, 30, 30);
     imagePlay.frame                = CGRectMake(ScreenWidth - 40, height, 30, 30);
     
-    height                         = height + 45;
+    imageDivideLine.frame          = CGRectMake(10, height + 50, ScreenWidth - 20, 0.5);
+    
+    height                         = height + 60;
     CGSize labelTranslationSize    = [self calculateLabelHeight:labelTranslation.text FontSize:14];
-    labelTranslation.frame         = CGRectMake(10, height, ScreenWidth - 20, labelTranslationSize.height);
+    labelTranslation.frame         = CGRectMake(15, height, ScreenWidth - 30, labelTranslationSize.height);
     
     height                         = height + labelTranslation.height + 10;
     headerView.frame               = CGRectMake(0, 0, ScreenWidth, height);
@@ -277,18 +300,18 @@
 }
 
 - (void)loadCommentData {
-    // 1.添加假数据
-    for (int i = 0; i<5; i++) {
-        [commentArray addObject: [NSString stringWithFormat:@"%d", i]];
-    }
-    
-    [[AFHTTPRequestOperationManager manager] GET:@"http://dict-mobile.iciba.com/interface/index.php?client=4&type=1&timestamp=1432540461&c=discuss&m=getlist&sign=6829bd45117bde5e&field=1,3,4,5&wid=1300&page=3&size=10&zid=14" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-
+    [[AFHTTPRequestOperationManager manager] GET:DailyWordCommentUrl(dailyModel.sid, (int)++pageIndex, (int)pageSize) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        BEDiscussModel *discussModel = [BEDiscussModel jsonToObject:operation.responseString];
+        BEDiscussMessageModel *discussMessageModel = (BEDiscussMessageModel *)discussModel.message;
+        NSArray *array = [BEDiscussDetailModel objectArrayWithKeyValuesArray:discussMessageModel.data];
+        for (BEDiscussDetailModel *discussDetailModel in array) {
+            [commentArray addObject: discussDetailModel];
+        }
         [tableView reloadData];
         [tableView.footer endRefreshing];
-        
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"loadCommentData Error: %@", error);
+        [tableView.footer endRefreshing];
     }];
 }
 
@@ -297,8 +320,11 @@
 }
 
 - (void)networkRequest {
+    [commentArray removeAllObjects];
+    [tableView reloadData];
+
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:[DailyWordUrl stringByAppendingString:self.date] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [manager GET:DailyWordUrl(self.date) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         //json转换model
         BEDailyModel *model = [BEDailyModel jsonToObject:operation.responseString];
         BEDailyDetailModel *detailModel = (BEDailyDetailModel *)model.message;
@@ -335,7 +361,7 @@
             NSLog(@"save ok.");
         }
         //Get
-        [[AFHTTPRequestOperationManager manager] GET:[DailyWordLoveUrl stringByAppendingString:dailyModel.sid] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [[AFHTTPRequestOperationManager manager] GET:DailyWordLoveUrl(dailyModel.sid) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"love ok.");
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"error!");
@@ -419,19 +445,6 @@
 
 #pragma mark - UITableViewDataSource
 
-//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    return 20;
-//}
-//
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-//    if (cell == nil) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
-//    }
-//    cell.textLabel.text=[NSString stringWithFormat:@"%d",indexPath.row+1];
-//    return cell;
-//}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return commentArray.count;
@@ -440,14 +453,34 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *ID = @"cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
+    BEDailyCommentCell *cell = (BEDailyCommentCell *)[tableView dequeueReusableCellWithIdentifier:ID];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+        cell = [[BEDailyCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
     }
-
-    cell.textLabel.text = commentArray[indexPath.row];;
-
+    
+    BEDiscussDetailModel *discussDetailModel = (BEDiscussDetailModel *)commentArray[indexPath.row];
+    if ([discussDetailModel.reply_name isEqualToString:@""]) {
+        cell.rtLabel.text = [NSString stringWithFormat:textStyle, discussDetailModel.user_name, discussDetailModel.restext];
+    } else {
+        cell.rtLabel.text = [NSString stringWithFormat:textStyleWithNoReplyName, discussDetailModel.user_name, discussDetailModel.reply_name, discussDetailModel.restext];
+    }
+    
     return cell;
 }
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    RTLabel *rtLabel = [BEDailyCommentCell textLabel];
+    BEDiscussDetailModel *discussDetailModel = (BEDiscussDetailModel *)commentArray[indexPath.row];
+    if ([discussDetailModel.reply_name isEqualToString:@""]) {
+        rtLabel.text = [NSString stringWithFormat:textStyle, discussDetailModel.user_name, discussDetailModel.restext];
+    } else {
+        rtLabel.text = [NSString stringWithFormat:textStyleWithNoReplyName, discussDetailModel.user_name, discussDetailModel.reply_name, discussDetailModel.restext];
+    }
+    CGSize optimumSize = [rtLabel optimumSize];
+    
+    return optimumSize.height + 10;
+}
+
 
 @end

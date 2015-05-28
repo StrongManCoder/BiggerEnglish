@@ -26,6 +26,8 @@
 		429575991B0335840064FC69 /* SettingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575981B0335840064FC69 /* SettingManager.m */; };
 		4297EC051B04425100CBD8CD /* BEFavouriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4297EC041B04425100CBD8CD /* BEFavouriteViewController.m */; };
 		4297EC081B04427000CBD8CD /* BEWordBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4297EC071B04427000CBD8CD /* BEWordBookViewController.m */; };
+		429E52AA1B16F5E200D9828F /* RTLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 429E52A91B16F5E200D9828F /* RTLabel.m */; };
+		429E52AD1B16F7B600D9828F /* BEDailyCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 429E52AC1B16F7B600D9828F /* BEDailyCommentCell.m */; };
 		42B57F6B1B0D874600E85DD6 /* ResponseSuper.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B57F6A1B0D874600E85DD6 /* ResponseSuper.m */; };
 		42BA9D841B13180B00FB55BF /* MJRefresh.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 42BA9D6C1B13180B00FB55BF /* MJRefresh.bundle */; };
 		42BA9D851B13180B00FB55BF /* MJRefreshComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BA9D6F1B13180B00FB55BF /* MJRefreshComponent.m */; };
@@ -102,6 +104,10 @@
 		4297EC061B04427000CBD8CD /* BEWordBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEWordBookViewController.h; sourceTree = "<group>"; };
 		4297EC071B04427000CBD8CD /* BEWordBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEWordBookViewController.m; sourceTree = "<group>"; };
 		4297EC0A1B04871B00CBD8CD /* CustomColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomColor.h; sourceTree = "<group>"; };
+		429E52A81B16F5E200D9828F /* RTLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTLabel.h; sourceTree = "<group>"; };
+		429E52A91B16F5E200D9828F /* RTLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTLabel.m; sourceTree = "<group>"; };
+		429E52AB1B16F7B600D9828F /* BEDailyCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEDailyCommentCell.h; sourceTree = "<group>"; };
+		429E52AC1B16F7B600D9828F /* BEDailyCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEDailyCommentCell.m; sourceTree = "<group>"; };
 		42B57F691B0D874600E85DD6 /* ResponseSuper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResponseSuper.h; sourceTree = "<group>"; };
 		42B57F6A1B0D874600E85DD6 /* ResponseSuper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseSuper.m; sourceTree = "<group>"; };
 		42BA9D691B1300AA00FB55BF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -282,6 +288,8 @@
 				429575941B02F7EE0064FC69 /* BEDailyViewController.m */,
 				421B7E381B09EABF009FB3F7 /* BEDailyDetailViewController.h */,
 				421B7E391B09EABF009FB3F7 /* BEDailyDetailViewController.m */,
+				429E52AB1B16F7B600D9828F /* BEDailyCommentCell.h */,
+				429E52AC1B16F7B600D9828F /* BEDailyCommentCell.m */,
 				4297EC031B04425100CBD8CD /* BEFavouriteViewController.h */,
 				4297EC041B04425100CBD8CD /* BEFavouriteViewController.m */,
 				4297EC061B04427000CBD8CD /* BEWordBookViewController.h */,
@@ -293,6 +301,7 @@
 		4295756E1B02E1DB0064FC69 /* Additions */ = {
 			isa = PBXGroup;
 			children = (
+				429E52A71B16F5E200D9828F /* RTLabel */,
 				42BA9D6B1B13180B00FB55BF /* MJRefresh */,
 				42908FB71B0C8C8F000F29FB /* ScrollView */,
 				4295758C1B02EC620064FC69 /* Helpers */,
@@ -351,6 +360,15 @@
 				4297EC0A1B04871B00CBD8CD /* CustomColor.h */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		429E52A71B16F5E200D9828F /* RTLabel */ = {
+			isa = PBXGroup;
+			children = (
+				429E52A81B16F5E200D9828F /* RTLabel.h */,
+				429E52A91B16F5E200D9828F /* RTLabel.m */,
+			);
+			path = RTLabel;
 			sourceTree = "<group>";
 		};
 		42BA9D6B1B13180B00FB55BF /* MJRefresh */ = {
@@ -595,9 +613,11 @@
 				429575991B0335840064FC69 /* SettingManager.m in Sources */,
 				42BA9D8A1B13180B00FB55BF /* MJRefreshHeader.m in Sources */,
 				4204C9181B02088400169446 /* BiggerEnglish.xcdatamodeld in Sources */,
+				429E52AA1B16F5E200D9828F /* RTLabel.m in Sources */,
 				42DED9381B15C22B005A5A0A /* FavourModel.m in Sources */,
 				4295756D1B02DF690064FC69 /* BETranslateViewController.m in Sources */,
 				429575781B02E3D90064FC69 /* BEMenuSectionCell.m in Sources */,
+				429E52AD1B16F7B600D9828F /* BEDailyCommentCell.m in Sources */,
 				42BA9D871B13180B00FB55BF /* MJRefreshFooter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

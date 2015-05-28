@@ -8,8 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "BEDiscussMessageModel.h"   
+#import "ResponseSuper.h"
 
-@interface BEDiscussModel : NSObject
+@interface BEDiscussModel : ResponseSuper
 
 @property (copy, nonatomic) NSString *status;
 @property (retain, nonatomic) BEDiscussMessageModel *message;
