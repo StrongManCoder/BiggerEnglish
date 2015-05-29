@@ -115,6 +115,7 @@
     [tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
     imageLoading.hidden = YES;
     imageError.hidden = YES;
+    tableView.hidden = NO;
     //加栽评论
     pageIndex = 0;
     [tableView.footer beginRefreshing];
@@ -142,7 +143,7 @@
     tableView =[[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64) style:UITableViewStylePlain];
     tableView.showsVerticalScrollIndicator = NO;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    //    cell.selectionStytle = UITableViewCellSelectionStyleNone；
+    tableView.hidden = YES;
     tableView.dataSource = self;
     tableView.delegate = self;
     [self.view addSubview:tableView];
@@ -156,7 +157,7 @@
     [tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadCommentData)];
     tableView.footer.automaticallyRefresh = NO;
     tableView.footer.textColor = [UIColor BEDeepFontColor];
-    [tableView.footer setTitle:@"点击或上拉加载更多评论！" forState:MJRefreshFooterStateIdle];
+    [tableView.footer setTitle:@"点击或上拉载更多评论！" forState:MJRefreshFooterStateIdle];
     [tableView.footer setTitle:@"正在加载中 ..." forState:MJRefreshFooterStateRefreshing];
     [tableView.footer setTitle:@"No more data" forState:MJRefreshFooterStateNoMoreData];
     
@@ -234,7 +235,7 @@
     imageError.contentMode = UIViewContentModeScaleAspectFit;
     
     imageLoading = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
-    imageLoading.hidden = YES;
+    imageLoading.hidden = NO;
     //imageLoading.image = [UIImage imageNamed:@"action_favorite"];
     imageLoading.backgroundColor = [UIColor whiteColor];
     imageLoading.contentMode = UIViewContentModeScaleAspectFit;

@@ -19,6 +19,7 @@
 #import "AFNetworking.h"
 #import "NSObject+MJKeyValue.h"
 #import "CustomColor.h"
+#import "Masonry.h"
 
 #endif
 

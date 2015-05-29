@@ -16,14 +16,8 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        
-        _rtLabel = [BEDailyCommentCell textLabel];
-        _rtLabel.lineSpacing = 3;
-        [self.contentView addSubview:_rtLabel];
-        
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.backgroundColor = [UIColor clearColor];
-        
         [self configureViews];
     }
     return self;
@@ -39,7 +33,9 @@
 }
 
 - (void)configureViews {
-
+    _rtLabel = [BEDailyCommentCell textLabel];
+    _rtLabel.lineSpacing = 3;
+    [self.contentView addSubview:_rtLabel];
 }
 
 + (RTLabel*)textLabel {

@@ -127,7 +127,7 @@ CGFloat sildeMenuWidth;
         @strongify(self);
         
         [self showViewControllerAtIndex:index animated:YES];
-        [SettingManager manager].selectedSectionIndex = index;
+//        [SettingManager manager].selectedSectionIndex = index;
     }];
 }
 
@@ -149,7 +149,7 @@ CGFloat sildeMenuWidth;
     self.wordBookNavigationController = [[UINavigationController alloc] initWithRootViewController:self.wordBookViewController];
     
     [self.viewControllerContainView addSubview:[self viewControllerForIndex:[SettingManager manager].selectedSectionIndex].view];
-    self.currentSelectedIndex = [SettingManager manager].selectedSectionIndex;
+//    self.currentSelectedIndex = [SettingManager manager].selectedSectionIndex;
 }
 
 - (void)configureNotifications {
@@ -245,10 +245,10 @@ CGFloat sildeMenuWidth;
     UIViewController *viewController;
     switch (index) {
         case 0:
-            viewController = self.translateNavigationController;
+            viewController = self.dailyNavigationController;
             break;
         case 1:
-            viewController = self.dailyNavigationController;
+            viewController = self.translateNavigationController;
             break;
         case 2:
             viewController = self.favouriteNavigationController;

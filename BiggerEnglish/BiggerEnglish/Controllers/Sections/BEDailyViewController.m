@@ -93,6 +93,11 @@ static int const MaxPage = 100;
     [super viewDidLoad];
 }
 
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super   viewWillAppear:animated];
+}
+
 - (UIViewController *) controllerAtIndex:(NSInteger) index {
     if (index == MaxPage - 1) {
         return nil;
