@@ -9,14 +9,13 @@
 #import "BEFavouriteViewController.h"
 #import "BEFavouriteViewCell.h"
 #import "FavourModel.h" 
-#import "BEFavouriteDetailViewController.h" 
+#import "BEDailyDetailViewController.h" 
 
-@interface BEFavouriteViewController() <UITableViewDelegate, UITableViewDataSource> {
-    
-    NSMutableArray *favourArray;
-}
+@interface BEFavouriteViewController() <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *tableView;
+@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @end
 
@@ -27,7 +26,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.title = @"收藏";
-        favourArray = [NSMutableArray array];
     }
     return self;
 }
@@ -36,7 +34,6 @@
     [super loadView];
     
     [self configureLeftButton];
-    [self initFavourData];
     [self.view addSubview:self.tableView];
 }
 
@@ -44,14 +41,16 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
-        self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
 }
 
 #pragma mark - UITableViewDataSource
 
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return favourArray.count;
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
+    return [sectionInfo numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -61,18 +60,69 @@
     if (cell == nil) {
         cell = [[BEFavouriteViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
     }
-    FavourModel *favourModel = (FavourModel *)favourArray[indexPath.row];
-    cell.date = favourModel.title;
-    cell.content = favourModel.content;
-    cell.note = favourModel.note;
+
+    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.date = [object valueForKey:@"title"];
+    cell.content = [object valueForKey:@"content"];
+    cell.note = [object valueForKey:@"note"];
 
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    BEFavouriteDetailViewController *favouriteDetailViewController = [[BEFavouriteDetailViewController alloc] init];
-    [self.navigationController pushViewController:favouriteDetailViewController animated:YES];
+    BEDailyDetailViewController *controller = [[BEDailyDetailViewController alloc] init];
+    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self.navigationController pushViewController:controller animated:YES];
+    [controller loadFavourModelData:(FavourModel *)object];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    UITableViewCell *cell = [self tableView:tableView cellForRowAtIndexPath:indexPath];
+//    return cell.frame.size.height;
+    return 60;
+
+}
+
+#pragma mark - Fetched results controller
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView beginUpdates];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath
+{
+    UITableView *tableView = self.tableView;
+    
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            break;
+    }
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView endUpdates];
+}
+
+#pragma mark - Notification
+
+- (void)navigateSetting {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kShowMenuNotification object:nil];
 }
 
 #pragma mark - Private Method
@@ -87,25 +137,6 @@
     [leftButton addTarget:self action:@selector(navigateSetting) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *barItem              = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
     self.navigationItem.leftBarButtonItem = barItem;
-}
-
-- (void)initFavourData {
-    NSFetchRequest *request=[[NSFetchRequest alloc] init];
-    id delegate = [[UIApplication sharedApplication] delegate];
-    NSManagedObjectContext *managedObjectContext = [delegate managedObjectContext];
-    NSEntityDescription *entity=[NSEntityDescription entityForName:@"FavourModel" inManagedObjectContext:managedObjectContext];
-    [request setEntity:entity];
-    NSArray *favourResults=[[managedObjectContext executeFetchRequest:request error:nil] copy];
-    
-    for (FavourModel *favour in favourResults) {
-        [favourArray addObject:favour];
-    }
-}
-
-#pragma mark - Notification
-
-- (void)navigateSetting {
-    [[NSNotificationCenter defaultCenter] postNotificationName:kShowMenuNotification object:nil];
 }
 
 #pragma mark - Getter / Setter
@@ -124,5 +155,42 @@
     return _tableView;
 }
 
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (_fetchedResultsController != nil) {
+        return _fetchedResultsController;
+    }
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"FavourModel" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:NO];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
+    aFetchedResultsController.delegate = self;
+    self.fetchedResultsController = aFetchedResultsController;
+    
+    NSError *error = nil;
+    if (![self.fetchedResultsController performFetch:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    return _fetchedResultsController;
+}
+
+- (NSManagedObjectContext *)managedObjectContext {
+    if (_managedObjectContext != nil) {
+        return _managedObjectContext;
+    }
+    
+    id delegate = [[UIApplication sharedApplication] delegate];
+    _managedObjectContext = [delegate managedObjectContext];
+    
+    return _managedObjectContext;
+}
 
 @end
