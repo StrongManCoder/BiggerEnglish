@@ -5,14 +5,36 @@
       "scale" : "1x"
     },
     {
+      "resizing" : {
+        "mode" : "3-part-horizontal",
+        "center" : {
+          "mode" : "fill",
+          "width" : 1
+        },
+        "capInsets" : {
+          "right" : 0,
+          "left" : 59
+        }
+      },
       "idiom" : "universal",
-      "scale" : "2x",
-      "filename" : "navi_back@2x.png"
+      "filename" : "navi_back@2x.png",
+      "scale" : "2x"
     },
     {
+      "resizing" : {
+        "mode" : "3-part-horizontal",
+        "center" : {
+          "mode" : "fill",
+          "width" : 1
+        },
+        "capInsets" : {
+          "right" : 0,
+          "left" : 89
+        }
+      },
       "idiom" : "universal",
-      "scale" : "3x",
-      "filename" : "navi_back@3x.png"
+      "filename" : "navi_back@3x.png",
+      "scale" : "3x"
     }
   ],
   "info" : {

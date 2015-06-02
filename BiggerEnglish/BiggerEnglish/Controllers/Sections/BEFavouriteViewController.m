@@ -26,6 +26,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.title = @"收藏";
+//        [self fetchedResultsController];
     }
     return self;
 }
@@ -77,12 +78,16 @@
     [controller loadFavourModelData:(FavourModel *)object];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    UITableViewCell *cell = [self tableView:tableView cellForRowAtIndexPath:indexPath];
-//    return cell.frame.size.height;
-    return 60;
+//- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+//    return @"   ";
+//}
 
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    BEFavouriteViewCell *cell = (BEFavouriteViewCell *)[self tableView:tableView cellForRowAtIndexPath:indexPath];
+//    NSLog(@"%@", cell.content);
+////    return cell.frame.size.height;
+//    return 200;
+//}
 
 #pragma mark - Fetched results controller
 
@@ -147,10 +152,14 @@
     }
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, self.view.frame.size.height - 64)];
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     _tableView.estimatedRowHeight = 44.0f;
     _tableView.rowHeight = UITableViewAutomaticDimension;
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 1)];
+    footerView.backgroundColor = [UIColor whiteColor];
+    _tableView.tableFooterView = footerView;
 
     return _tableView;
 }
@@ -169,7 +178,7 @@
     NSArray *sortDescriptors = @[sortDescriptor];
     [fetchRequest setSortDescriptors:sortDescriptors];
     
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     

@@ -20,6 +20,8 @@ static CGFloat const kAvatarHeight = 70.0f;
 @property (nonatomic, strong) UIImageView *divideImageView;
 @property (nonatomic, strong) UILabel     *usernameLabel;
 
+@property (nonatomic, strong) UIButton    *settingButton;
+
 @property (nonatomic, strong) UITableView *tableView;
 
 @property (nonatomic, strong) NSArray     *sectionImageNameArray;
@@ -39,6 +41,7 @@ static CGFloat const kAvatarHeight = 70.0f;
         
         [self configureTableView];
         [self configureProfileView];
+        [self configureBottomView];
         [self configureNotifications];
         
     }
@@ -56,6 +59,7 @@ static CGFloat const kAvatarHeight = 70.0f;
     self.tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;
     self.tableView.delegate        = self;
     self.tableView.dataSource      = self;
+    self.tableView.bounces = NO;
     //    self.tableView.contentInsetTop = (ScreenHeight - 44 * self.sectionTitleArray.count) / 2;
     self.tableView.contentInsetTop = 120;
     [self addSubview:self.tableView];
@@ -120,6 +124,17 @@ static CGFloat const kAvatarHeight = 70.0f;
     
 }
 
+- (void)configureBottomView {
+    self.settingButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.settingButton.adjustsImageWhenHighlighted = YES;
+    UIImage *image = [UIImage imageNamed:@"icon_setting"];
+    [self.settingButton setImage:[image imageWithTintColor:[UIColor BEDeepFontColor]] forState:UIControlStateNormal];
+    [self.settingButton setImage:[image imageWithTintColor:[UIColor BEHighLightFontColor]] forState:UIControlStateHighlighted];
+//    [self.settingButton addTarget:self action:@selector(navigateSetting) forControlEvents:UIControlEventTouchUpInside];
+
+    [self addSubview:self.settingButton];
+}
+
 - (void)configureNotifications {
     /*
      
@@ -153,7 +168,7 @@ static CGFloat const kAvatarHeight = 70.0f;
     //    self.divideImageView.frame = (CGRect){80, kAvatarHeight + 50, 80, 0.5};
     self.divideImageView.frame = (CGRect){-self.width, kAvatarHeight + 50, self.width * 2, 0.5};
     self.tableView.frame = (CGRect){0, 0, self.width, self.height};
-    
+    self.settingButton.frame = (CGRect){20, ScreenHeight - 40, 25, 25};
     
     [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:[SettingManager manager].selectedSectionIndex inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
 }

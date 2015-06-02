@@ -13,6 +13,7 @@
 @property (nonatomic, strong) UILabel *labelDate;
 @property (nonatomic, strong) UILabel *labelContent;
 @property (nonatomic, strong) UILabel *labelNote;
+@property (nonatomic, strong) UIImageView *imageSeparator;
 
 @end
 
@@ -31,6 +32,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
+        self.
         self.backgroundColor = [UIColor clearColor];
         [self configureViews];
     }
@@ -46,29 +48,35 @@
     [self.contentView addSubview:self.labelDate];
     [self.contentView addSubview:self.labelContent];
     [self.contentView addSubview:self.labelNote];
-    
+    [self.contentView addSubview:self.imageSeparator];
+
     [self.labelDate mas_makeConstraints:^(MASConstraintMaker *make) {
-        
-        make.top.equalTo(self.contentView.mas_top).with.offset(-50);
+        make.top.equalTo(self.contentView).with.offset(10);
         make.left.equalTo(self.contentView).with.offset(10);
         make.right.equalTo(self.contentView).with.offset(-10);
-        make.bottom.equalTo(self.labelContent).with.offset(-10);
+        make.bottom.equalTo(self.labelContent.mas_top).with.offset(-5);
     }];
     
     [self.labelContent mas_makeConstraints:^(MASConstraintMaker *make) {
-        
-        make.top.equalTo(self.labelDate).with.offset(60);
+        make.top.equalTo(self.labelDate.mas_bottom).with.offset(5);
         make.left.equalTo(self.contentView).with.offset(10);
         make.right.equalTo(self.contentView).with.offset(-10);
-        make.bottom.equalTo(self.labelNote).with.offset(-10);
+        make.bottom.equalTo(self.labelNote.mas_top).with.offset(-10);
     }];
     
     [self.labelNote mas_makeConstraints:^(MASConstraintMaker *make) {
-        
-        make.top.equalTo(self.labelContent).with.offset(70);
+        make.top.equalTo(self.labelContent.mas_bottom).with.offset(10);
         make.left.equalTo(self.contentView).with.offset(10);
         make.right.equalTo(self.contentView).with.offset(-10);
-        make.bottom.equalTo(self.contentView).with.offset(-10);
+        make.bottom.equalTo(self.imageSeparator.mas_top).with.offset(-10);
+    }];
+    
+    [self.imageSeparator mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.labelNote.mas_bottom).with.offset(10);
+        make.left.equalTo(self.contentView).with.offset(20);
+        make.right.equalTo(self.contentView).with.offset(0);
+        make.bottom.equalTo(self.contentView).with.offset(0);
+        make.height.mas_equalTo(@1);
     }];
 }
 
@@ -80,7 +88,7 @@
     if (_labelDate != nil) {
         return _labelDate;
     }
-    _labelDate = [[UILabel alloc] init];
+    _labelDate = [[UILabel alloc] initWithFrame:CGRectZero];
     _labelDate.textAlignment = NSTextAlignmentLeft;
     _labelDate.textColor = [UIColor BEHighLightFontColor];
     _labelDate.font = [UIFont systemFontOfSize:20];
@@ -88,17 +96,16 @@
     return _labelDate;
 }
 
-
 - (UILabel *)labelContent {
     if (_labelContent != nil) {
         return _labelContent;
     }
-    _labelContent = [[UILabel alloc] init];
+    _labelContent = [[UILabel alloc] initWithFrame:CGRectZero];
     _labelContent.textAlignment = NSTextAlignmentLeft;
     _labelContent.textColor = [UIColor BEFontColor];
     _labelContent.font = [UIFont systemFontOfSize:16];
     _labelContent.numberOfLines = 0;
-
+    _labelContent.preferredMaxLayoutWidth = ScreenWidth - 20;
     return _labelContent;
 }
 
@@ -106,13 +113,27 @@
     if (_labelNote != nil) {
         return _labelNote;
     }
-    _labelNote = [[UILabel alloc] init];
+    _labelNote = [[UILabel alloc] initWithFrame:CGRectZero];
     _labelNote.textAlignment = NSTextAlignmentLeft;
     _labelNote.textColor = [UIColor BEDeepFontColor];
     _labelNote.font = [UIFont systemFontOfSize:16];
     _labelNote.numberOfLines = 0;
-    
+    _labelNote.preferredMaxLayoutWidth = ScreenWidth - 20;
+
     return _labelNote;
+}
+
+- (UIImageView *)imageSeparator {
+    if (_imageSeparator != nil) {
+        return _imageSeparator;
+    }
+    _imageSeparator = [[UIImageView alloc] initWithFrame:CGRectZero];
+    _imageSeparator.backgroundColor = [UIColor BEHighLightFontColor];
+    _imageSeparator.contentMode = UIViewContentModeScaleAspectFill;
+    _imageSeparator.image = [UIImage imageNamed:@"section_divide"];
+    _imageSeparator.clipsToBounds = YES;
+    _imageSeparator.alpha = 0.3;
+    return _imageSeparator;
 }
 
 - (void)setDate:(NSString *)date {
