@@ -12,6 +12,9 @@
 #import "BEFavouriteViewController.h"
 #import "BEWordBookViewController.h"
 #import "BEMenuView.h"
+#import "BESettingViewController.h"
+#import "BEUserViewController.h"
+#import "BELoginViewController.h"
 
 //static CGFloat const kMenuWidth = 200.0;
 
@@ -26,6 +29,7 @@
 @property (nonatomic, strong) UINavigationController       *dailyNavigationController;
 @property (nonatomic, strong) UINavigationController       *favouriteNavigationController;
 @property (nonatomic, strong) UINavigationController       *wordBookNavigationController;
+
 
 @property (nonatomic, strong) UIView *viewControllerContainView;
 @property (nonatomic, strong) BEMenuView *menuView;
@@ -165,6 +169,10 @@ CGFloat sildeMenuWidth;
 //     @strongify(self);
      
      }];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveShowSettingViewControllerNotification) name:kShowSettingVCNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveShowLoginViewControllerNotification) name:kShowLoginVCNotification object:nil];
 }
 
 - (void)configureGestures {
@@ -365,6 +373,18 @@ CGFloat sildeMenuWidth;
         [self setMenuOffset:sildeMenuWidth];
         self.rootBackgroundButton.hidden = NO;
     } completion:nil];
+}
+
+- (void)didReceiveShowSettingViewControllerNotification {
+    BESettingViewController *controller = [[BESettingViewController alloc] init];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+    [self presentViewController:navigationController animated:YES completion:nil];
+}
+
+- (void)didReceiveShowLoginViewControllerNotification {
+    BELoginViewController *controller = [[BELoginViewController alloc] init];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+    [self presentViewController:navigationController animated:YES completion:nil];
 }
 
 - (void)didReceiveResetInactiveDelegateNotification {

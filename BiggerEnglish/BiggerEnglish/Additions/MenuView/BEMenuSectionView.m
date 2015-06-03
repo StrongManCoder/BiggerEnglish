@@ -77,6 +77,7 @@ static CGFloat const kAvatarHeight = 70.0f;
     [self addSubview:self.avatarImageView];
     
     self.avatarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.avatarButton addTarget:self action:@selector(showLoginViewController) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.avatarButton];
     
     self.divideImageView = [[UIImageView alloc] init];
@@ -86,42 +87,6 @@ static CGFloat const kAvatarHeight = 70.0f;
     self.divideImageView.clipsToBounds = YES;
     [self addSubview:self.divideImageView];
     
-    /*
-     // Handles
-     [self.avatarButton bk_addEventHandler:^(id sender) {
-     
-     if (![V2DataManager manager].user.isLogin) {
-     [[NSNotificationCenter defaultCenter] postNotificationName:kShowLoginVCNotification object:nil];
-     } else {
-     
-     self.actionSheet = [[SCActionSheet alloc] sc_initWithTitles:@[@"是否注销？"] customViews:nil buttonTitles:@"注销", nil];
-     
-     [self.actionSheet sc_configureButtonWithBlock:^(SCActionSheetButton *button) {
-     button.type = SCActionSheetButtonTypeRed;
-     } forIndex:0];
-     
-     [self.actionSheet sc_setButtonHandler:^{
-     
-     [[V2DataManager manager] UserLogout];
-     
-     } forIndex:0];
-     
-     [self.actionSheet sc_show:YES];
-     
-     //            UIAlertView *alertView = [[UIAlertView alloc] bk_initWithTitle:@"是否注销？" message:nil];
-     //            [alertView bk_addButtonWithTitle:@"注销" handler:^{
-     //                [[V2DataManager manager] UserLogout];
-     //            }];
-     //            [alertView bk_setCancelButtonWithTitle:@"取消" handler:^{
-     //                ;
-     //            }];
-     //            [alertView show];
-     
-     }
-     
-     } forControlEvents:UIControlEventTouchUpInside];
-     */
-    
 }
 
 - (void)configureBottomView {
@@ -130,9 +95,17 @@ static CGFloat const kAvatarHeight = 70.0f;
     UIImage *image = [UIImage imageNamed:@"icon_setting"];
     [self.settingButton setImage:[image imageWithTintColor:[UIColor BEDeepFontColor]] forState:UIControlStateNormal];
     [self.settingButton setImage:[image imageWithTintColor:[UIColor BEHighLightFontColor]] forState:UIControlStateHighlighted];
-//    [self.settingButton addTarget:self action:@selector(navigateSetting) forControlEvents:UIControlEventTouchUpInside];
+    [self.settingButton addTarget:self action:@selector(showSettingViewController) forControlEvents:UIControlEventTouchUpInside];
 
     [self addSubview:self.settingButton];
+}
+
+- (void)showSettingViewController {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kShowSettingVCNotification object:nil];
+}
+
+- (void)showLoginViewController {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kShowLoginVCNotification object:nil];
 }
 
 - (void)configureNotifications {
@@ -164,7 +137,11 @@ static CGFloat const kAvatarHeight = 70.0f;
     
     //    CGFloat spaceHeight = (self.tableView.contentInsetTop - kAvatarHeight) / 3.0;
     self.avatarImageView.frame = (CGRect){30, 30, kAvatarHeight, kAvatarHeight};
-    self.avatarButton.frame = self.avatarImageView.frame;
+//    self.avatarButton.frame = self.avatarImageView.frame;
+    
+    self.avatarButton.frame = (CGRect){0, 0, self.width, 120};
+
+    
     //    self.divideImageView.frame = (CGRect){80, kAvatarHeight + 50, 80, 0.5};
     self.divideImageView.frame = (CGRect){-self.width, kAvatarHeight + 50, self.width * 2, 0.5};
     self.tableView.frame = (CGRect){0, 0, self.width, self.height};

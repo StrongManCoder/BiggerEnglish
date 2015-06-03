@@ -13,7 +13,6 @@
 		4204C9231B02088400169446 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4204C9221B02088400169446 /* Images.xcassets */; };
 		4204C9261B02088400169446 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4204C9241B02088400169446 /* LaunchScreen.xib */; };
 		4204C9321B02088400169446 /* BiggerEnglishTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4204C9311B02088400169446 /* BiggerEnglishTests.m */; };
-		421B7E3A1B09EABF009FB3F7 /* BEDailyDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 421B7E391B09EABF009FB3F7 /* BEDailyDetailViewController.m */; };
 		423854A71B18083400567BC3 /* BEFavouriteViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 423854A61B18083400567BC3 /* BEFavouriteViewCell.m */; };
 		423854AA1B1811CD00567BC3 /* BEDailyCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 423854A91B1811CD00567BC3 /* BEDailyCommentCell.m */; };
 		42908FBA1B0C8CA1000F29FB /* BELazyScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 42908FB91B0C8CA1000F29FB /* BELazyScrollView.m */; };
@@ -42,6 +41,10 @@
 		42BA9D8D1B13180B00FB55BF /* UIScrollView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BA9D7F1B13180B00FB55BF /* UIScrollView+MJExtension.m */; };
 		42BA9D8E1B13180B00FB55BF /* UIScrollView+MJRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BA9D811B13180B00FB55BF /* UIScrollView+MJRefresh.m */; };
 		42BA9D8F1B13180B00FB55BF /* UIView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BA9D831B13180B00FB55BF /* UIView+MJExtension.m */; };
+		42BF684B1B1EA73A00255496 /* BEDailyDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BF684A1B1EA73A00255496 /* BEDailyDetailViewController.m */; };
+		42BF684E1B1EED7500255496 /* BESettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BF684D1B1EED7500255496 /* BESettingViewController.m */; };
+		42DCBAA81B1EFBB700572474 /* BEUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DCBAA71B1EFBB700572474 /* BEUserViewController.m */; };
+		42DCBAAB1B1EFC2E00572474 /* BELoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DCBAAA1B1EFC2E00572474 /* BELoginViewController.m */; };
 		42DED9351B15C22A005A5A0A /* LoveModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DED9341B15C22A005A5A0A /* LoveModel.m */; };
 		42DED9381B15C22B005A5A0A /* FavourModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DED9371B15C22B005A5A0A /* FavourModel.m */; };
 		42DED93F1B15C2F2005A5A0A /* BEDailyDetailModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DED93C1B15C2F2005A5A0A /* BEDailyDetailModel.m */; };
@@ -76,8 +79,6 @@
 		4204C92B1B02088400169446 /* BiggerEnglishTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BiggerEnglishTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4204C9301B02088400169446 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4204C9311B02088400169446 /* BiggerEnglishTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BiggerEnglishTests.m; sourceTree = "<group>"; };
-		421B7E381B09EABF009FB3F7 /* BEDailyDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEDailyDetailViewController.h; sourceTree = "<group>"; };
-		421B7E391B09EABF009FB3F7 /* BEDailyDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEDailyDetailViewController.m; sourceTree = "<group>"; };
 		423854A51B18083400567BC3 /* BEFavouriteViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEFavouriteViewCell.h; sourceTree = "<group>"; };
 		423854A61B18083400567BC3 /* BEFavouriteViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEFavouriteViewCell.m; sourceTree = "<group>"; };
 		423854A81B1811CD00567BC3 /* BEDailyCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEDailyCommentCell.h; sourceTree = "<group>"; };
@@ -138,6 +139,14 @@
 		42BA9D811B13180B00FB55BF /* UIScrollView+MJRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+MJRefresh.m"; sourceTree = "<group>"; };
 		42BA9D821B13180B00FB55BF /* UIView+MJExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MJExtension.h"; sourceTree = "<group>"; };
 		42BA9D831B13180B00FB55BF /* UIView+MJExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MJExtension.m"; sourceTree = "<group>"; };
+		42BF68491B1EA73A00255496 /* BEDailyDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEDailyDetailViewController.h; sourceTree = "<group>"; };
+		42BF684A1B1EA73A00255496 /* BEDailyDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEDailyDetailViewController.m; sourceTree = "<group>"; };
+		42BF684C1B1EED7500255496 /* BESettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BESettingViewController.h; sourceTree = "<group>"; };
+		42BF684D1B1EED7500255496 /* BESettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BESettingViewController.m; sourceTree = "<group>"; };
+		42DCBAA61B1EFBB700572474 /* BEUserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEUserViewController.h; sourceTree = "<group>"; };
+		42DCBAA71B1EFBB700572474 /* BEUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEUserViewController.m; sourceTree = "<group>"; };
+		42DCBAA91B1EFC2E00572474 /* BELoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BELoginViewController.h; sourceTree = "<group>"; };
+		42DCBAAA1B1EFC2E00572474 /* BELoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BELoginViewController.m; sourceTree = "<group>"; };
 		42DED9331B15C22A005A5A0A /* LoveModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoveModel.h; sourceTree = "<group>"; };
 		42DED9341B15C22A005A5A0A /* LoveModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoveModel.m; sourceTree = "<group>"; };
 		42DED9361B15C22B005A5A0A /* FavourModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavourModel.h; sourceTree = "<group>"; };
@@ -297,7 +306,14 @@
 			children = (
 				429575601B02DE830064FC69 /* BERootViewController.h */,
 				429575611B02DE830064FC69 /* BERootViewController.m */,
+				42BF684C1B1EED7500255496 /* BESettingViewController.h */,
+				42BF684D1B1EED7500255496 /* BESettingViewController.m */,
+				42DCBAA61B1EFBB700572474 /* BEUserViewController.h */,
+				42DCBAA71B1EFBB700572474 /* BEUserViewController.m */,
+				42DCBAA91B1EFC2E00572474 /* BELoginViewController.h */,
+				42DCBAAA1B1EFC2E00572474 /* BELoginViewController.m */,
 				4295756A1B02DF5D0064FC69 /* Sections */,
+				42BF68481B1EA70F00255496 /* Contents */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -309,8 +325,6 @@
 				4295756C1B02DF690064FC69 /* BETranslateViewController.m */,
 				429575931B02F7EE0064FC69 /* BEDailyViewController.h */,
 				429575941B02F7EE0064FC69 /* BEDailyViewController.m */,
-				421B7E381B09EABF009FB3F7 /* BEDailyDetailViewController.h */,
-				421B7E391B09EABF009FB3F7 /* BEDailyDetailViewController.m */,
 				4297EC031B04425100CBD8CD /* BEFavouriteViewController.h */,
 				4297EC041B04425100CBD8CD /* BEFavouriteViewController.m */,
 				4297EC061B04427000CBD8CD /* BEWordBookViewController.h */,
@@ -421,6 +435,15 @@
 				42BA9D831B13180B00FB55BF /* UIView+MJExtension.m */,
 			);
 			path = MJRefresh;
+			sourceTree = "<group>";
+		};
+		42BF68481B1EA70F00255496 /* Contents */ = {
+			isa = PBXGroup;
+			children = (
+				42BF68491B1EA73A00255496 /* BEDailyDetailViewController.h */,
+				42BF684A1B1EA73A00255496 /* BEDailyDetailViewController.m */,
+			);
+			path = Contents;
 			sourceTree = "<group>";
 		};
 		42DED9321B15C1EB005A5A0A /* CoreData */ = {
@@ -610,7 +633,6 @@
 				42BA9D891B13180B00FB55BF /* MJRefreshGifHeader.m in Sources */,
 				42DED9491B15C3B3005A5A0A /* BEDiscussDetailModel.m in Sources */,
 				423854AA1B1811CD00567BC3 /* BEDailyCommentCell.m in Sources */,
-				421B7E3A1B09EABF009FB3F7 /* BEDailyDetailViewController.m in Sources */,
 				42DED9401B15C2F2005A5A0A /* BEDailyModel.m in Sources */,
 				4297EC081B04427000CBD8CD /* BEWordBookViewController.m in Sources */,
 				423854A71B18083400567BC3 /* BEFavouriteViewCell.m in Sources */,
@@ -623,10 +645,12 @@
 				42BA9D8B1B13180B00FB55BF /* MJRefreshLegendFooter.m in Sources */,
 				429575721B02E2660064FC69 /* BEMenuView.m in Sources */,
 				42BA9D8F1B13180B00FB55BF /* UIView+MJExtension.m in Sources */,
+				42DCBAA81B1EFBB700572474 /* BEUserViewController.m in Sources */,
 				42908FBA1B0C8CA1000F29FB /* BELazyScrollView.m in Sources */,
 				4295758B1B02EB1E0064FC69 /* EXTScope.m in Sources */,
 				429575911B02EC620064FC69 /* UIImage+Tint.m in Sources */,
 				429575951B02F7EE0064FC69 /* BEDailyViewController.m in Sources */,
+				42DCBAAB1B1EFC2E00572474 /* BELoginViewController.m in Sources */,
 				4297EC051B04425100CBD8CD /* BEFavouriteViewController.m in Sources */,
 				42DED9431B15C340005A5A0A /* BEDiscussModel.m in Sources */,
 				42DED9461B15C39D005A5A0A /* BEDiscussMessageModel.m in Sources */,
@@ -635,9 +659,11 @@
 				4204C9121B02088400169446 /* main.m in Sources */,
 				429575991B0335840064FC69 /* SettingManager.m in Sources */,
 				42BA9D8A1B13180B00FB55BF /* MJRefreshHeader.m in Sources */,
+				42BF684E1B1EED7500255496 /* BESettingViewController.m in Sources */,
 				4204C9181B02088400169446 /* BiggerEnglish.xcdatamodeld in Sources */,
 				429E52AA1B16F5E200D9828F /* RTLabel.m in Sources */,
 				42DED9381B15C22B005A5A0A /* FavourModel.m in Sources */,
+				42BF684B1B1EA73A00255496 /* BEDailyDetailViewController.m in Sources */,
 				4295756D1B02DF690064FC69 /* BETranslateViewController.m in Sources */,
 				429575781B02E3D90064FC69 /* BEMenuSectionCell.m in Sources */,
 				42BA9D871B13180B00FB55BF /* MJRefreshFooter.m in Sources */,

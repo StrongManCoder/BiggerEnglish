@@ -20,12 +20,10 @@
 #import "BEDiscussModel.h"
 #import "BEDailyCommentCell.h"
 
-@interface BEDailyDetailViewController() {
+@interface BEDailyDetailViewController() <AVAudioPlayerDelegate> {
     
     NSDictionary *dictionaryMonth;
     BEDailyDetailModel *dailyModel;
-    
-    AVAudioPlayer *player;
     
     NSMutableArray *commentArray;
     
@@ -34,6 +32,8 @@
     
     NSString *textStyle;
     NSString *textStyleWithNoReplyName;
+
+//    NSArray *soundImageArray;
 }
 
 @property (nonatomic, strong) UITableView *tableView;
@@ -52,6 +52,8 @@
 @property (nonatomic, strong) UIImageView *imageError;
 @property (nonatomic, strong) UIImageView *imageLoading;
 
+@property (nonatomic, strong) AVAudioPlayer *player;
+
 @end
 
 @implementation BEDailyDetailViewController
@@ -67,6 +69,11 @@
         
         textStyle = @"<p><font color=#93B4DA>%@</font> <font color=#333333>回复: %@</font></p>";
         textStyleWithNoReplyName = @"<p><font color=#93B4DA>%@</font> <font color=#333333>回复</font> <font color=#93B4DA>%@</font><font color=#333333>: %@</font></p>";
+        
+//        soundImageArray = [NSArray arrayWithObjects:[[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,
+//                           [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,
+//                           [[UIImage imageNamed:@"icon_sound3"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,
+//                           [[UIImage imageNamed:@"icon_sound4"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,nil];
     }
     return self;
 }
@@ -87,7 +94,7 @@
     dailyModel = model;
     
     [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.picture2]
-                 placeholderImage:nil];
+                      placeholderImage:nil];
     
     NSArray * array = [self.date componentsSeparatedByString:@"-"];
     NSString *stringDay = [array objectAtIndex:2];
@@ -139,7 +146,7 @@
 
 - (void)loadFavourModelData:(FavourModel *)favour {
     self.date = favour.title;
-
+    
     BEDailyDetailModel *model = [[BEDailyDetailModel alloc] init];
     model.title = favour.title;
     model.content = favour.content;
@@ -151,6 +158,258 @@
     model.url = favour.url;
     model.sid = favour.sid;
     self.dailyModel = model;
+}
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return commentArray.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *ID = @"cell";
+    BEDailyCommentCell *cell = (BEDailyCommentCell *)[tableView dequeueReusableCellWithIdentifier:ID];
+    if (cell == nil) {
+        cell = [[BEDailyCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+    }
+    
+    BEDiscussDetailModel *discussDetailModel = (BEDiscussDetailModel *)commentArray[indexPath.row];
+    if ([discussDetailModel.reply_name isEqualToString:@""]) {
+        cell.rtLabel.text = [NSString stringWithFormat:textStyle, discussDetailModel.user_name, discussDetailModel.restext];
+    } else {
+        cell.rtLabel.text = [NSString stringWithFormat:textStyleWithNoReplyName, discussDetailModel.user_name, discussDetailModel.reply_name, discussDetailModel.restext];
+    }
+    
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    RTLabel *rtLabel = [BEDailyCommentCell textLabel];
+    BEDiscussDetailModel *discussDetailModel = (BEDiscussDetailModel *)commentArray[indexPath.row];
+    if ([discussDetailModel.reply_name isEqualToString:@""]) {
+        rtLabel.text = [NSString stringWithFormat:textStyle, discussDetailModel.user_name, discussDetailModel.restext];
+    } else {
+        rtLabel.text = [NSString stringWithFormat:textStyleWithNoReplyName, discussDetailModel.user_name, discussDetailModel.reply_name, discussDetailModel.restext];
+    }
+    CGSize optimumSize = [rtLabel optimumSize];
+    
+    return optimumSize.height + 10;
+}
+
+#pragma mark - AVAudioPlayerDelegate
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer*)player successfully:(BOOL)flag{
+    //播放结束时执行的动作
+}
+
+#pragma mark - Getter
+
+- (UITableView *)tableView {
+    if (_tableView != nil) {
+        return _tableView;
+    }
+    
+    _tableView =[[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64) style:UITableViewStylePlain];
+    _tableView.showsVerticalScrollIndicator = NO;
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _tableView.hidden = YES;
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
+    [self.view addSubview:_tableView];
+    //下拉刷新
+    @weakify(self);
+    [_tableView addLegendHeaderWithRefreshingBlock:^{
+        @strongify(self);
+        [self networkRequest];
+    }];
+    //上拉加载评论
+    [_tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadCommentData)];
+    _tableView.footer.automaticallyRefresh = NO;
+    _tableView.footer.textColor = [UIColor BEDeepFontColor];
+    [_tableView.footer setTitle:@"点击或上拉载更多评论！" forState:MJRefreshFooterStateIdle];
+    [_tableView.footer setTitle:@"正在加载中 ..." forState:MJRefreshFooterStateRefreshing];
+    [_tableView.footer setTitle:@"No more data" forState:MJRefreshFooterStateNoMoreData];
+    
+    return _tableView;
+}
+
+- (UIView *)headerView {
+    if (_headerView != nil) {
+        return _headerView;
+    }
+    
+    _headerView = [[UIView alloc] init];
+    _headerView.backgroundColor = [UIColor whiteColor];
+    return _headerView;
+}
+
+- (UIImageView *)imageView {
+    if (_imageView != nil) {
+        return _imageView;
+    }
+    
+    _imageView = [[UIImageView alloc] init];
+    _imageView.contentMode = UIViewContentModeScaleAspectFit;
+    return _imageView;
+}
+
+- (UILabel *)labelDate {
+    if (_labelDate != nil) {
+        return _labelDate;
+    }
+    
+    _labelDate = [[UILabel alloc] init];
+    _labelDate.textAlignment = NSTextAlignmentLeft;
+    _labelDate.textColor = [UIColor BEHighLightFontColor];
+    _labelDate.font = [UIFont boldSystemFontOfSize:20];
+    return _labelDate;
+}
+
+- (UILabel *)labelContent {
+    if (_labelContent != nil) {
+        return _labelContent;
+    }
+    
+    _labelContent = [[UILabel alloc] init];
+    _labelContent.textAlignment = NSTextAlignmentLeft;
+    _labelContent.textColor = [UIColor BEFontColor];
+    _labelContent.font = [UIFont systemFontOfSize:16];
+    _labelContent.numberOfLines = 0;
+    return _labelContent;
+}
+
+- (UILabel *)labelNote {
+    if (_labelNote != nil) {
+        return _labelNote;
+    }
+    
+    _labelNote = [[UILabel alloc] init];
+    _labelNote.textAlignment = NSTextAlignmentLeft;
+    _labelNote.textColor = [UIColor BEDeepFontColor];
+    _labelNote.font = [UIFont systemFontOfSize:16];
+    _labelNote.numberOfLines = 0;
+    return _labelNote;
+}
+
+- (UIImageView *)imageLove {
+    if (_imageLove != nil) {
+        return _imageLove;
+    }
+    
+    _imageLove  = [[UIImageView alloc] init];
+    _imageLove.image = [[UIImage imageNamed:@"icon_love"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _imageLove.userInteractionEnabled = YES;
+    UITapGestureRecognizer *imageLoveSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageLoveClick)];
+    [_imageLove addGestureRecognizer:imageLoveSingleTap];
+    return _imageLove;
+}
+
+- (UILabel *)labelLoveCount {
+    if (_labelLoveCount != nil) {
+        return _labelLoveCount;
+    }
+    
+    _labelLoveCount = [[UILabel alloc] init];
+    _labelLoveCount.textAlignment = NSTextAlignmentLeft;
+    _labelLoveCount.textColor = [UIColor BEHighLightFontColor];
+    _labelLoveCount.font = [UIFont systemFontOfSize:14];
+    _labelLoveCount.numberOfLines = 0;
+    return _labelLoveCount;
+}
+
+- (UIImageView *)imageFavour {
+    if (_imageFavour != nil) {
+        return _imageFavour;
+    }
+    
+    _imageFavour = [[UIImageView alloc] init];
+    _imageFavour.image = [[UIImage imageNamed:@"icon_favour"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _imageFavour.userInteractionEnabled = YES;
+    UITapGestureRecognizer *imageLoveSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageFavourClick)];
+    [_imageFavour addGestureRecognizer:imageLoveSingleTap];
+    
+    return _imageFavour;
+}
+
+- (UIImageView *)imageShare {
+    if (_imageShare != nil) {
+        return _imageShare;
+    }
+    
+    _imageShare = [[UIImageView alloc] init];
+    _imageShare.image = [[UIImage imageNamed:@"icon_share"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _imageShare.userInteractionEnabled = YES;
+    UITapGestureRecognizer *imageShareSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageShareClick)];
+    [_imageShare addGestureRecognizer:imageShareSingleTap];
+    return _imageShare;
+}
+
+- (UIImageView *)imagePlay {
+    if (_imagePlay != nil) {
+        return _imagePlay;
+    }
+    
+    _imagePlay = [[UIImageView alloc] init];
+    _imagePlay.image = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _imagePlay.userInteractionEnabled = YES;
+    UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
+    [_imagePlay addGestureRecognizer:imagePlaySingleTap];
+    return _imagePlay;
+}
+
+- (UIImageView *)imageDivideLine {
+    if (_imageDivideLine != nil) {
+        return _imageDivideLine;
+    }
+    
+    _imageDivideLine = [[UIImageView alloc] init];
+    _imageDivideLine.backgroundColor = [UIColor BEHighLightFontColor];
+    _imageDivideLine.contentMode = UIViewContentModeScaleAspectFill;
+    _imageDivideLine.image = [UIImage imageNamed:@"section_divide"];
+    _imageDivideLine.clipsToBounds = YES;
+    return _imageDivideLine;
+}
+
+- (UILabel *)labelTranslation {
+    if (_labelTranslation != nil) {
+        return _labelTranslation;
+    }
+    
+    _labelTranslation = [[UILabel alloc] init];
+    _labelTranslation.textAlignment = NSTextAlignmentLeft;
+    _labelTranslation.textColor = [UIColor BEFontColor];
+    _labelTranslation.font = [UIFont systemFontOfSize:14];
+    _labelTranslation.numberOfLines = 0;
+    return _labelTranslation;
+}
+
+- (UIImageView *)imageError {
+    if (_imageError != nil) {
+        return _imageError;
+    }
+    
+    _imageError = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+    _imageError.hidden = YES;
+    _imageError.image = [UIImage imageNamed:@"image_error"];
+    _imageError.backgroundColor = [UIColor whiteColor];
+    _imageError.contentMode = UIViewContentModeScaleAspectFit;
+    return _imageError;
+}
+
+- (UIImageView *)imageLoading {
+    if (_imageLoading != nil) {
+        return _imageLoading;
+    }
+    
+    _imageLoading = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+    _imageLoading.hidden = NO;
+    _imageLoading.image = [UIImage imageNamed:@"image_loading"];
+    _imageLoading.backgroundColor = [UIColor whiteColor];
+    _imageLoading.contentMode = UIViewContentModeScaleAspectFit;
+    return _imageLoading;
 }
 
 #pragma mark - Private Method
@@ -232,16 +491,12 @@
     }];
 }
 
-- (void)reloadData {
-    
-}
-
 - (void)networkRequest {
     [commentArray removeAllObjects];
     [self.tableView reloadData];
-
+    
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        [manager GET:DailyWordUrl(self.date) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [manager GET:DailyWordUrl(self.date) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         //json转换model
         BEDailyModel *model = [BEDailyModel jsonToObject:operation.responseString];
         BEDailyDetailModel *detailModel = (BEDailyDetailModel *)model.message;
@@ -265,6 +520,15 @@
     } else {
         dailyModel.love =  [NSString stringWithFormat:@"%d", [dailyModel.love intValue] + 1];
         self.labelLoveCount.text = dailyModel.love;
+        
+        CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
+        animation.values =  [[NSArray alloc] initWithObjects:[NSNumber numberWithDouble:1.0],
+                             [NSNumber numberWithDouble:1.4],
+                             [NSNumber numberWithDouble:0.9],
+                             [NSNumber numberWithDouble:1.0],nil];
+        animation.duration = 0.5f;
+        animation.calculationMode = kCAAnimationCubic;
+        [self.imageLove.layer addAnimation:animation forKey:@"bounceAnimation"];
         
         self.imageLove.image = [[UIImage imageNamed:@"icon_love_highlight"] imageWithTintColor:[UIColor BEHighLightFontColor]];
         //加入缓存
@@ -311,6 +575,17 @@
         }
     } else {
         self.imageFavour.image = [[UIImage imageNamed:@"icon_favour_highlight"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+        
+        CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
+        animation.values =  [[NSArray alloc] initWithObjects:[NSNumber numberWithDouble:1.0],
+                             [NSNumber numberWithDouble:1.4],
+                             [NSNumber numberWithDouble:0.9],
+                             [NSNumber numberWithDouble:1.15],
+                             [NSNumber numberWithDouble:1.0],nil];
+        animation.duration = 0.5f;
+        animation.calculationMode = kCAAnimationCubic;
+        [self.imageFavour.layer addAnimation:animation forKey:@"bounceAnimation"];
+        
         //加入缓存
         [[CacheManager manager].arrayFavour addObject:self.date];
         //添加到数据库
@@ -348,8 +623,18 @@
     [audioData writeToFile:filePath atomically:YES];
     //播放本地音乐
     NSURL *fileURL = [NSURL fileURLWithPath:filePath];
-    player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
-    [player play];
+    self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
+    self.player.delegate = self;
+    [self.player play];
+    
+//    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
+//    animation.calculationMode = kCAAnimationDiscrete;
+//    animation.duration = 3.0f;
+//    animation.values = soundImageArray;
+//    animation.repeatCount = 8;
+//    animation.removedOnCompletion = false;
+//    animation.fillMode = kCAFillModeForwards;
+//    [self.imagePlay.layer addAnimation:animation forKey:@"frameAnimation"];
 }
 
 //计算Label高度
@@ -359,252 +644,5 @@
     
     return size;
 }
-
-#pragma mark - UITableViewDataSource
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return commentArray.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *ID = @"cell";
-    BEDailyCommentCell *cell = (BEDailyCommentCell *)[tableView dequeueReusableCellWithIdentifier:ID];
-    if (cell == nil) {
-        cell = [[BEDailyCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
-    }
-    
-    BEDiscussDetailModel *discussDetailModel = (BEDiscussDetailModel *)commentArray[indexPath.row];
-    if ([discussDetailModel.reply_name isEqualToString:@""]) {
-        cell.rtLabel.text = [NSString stringWithFormat:textStyle, discussDetailModel.user_name, discussDetailModel.restext];
-    } else {
-        cell.rtLabel.text = [NSString stringWithFormat:textStyleWithNoReplyName, discussDetailModel.user_name, discussDetailModel.reply_name, discussDetailModel.restext];
-    }
-    
-    return cell;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    RTLabel *rtLabel = [BEDailyCommentCell textLabel];
-    BEDiscussDetailModel *discussDetailModel = (BEDiscussDetailModel *)commentArray[indexPath.row];
-    if ([discussDetailModel.reply_name isEqualToString:@""]) {
-        rtLabel.text = [NSString stringWithFormat:textStyle, discussDetailModel.user_name, discussDetailModel.restext];
-    } else {
-        rtLabel.text = [NSString stringWithFormat:textStyleWithNoReplyName, discussDetailModel.user_name, discussDetailModel.reply_name, discussDetailModel.restext];
-    }
-    CGSize optimumSize = [rtLabel optimumSize];
-    
-    return optimumSize.height + 10;
-}
-
-#pragma mark - Getter
-
-- (UITableView *)tableView {
-    if (_tableView != nil) {
-        return _tableView;
-    }
-    
-    _tableView =[[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64) style:UITableViewStylePlain];
-    _tableView.showsVerticalScrollIndicator = NO;
-    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _tableView.hidden = YES;
-    _tableView.dataSource = self;
-    _tableView.delegate = self;
-    [self.view addSubview:_tableView];
-    //下拉刷新
-    @weakify(self);
-    [_tableView addLegendHeaderWithRefreshingBlock:^{
-        @strongify(self);
-        [self networkRequest];
-    }];
-    //上拉加载评论
-    [_tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadCommentData)];
-    _tableView.footer.automaticallyRefresh = NO;
-    _tableView.footer.textColor = [UIColor BEDeepFontColor];
-    [_tableView.footer setTitle:@"点击或上拉载更多评论！" forState:MJRefreshFooterStateIdle];
-    [_tableView.footer setTitle:@"正在加载中 ..." forState:MJRefreshFooterStateRefreshing];
-    [_tableView.footer setTitle:@"No more data" forState:MJRefreshFooterStateNoMoreData];
-    
-    return _tableView;
-}
-
-- (UIView *)headerView {
-    if (_headerView != nil) {
-        return _headerView;
-    }
-    
-    _headerView = [[UIView alloc] init];
-    _headerView.backgroundColor = [UIColor whiteColor];
-    return _headerView;
-}
-
-- (UIImageView *)imageView {
-    if (_imageView != nil) {
-        return _imageView;
-    }
-
-    _imageView = [[UIImageView alloc] init];
-    _imageView.contentMode = UIViewContentModeScaleAspectFit;
-    return _imageView;
-}
-
-- (UILabel *)labelDate {
-    if (_labelDate != nil) {
-        return _labelDate;
-    }
-    
-    _labelDate = [[UILabel alloc] init];
-    _labelDate.textAlignment = NSTextAlignmentLeft;
-    _labelDate.textColor = [UIColor BEHighLightFontColor];
-    _labelDate.font = [UIFont boldSystemFontOfSize:20];
-    return _labelDate;
-}
-
-- (UILabel *)labelContent {
-    if (_labelContent != nil) {
-        return _labelContent;
-    }
-    
-    _labelContent = [[UILabel alloc] init];
-    _labelContent.textAlignment = NSTextAlignmentLeft;
-    _labelContent.textColor = [UIColor BEFontColor];
-    _labelContent.font = [UIFont systemFontOfSize:16];
-    _labelContent.numberOfLines = 0;
-    return _labelContent;
-}
-
-- (UILabel *)labelNote {
-    if (_labelNote != nil) {
-        return _labelNote;
-    }
-    
-    _labelNote = [[UILabel alloc] init];
-    _labelNote.textAlignment = NSTextAlignmentLeft;
-    _labelNote.textColor = [UIColor BEDeepFontColor];
-    _labelNote.font = [UIFont systemFontOfSize:16];
-    _labelNote.numberOfLines = 0;
-    return _labelNote;
-}
-
-- (UIImageView *)imageLove {
-    if (_imageLove != nil) {
-        return _imageLove;
-    }
-    
-    _imageLove  = [[UIImageView alloc] init];
-    _imageLove.image = [[UIImage imageNamed:@"icon_love"] imageWithTintColor:[UIColor BEHighLightFontColor]];
-    _imageLove.userInteractionEnabled = YES;
-    UITapGestureRecognizer *imageLoveSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageLoveClick)];
-    [_imageLove addGestureRecognizer:imageLoveSingleTap];
-    return _imageLove;
-}
-
-- (UILabel *)labelLoveCount {
-    if (_labelLoveCount != nil) {
-        return _labelLoveCount;
-    }
-    
-    _labelLoveCount = [[UILabel alloc] init];
-    _labelLoveCount.textAlignment = NSTextAlignmentLeft;
-    _labelLoveCount.textColor = [UIColor BEHighLightFontColor];
-    _labelLoveCount.font = [UIFont systemFontOfSize:14];
-    _labelLoveCount.numberOfLines = 0;
-    return _labelLoveCount;
-}
-
-- (UIImageView *)imageFavour {
-    if (_imageFavour != nil) {
-        return _imageFavour;
-    }
-    
-    _imageFavour = [[UIImageView alloc] init];
-    _imageFavour.image = [[UIImage imageNamed:@"icon_favour"] imageWithTintColor:[UIColor BEHighLightFontColor]];
-    _imageFavour.userInteractionEnabled = YES;
-    UITapGestureRecognizer *imageLoveSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageFavourClick)];
-    [_imageFavour addGestureRecognizer:imageLoveSingleTap];
-
-    return _imageFavour;
-}
-
-- (UIImageView *)imageShare {
-    if (_imageShare != nil) {
-        return _imageShare;
-    }
-    
-    _imageShare = [[UIImageView alloc] init];
-    _imageShare.image = [[UIImage imageNamed:@"icon_share"] imageWithTintColor:[UIColor BEHighLightFontColor]];
-    _imageShare.userInteractionEnabled = YES;
-    UITapGestureRecognizer *imageShareSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageShareClick)];
-    [_imageShare addGestureRecognizer:imageShareSingleTap];
-    return _imageShare;
-}
-
-- (UIImageView *)imagePlay {
-    if (_imagePlay != nil) {
-        return _imagePlay;
-    }
-
-    _imagePlay = [[UIImageView alloc] init];
-    _imagePlay.image = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]];
-    _imagePlay.userInteractionEnabled = YES;
-    UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
-    [_imagePlay addGestureRecognizer:imagePlaySingleTap];
-    return _imagePlay;
-}
-
-- (UIImageView *)imageDivideLine {
-    if (_imageDivideLine != nil) {
-        return _imageDivideLine;
-    }
-    
-    _imageDivideLine = [[UIImageView alloc] init];
-    _imageDivideLine.backgroundColor = [UIColor BEHighLightFontColor];
-    _imageDivideLine.contentMode = UIViewContentModeScaleAspectFill;
-    _imageDivideLine.image = [UIImage imageNamed:@"section_divide"];
-    _imageDivideLine.clipsToBounds = YES;
-    return _imageDivideLine;
-}
-
-- (UILabel *)labelTranslation {
-    if (_labelTranslation != nil) {
-        return _labelTranslation;
-    }
-    
-    _labelTranslation = [[UILabel alloc] init];
-    _labelTranslation.textAlignment = NSTextAlignmentLeft;
-    _labelTranslation.textColor = [UIColor BEFontColor];
-    _labelTranslation.font = [UIFont systemFontOfSize:14];
-    _labelTranslation.numberOfLines = 0;
-    return _labelTranslation;
-}
-
-- (UIImageView *)imageError {
-    if (_imageError != nil) {
-        return _imageError;
-    }
-    
-    _imageError = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
-    _imageError.hidden = YES;
-    //_imageError.image = [UIImage imageNamed:@"action_favorite"];
-    _imageError.backgroundColor = [UIColor blackColor];
-    _imageError.contentMode = UIViewContentModeScaleAspectFit;
-    return _imageError;
-}
-
-- (UIImageView *)imageLoading {
-    if (_imageLoading != nil) {
-        return _imageLoading;
-    }
-    
-    _imageLoading = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
-    _imageLoading.hidden = NO;
-    //_imageLoading.image = [UIImage imageNamed:@"action_favorite"];
-    _imageLoading.backgroundColor = [UIColor whiteColor];
-    _imageLoading.contentMode = UIViewContentModeScaleAspectFit;
-    return _imageLoading;
-}
-
 
 @end
