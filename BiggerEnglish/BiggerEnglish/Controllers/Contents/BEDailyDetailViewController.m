@@ -205,213 +205,6 @@
     //播放结束时执行的动作
 }
 
-#pragma mark - Getter
-
-- (UITableView *)tableView {
-    if (_tableView != nil) {
-        return _tableView;
-    }
-    
-    _tableView =[[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64) style:UITableViewStylePlain];
-    _tableView.showsVerticalScrollIndicator = NO;
-    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _tableView.hidden = YES;
-    _tableView.dataSource = self;
-    _tableView.delegate = self;
-    [self.view addSubview:_tableView];
-    //下拉刷新
-    @weakify(self);
-    [_tableView addLegendHeaderWithRefreshingBlock:^{
-        @strongify(self);
-        [self networkRequest];
-    }];
-    //上拉加载评论
-    [_tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadCommentData)];
-    _tableView.footer.automaticallyRefresh = NO;
-    _tableView.footer.textColor = [UIColor BEDeepFontColor];
-    [_tableView.footer setTitle:@"点击或上拉载更多评论！" forState:MJRefreshFooterStateIdle];
-    [_tableView.footer setTitle:@"正在加载中 ..." forState:MJRefreshFooterStateRefreshing];
-    [_tableView.footer setTitle:@"No more data" forState:MJRefreshFooterStateNoMoreData];
-    
-    return _tableView;
-}
-
-- (UIView *)headerView {
-    if (_headerView != nil) {
-        return _headerView;
-    }
-    
-    _headerView = [[UIView alloc] init];
-    _headerView.backgroundColor = [UIColor whiteColor];
-    return _headerView;
-}
-
-- (UIImageView *)imageView {
-    if (_imageView != nil) {
-        return _imageView;
-    }
-    
-    _imageView = [[UIImageView alloc] init];
-    _imageView.contentMode = UIViewContentModeScaleAspectFit;
-    return _imageView;
-}
-
-- (UILabel *)labelDate {
-    if (_labelDate != nil) {
-        return _labelDate;
-    }
-    
-    _labelDate = [[UILabel alloc] init];
-    _labelDate.textAlignment = NSTextAlignmentLeft;
-    _labelDate.textColor = [UIColor BEHighLightFontColor];
-    _labelDate.font = [UIFont boldSystemFontOfSize:20];
-    return _labelDate;
-}
-
-- (UILabel *)labelContent {
-    if (_labelContent != nil) {
-        return _labelContent;
-    }
-    
-    _labelContent = [[UILabel alloc] init];
-    _labelContent.textAlignment = NSTextAlignmentLeft;
-    _labelContent.textColor = [UIColor BEFontColor];
-    _labelContent.font = [UIFont systemFontOfSize:16];
-    _labelContent.numberOfLines = 0;
-    return _labelContent;
-}
-
-- (UILabel *)labelNote {
-    if (_labelNote != nil) {
-        return _labelNote;
-    }
-    
-    _labelNote = [[UILabel alloc] init];
-    _labelNote.textAlignment = NSTextAlignmentLeft;
-    _labelNote.textColor = [UIColor BEDeepFontColor];
-    _labelNote.font = [UIFont systemFontOfSize:16];
-    _labelNote.numberOfLines = 0;
-    return _labelNote;
-}
-
-- (UIImageView *)imageLove {
-    if (_imageLove != nil) {
-        return _imageLove;
-    }
-    
-    _imageLove  = [[UIImageView alloc] init];
-    _imageLove.image = [[UIImage imageNamed:@"icon_love"] imageWithTintColor:[UIColor BEHighLightFontColor]];
-    _imageLove.userInteractionEnabled = YES;
-    UITapGestureRecognizer *imageLoveSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageLoveClick)];
-    [_imageLove addGestureRecognizer:imageLoveSingleTap];
-    return _imageLove;
-}
-
-- (UILabel *)labelLoveCount {
-    if (_labelLoveCount != nil) {
-        return _labelLoveCount;
-    }
-    
-    _labelLoveCount = [[UILabel alloc] init];
-    _labelLoveCount.textAlignment = NSTextAlignmentLeft;
-    _labelLoveCount.textColor = [UIColor BEHighLightFontColor];
-    _labelLoveCount.font = [UIFont systemFontOfSize:14];
-    _labelLoveCount.numberOfLines = 0;
-    return _labelLoveCount;
-}
-
-- (UIImageView *)imageFavour {
-    if (_imageFavour != nil) {
-        return _imageFavour;
-    }
-    
-    _imageFavour = [[UIImageView alloc] init];
-    _imageFavour.image = [[UIImage imageNamed:@"icon_favour"] imageWithTintColor:[UIColor BEHighLightFontColor]];
-    _imageFavour.userInteractionEnabled = YES;
-    UITapGestureRecognizer *imageLoveSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageFavourClick)];
-    [_imageFavour addGestureRecognizer:imageLoveSingleTap];
-    
-    return _imageFavour;
-}
-
-- (UIImageView *)imageShare {
-    if (_imageShare != nil) {
-        return _imageShare;
-    }
-    
-    _imageShare = [[UIImageView alloc] init];
-    _imageShare.image = [[UIImage imageNamed:@"icon_share"] imageWithTintColor:[UIColor BEHighLightFontColor]];
-    _imageShare.userInteractionEnabled = YES;
-    UITapGestureRecognizer *imageShareSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageShareClick)];
-    [_imageShare addGestureRecognizer:imageShareSingleTap];
-    return _imageShare;
-}
-
-- (UIImageView *)imagePlay {
-    if (_imagePlay != nil) {
-        return _imagePlay;
-    }
-    
-    _imagePlay = [[UIImageView alloc] init];
-    _imagePlay.image = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]];
-    _imagePlay.userInteractionEnabled = YES;
-    UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
-    [_imagePlay addGestureRecognizer:imagePlaySingleTap];
-    return _imagePlay;
-}
-
-- (UIImageView *)imageDivideLine {
-    if (_imageDivideLine != nil) {
-        return _imageDivideLine;
-    }
-    
-    _imageDivideLine = [[UIImageView alloc] init];
-    _imageDivideLine.backgroundColor = [UIColor BEHighLightFontColor];
-    _imageDivideLine.contentMode = UIViewContentModeScaleAspectFill;
-    _imageDivideLine.image = [UIImage imageNamed:@"section_divide"];
-    _imageDivideLine.clipsToBounds = YES;
-    return _imageDivideLine;
-}
-
-- (UILabel *)labelTranslation {
-    if (_labelTranslation != nil) {
-        return _labelTranslation;
-    }
-    
-    _labelTranslation = [[UILabel alloc] init];
-    _labelTranslation.textAlignment = NSTextAlignmentLeft;
-    _labelTranslation.textColor = [UIColor BEFontColor];
-    _labelTranslation.font = [UIFont systemFontOfSize:14];
-    _labelTranslation.numberOfLines = 0;
-    return _labelTranslation;
-}
-
-- (UIImageView *)imageError {
-    if (_imageError != nil) {
-        return _imageError;
-    }
-    
-    _imageError = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
-    _imageError.hidden = YES;
-    _imageError.image = [UIImage imageNamed:@"image_error"];
-    _imageError.backgroundColor = [UIColor whiteColor];
-    _imageError.contentMode = UIViewContentModeScaleAspectFit;
-    return _imageError;
-}
-
-- (UIImageView *)imageLoading {
-    if (_imageLoading != nil) {
-        return _imageLoading;
-    }
-    
-    _imageLoading = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
-    _imageLoading.hidden = NO;
-    _imageLoading.image = [UIImage imageNamed:@"image_loading"];
-    _imageLoading.backgroundColor = [UIColor whiteColor];
-    _imageLoading.contentMode = UIViewContentModeScaleAspectFit;
-    return _imageLoading;
-}
-
 #pragma mark - Private Method
 
 - (void)configureHeaderView {
@@ -643,6 +436,213 @@
     CGSize size = [value boundingRectWithSize:CGSizeMake(ScreenWidth - 20, MAXFLOAT) options: NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attribute context:nil].size;
     
     return size;
+}
+
+#pragma mark - Getter
+
+- (UITableView *)tableView {
+    if (_tableView != nil) {
+        return _tableView;
+    }
+    
+    _tableView =[[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64) style:UITableViewStylePlain];
+    _tableView.showsVerticalScrollIndicator = NO;
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _tableView.hidden = YES;
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
+    [self.view addSubview:_tableView];
+    //下拉刷新
+    @weakify(self);
+    [_tableView addLegendHeaderWithRefreshingBlock:^{
+        @strongify(self);
+        [self networkRequest];
+    }];
+    //上拉加载评论
+    [_tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadCommentData)];
+    _tableView.footer.automaticallyRefresh = NO;
+    _tableView.footer.textColor = [UIColor BEDeepFontColor];
+    [_tableView.footer setTitle:@"点击或上拉加载更多评论！" forState:MJRefreshFooterStateIdle];
+    [_tableView.footer setTitle:@"正在加载中 ..." forState:MJRefreshFooterStateRefreshing];
+    [_tableView.footer setTitle:@"No more data" forState:MJRefreshFooterStateNoMoreData];
+    
+    return _tableView;
+}
+
+- (UIView *)headerView {
+    if (_headerView != nil) {
+        return _headerView;
+    }
+    
+    _headerView = [[UIView alloc] init];
+    _headerView.backgroundColor = [UIColor whiteColor];
+    return _headerView;
+}
+
+- (UIImageView *)imageView {
+    if (_imageView != nil) {
+        return _imageView;
+    }
+    
+    _imageView = [[UIImageView alloc] init];
+    _imageView.contentMode = UIViewContentModeScaleAspectFit;
+    return _imageView;
+}
+
+- (UILabel *)labelDate {
+    if (_labelDate != nil) {
+        return _labelDate;
+    }
+    
+    _labelDate = [[UILabel alloc] init];
+    _labelDate.textAlignment = NSTextAlignmentLeft;
+    _labelDate.textColor = [UIColor BEHighLightFontColor];
+    _labelDate.font = [UIFont boldSystemFontOfSize:20];
+    return _labelDate;
+}
+
+- (UILabel *)labelContent {
+    if (_labelContent != nil) {
+        return _labelContent;
+    }
+    
+    _labelContent = [[UILabel alloc] init];
+    _labelContent.textAlignment = NSTextAlignmentLeft;
+    _labelContent.textColor = [UIColor BEFontColor];
+    _labelContent.font = [UIFont systemFontOfSize:16];
+    _labelContent.numberOfLines = 0;
+    return _labelContent;
+}
+
+- (UILabel *)labelNote {
+    if (_labelNote != nil) {
+        return _labelNote;
+    }
+    
+    _labelNote = [[UILabel alloc] init];
+    _labelNote.textAlignment = NSTextAlignmentLeft;
+    _labelNote.textColor = [UIColor BEDeepFontColor];
+    _labelNote.font = [UIFont systemFontOfSize:16];
+    _labelNote.numberOfLines = 0;
+    return _labelNote;
+}
+
+- (UIImageView *)imageLove {
+    if (_imageLove != nil) {
+        return _imageLove;
+    }
+    
+    _imageLove  = [[UIImageView alloc] init];
+    _imageLove.image = [[UIImage imageNamed:@"icon_love"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _imageLove.userInteractionEnabled = YES;
+    UITapGestureRecognizer *imageLoveSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageLoveClick)];
+    [_imageLove addGestureRecognizer:imageLoveSingleTap];
+    return _imageLove;
+}
+
+- (UILabel *)labelLoveCount {
+    if (_labelLoveCount != nil) {
+        return _labelLoveCount;
+    }
+    
+    _labelLoveCount = [[UILabel alloc] init];
+    _labelLoveCount.textAlignment = NSTextAlignmentLeft;
+    _labelLoveCount.textColor = [UIColor BEHighLightFontColor];
+    _labelLoveCount.font = [UIFont systemFontOfSize:14];
+    _labelLoveCount.numberOfLines = 0;
+    return _labelLoveCount;
+}
+
+- (UIImageView *)imageFavour {
+    if (_imageFavour != nil) {
+        return _imageFavour;
+    }
+    
+    _imageFavour = [[UIImageView alloc] init];
+    _imageFavour.image = [[UIImage imageNamed:@"icon_favour"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _imageFavour.userInteractionEnabled = YES;
+    UITapGestureRecognizer *imageLoveSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageFavourClick)];
+    [_imageFavour addGestureRecognizer:imageLoveSingleTap];
+    
+    return _imageFavour;
+}
+
+- (UIImageView *)imageShare {
+    if (_imageShare != nil) {
+        return _imageShare;
+    }
+    
+    _imageShare = [[UIImageView alloc] init];
+    _imageShare.image = [[UIImage imageNamed:@"icon_share"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _imageShare.userInteractionEnabled = YES;
+    UITapGestureRecognizer *imageShareSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageShareClick)];
+    [_imageShare addGestureRecognizer:imageShareSingleTap];
+    return _imageShare;
+}
+
+- (UIImageView *)imagePlay {
+    if (_imagePlay != nil) {
+        return _imagePlay;
+    }
+    
+    _imagePlay = [[UIImageView alloc] init];
+    _imagePlay.image = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _imagePlay.userInteractionEnabled = YES;
+    UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
+    [_imagePlay addGestureRecognizer:imagePlaySingleTap];
+    return _imagePlay;
+}
+
+- (UIImageView *)imageDivideLine {
+    if (_imageDivideLine != nil) {
+        return _imageDivideLine;
+    }
+    
+    _imageDivideLine = [[UIImageView alloc] init];
+    _imageDivideLine.backgroundColor = [UIColor BEHighLightFontColor];
+    _imageDivideLine.contentMode = UIViewContentModeScaleAspectFill;
+    _imageDivideLine.image = [UIImage imageNamed:@"section_divide"];
+    _imageDivideLine.clipsToBounds = YES;
+    return _imageDivideLine;
+}
+
+- (UILabel *)labelTranslation {
+    if (_labelTranslation != nil) {
+        return _labelTranslation;
+    }
+    
+    _labelTranslation = [[UILabel alloc] init];
+    _labelTranslation.textAlignment = NSTextAlignmentLeft;
+    _labelTranslation.textColor = [UIColor BEFontColor];
+    _labelTranslation.font = [UIFont systemFontOfSize:14];
+    _labelTranslation.numberOfLines = 0;
+    return _labelTranslation;
+}
+
+- (UIImageView *)imageError {
+    if (_imageError != nil) {
+        return _imageError;
+    }
+    
+    _imageError = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+    _imageError.hidden = YES;
+    _imageError.image = [UIImage imageNamed:@"image_error"];
+    _imageError.backgroundColor = [UIColor whiteColor];
+    _imageError.contentMode = UIViewContentModeScaleAspectFit;
+    return _imageError;
+}
+
+- (UIImageView *)imageLoading {
+    if (_imageLoading != nil) {
+        return _imageLoading;
+    }
+    
+    _imageLoading = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+    _imageLoading.hidden = NO;
+    _imageLoading.image = [UIImage imageNamed:@"image_loading"];
+    _imageLoading.backgroundColor = [UIColor whiteColor];
+    _imageLoading.contentMode = UIViewContentModeScaleAspectFit;
+    return _imageLoading;
 }
 
 @end

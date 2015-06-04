@@ -37,7 +37,8 @@ PODS:
     - BlocksKit/DynamicDelegate
   - FrameAccessor (1.3.2)
   - Masonry (0.6.1)
-  - MJExtension (2.1.0)
+  - MJExtension (2.1.1)
+  - pop (1.0.7)
   - SDWebImage (3.7.2):
     - SDWebImage/Core (= 3.7.2)
   - SDWebImage/Core (3.7.2)
@@ -48,6 +49,7 @@ DEPENDENCIES:
   - FrameAccessor (~> 1.3.2)
   - Masonry (~> 0.6)
   - MJExtension
+  - pop
   - SDWebImage
 
 SPEC CHECKSUMS:
@@ -55,7 +57,8 @@ SPEC CHECKSUMS:
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   FrameAccessor: 0f7ba6ce37be9a5d0302a27c731dca70af8d438b
   Masonry: 4972309f2f134de9dd312f4dc4a21359b50e6caa
-  MJExtension: d4fd481247b262b59cf8cdf5815661cff460aaa2
+  MJExtension: 4b8a628ec7764a4b3c6c0e7261ec0687cf32ff20
+  pop: 628ffc631644601567ee8bfaaaea493ebd7d0923
   SDWebImage: 71b7cdc1d1721d6a82ed62889030225f2c249e29
 
 COCOAPODS: 0.36.3

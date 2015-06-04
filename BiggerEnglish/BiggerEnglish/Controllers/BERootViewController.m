@@ -9,24 +9,29 @@
 #import "BERootViewController.h"
 #import "BETranslateViewController.h"
 #import "BEDailyViewController.h"
+#import "BEReadViewController.h"
 #import "BEFavouriteViewController.h"
 #import "BEWordBookViewController.h"
 #import "BEMenuView.h"
 #import "BESettingViewController.h"
 #import "BEUserViewController.h"
 #import "BELoginViewController.h"
+#import "PresentingAnimator.h"
+#import "DismissingAnimator.h"
 
 //static CGFloat const kMenuWidth = 200.0;
 
-@interface BERootViewController () <UIGestureRecognizerDelegate, UINavigationControllerDelegate>
+@interface BERootViewController () <UIGestureRecognizerDelegate, UINavigationControllerDelegate, UIViewControllerTransitioningDelegate>
 
-@property (nonatomic, strong) BETranslateViewController       *translateViewController;
-@property (nonatomic, strong) BEDailyViewController       *dailyViewController;
-@property (nonatomic, strong) BEFavouriteViewController       *favouriteViewController;
-@property (nonatomic, strong) BEWordBookViewController       *wordBookViewController;
+@property (nonatomic, strong) BEDailyViewController        *dailyViewController;
+@property (nonatomic, strong) BEReadViewController         *readViewController;
+@property (nonatomic, strong) BETranslateViewController    *translateViewController;
+@property (nonatomic, strong) BEFavouriteViewController    *favouriteViewController;
+@property (nonatomic, strong) BEWordBookViewController     *wordBookViewController;
 
-@property (nonatomic, strong) UINavigationController       *translateNavigationController;
 @property (nonatomic, strong) UINavigationController       *dailyNavigationController;
+@property (nonatomic, strong) UINavigationController       *readNavigationController;
+@property (nonatomic, strong) UINavigationController       *translateNavigationController;
 @property (nonatomic, strong) UINavigationController       *favouriteNavigationController;
 @property (nonatomic, strong) UINavigationController       *wordBookNavigationController;
 
@@ -140,11 +145,14 @@ CGFloat sildeMenuWidth;
     self.viewControllerContainView = [[UIView alloc] initWithFrame:(CGRect){0, 0, ScreenWidth, ScreenHeight}];
     [self.view addSubview:self.viewControllerContainView];
     
-    self.translateViewController = [[BETranslateViewController alloc] init];
-    self.translateNavigationController = [[UINavigationController alloc] initWithRootViewController:self.translateViewController];
-    
     self.dailyViewController = [[BEDailyViewController alloc] init];
     self.dailyNavigationController = [[UINavigationController alloc] initWithRootViewController:self.dailyViewController];
+
+    self.readViewController = [[BEReadViewController alloc] init];
+    self.readNavigationController = [[UINavigationController alloc] initWithRootViewController:self.readViewController];
+
+    self.translateViewController = [[BETranslateViewController alloc] init];
+    self.translateNavigationController = [[UINavigationController alloc] initWithRootViewController:self.translateViewController];
     
     self.favouriteViewController = [[BEFavouriteViewController alloc] init];
     self.favouriteNavigationController = [[UINavigationController alloc] initWithRootViewController:self.favouriteViewController];
@@ -186,6 +194,21 @@ CGFloat sildeMenuWidth;
     panRecognizer.delegate                = self;
     [self.rootBackgroundButton addGestureRecognizer:panRecognizer];
 }
+
+#pragma mark - UIViewControllerTransitioningDelegate
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
+                                                                  presentingController:(UIViewController *)presenting
+                                                                      sourceController:(UIViewController *)source
+{
+    return [PresentingAnimator new];
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
+{
+    return [DismissingAnimator new];
+}
+
 
 #pragma mark - Private Methods
 
@@ -256,12 +279,15 @@ CGFloat sildeMenuWidth;
             viewController = self.dailyNavigationController;
             break;
         case 1:
-            viewController = self.translateNavigationController;
+            viewController = self.readNavigationController;
             break;
         case 2:
-            viewController = self.favouriteNavigationController;
+            viewController = self.translateNavigationController;
             break;
         case 3:
+            viewController = self.favouriteNavigationController;
+            break;
+        case 4:
             viewController = self.wordBookNavigationController;
             break;
         default:
@@ -378,13 +404,20 @@ CGFloat sildeMenuWidth;
 - (void)didReceiveShowSettingViewControllerNotification {
     BESettingViewController *controller = [[BESettingViewController alloc] init];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self presentViewController:navigationController animated:YES completion:nil];
+    navigationController.transitioningDelegate = self;
+    navigationController.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    [self.navigationController presentViewController:navigationController
+                                            animated:YES
+                                          completion:NULL];
 }
 
 - (void)didReceiveShowLoginViewControllerNotification {
     BELoginViewController *controller = [[BELoginViewController alloc] init];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self presentViewController:navigationController animated:YES completion:nil];
+    controller.transitioningDelegate = self;
+    controller.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    [self.navigationController presentViewController:controller
+                                            animated:YES
+                                          completion:NULL];
 }
 
 - (void)didReceiveResetInactiveDelegateNotification {

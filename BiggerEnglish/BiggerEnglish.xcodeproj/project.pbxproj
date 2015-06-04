@@ -25,6 +25,14 @@
 		429575911B02EC620064FC69 /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295758E1B02EC620064FC69 /* UIImage+Tint.m */; };
 		429575951B02F7EE0064FC69 /* BEDailyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575941B02F7EE0064FC69 /* BEDailyViewController.m */; };
 		429575991B0335840064FC69 /* SettingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575981B0335840064FC69 /* SettingManager.m */; };
+		4295803F1B1FE5E900C759D7 /* PresentingAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295803E1B1FE5E900C759D7 /* PresentingAnimator.m */; };
+		429580421B1FE79100C759D7 /* DismissingAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 429580411B1FE79100C759D7 /* DismissingAnimator.m */; };
+		429580451B2028E100C759D7 /* BEReadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 429580441B2028E100C759D7 /* BEReadViewController.m */; };
+		429580481B202E6C00C759D7 /* BEReadViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 429580471B202E6C00C759D7 /* BEReadViewCell.m */; };
+		4295804B1B20341500C759D7 /* BEReadDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295804A1B20341500C759D7 /* BEReadDetailViewController.m */; };
+		4295804F1B2039D600C759D7 /* BEReadModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295804E1B2039D600C759D7 /* BEReadModel.m */; };
+		429580521B203A7000C759D7 /* BEReadDetailModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 429580511B203A7000C759D7 /* BEReadDetailModel.m */; };
+		429580551B203B4000C759D7 /* BEReadDetailDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 429580541B203B4000C759D7 /* BEReadDetailDataModel.m */; };
 		4297EC051B04425100CBD8CD /* BEFavouriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4297EC041B04425100CBD8CD /* BEFavouriteViewController.m */; };
 		4297EC081B04427000CBD8CD /* BEWordBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4297EC071B04427000CBD8CD /* BEWordBookViewController.m */; };
 		429E52AA1B16F5E200D9828F /* RTLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 429E52A91B16F5E200D9828F /* RTLabel.m */; };
@@ -105,6 +113,22 @@
 		429575941B02F7EE0064FC69 /* BEDailyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEDailyViewController.m; sourceTree = "<group>"; };
 		429575971B0335840064FC69 /* SettingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingManager.h; sourceTree = "<group>"; };
 		429575981B0335840064FC69 /* SettingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingManager.m; sourceTree = "<group>"; };
+		4295803D1B1FE5E900C759D7 /* PresentingAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresentingAnimator.h; sourceTree = "<group>"; };
+		4295803E1B1FE5E900C759D7 /* PresentingAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresentingAnimator.m; sourceTree = "<group>"; };
+		429580401B1FE79100C759D7 /* DismissingAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DismissingAnimator.h; sourceTree = "<group>"; };
+		429580411B1FE79100C759D7 /* DismissingAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DismissingAnimator.m; sourceTree = "<group>"; };
+		429580431B2028E100C759D7 /* BEReadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEReadViewController.h; sourceTree = "<group>"; };
+		429580441B2028E100C759D7 /* BEReadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEReadViewController.m; sourceTree = "<group>"; };
+		429580461B202E6C00C759D7 /* BEReadViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEReadViewCell.h; sourceTree = "<group>"; };
+		429580471B202E6C00C759D7 /* BEReadViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEReadViewCell.m; sourceTree = "<group>"; };
+		429580491B20341500C759D7 /* BEReadDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEReadDetailViewController.h; sourceTree = "<group>"; };
+		4295804A1B20341500C759D7 /* BEReadDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEReadDetailViewController.m; sourceTree = "<group>"; };
+		4295804D1B2039D600C759D7 /* BEReadModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEReadModel.h; sourceTree = "<group>"; };
+		4295804E1B2039D600C759D7 /* BEReadModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEReadModel.m; sourceTree = "<group>"; };
+		429580501B203A7000C759D7 /* BEReadDetailModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEReadDetailModel.h; sourceTree = "<group>"; };
+		429580511B203A7000C759D7 /* BEReadDetailModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEReadDetailModel.m; sourceTree = "<group>"; };
+		429580531B203B4000C759D7 /* BEReadDetailDataModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEReadDetailDataModel.h; sourceTree = "<group>"; };
+		429580541B203B4000C759D7 /* BEReadDetailDataModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEReadDetailDataModel.m; sourceTree = "<group>"; };
 		4297EC031B04425100CBD8CD /* BEFavouriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEFavouriteViewController.h; sourceTree = "<group>"; };
 		4297EC041B04425100CBD8CD /* BEFavouriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEFavouriteViewController.m; sourceTree = "<group>"; };
 		4297EC061B04427000CBD8CD /* BEWordBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEWordBookViewController.h; sourceTree = "<group>"; };
@@ -218,6 +242,7 @@
 		4204C90E1B02088400169446 /* BiggerEnglish */ = {
 			isa = PBXGroup;
 			children = (
+				4295803A1B1FE59000C759D7 /* Animator */,
 				4297EC091B04868900CBD8CD /* Resources */,
 				429575961B0335690064FC69 /* Managers */,
 				4295756E1B02E1DB0064FC69 /* Additions */,
@@ -264,6 +289,7 @@
 		421B7E3B1B09F0C0009FB3F7 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				4295804C1B20397900C759D7 /* GetRead */,
 				42DED93A1B15C2D5005A5A0A /* GetDaily */,
 				42DED9391B15C2B3005A5A0A /* GetDiscuss */,
 				42DED9321B15C1EB005A5A0A /* CoreData */,
@@ -288,6 +314,8 @@
 				423854A91B1811CD00567BC3 /* BEDailyCommentCell.m */,
 				423854A51B18083400567BC3 /* BEFavouriteViewCell.h */,
 				423854A61B18083400567BC3 /* BEFavouriteViewCell.m */,
+				429580461B202E6C00C759D7 /* BEReadViewCell.h */,
+				429580471B202E6C00C759D7 /* BEReadViewCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -321,10 +349,12 @@
 		4295756A1B02DF5D0064FC69 /* Sections */ = {
 			isa = PBXGroup;
 			children = (
-				4295756B1B02DF690064FC69 /* BETranslateViewController.h */,
-				4295756C1B02DF690064FC69 /* BETranslateViewController.m */,
 				429575931B02F7EE0064FC69 /* BEDailyViewController.h */,
 				429575941B02F7EE0064FC69 /* BEDailyViewController.m */,
+				429580431B2028E100C759D7 /* BEReadViewController.h */,
+				429580441B2028E100C759D7 /* BEReadViewController.m */,
+				4295756B1B02DF690064FC69 /* BETranslateViewController.h */,
+				4295756C1B02DF690064FC69 /* BETranslateViewController.m */,
 				4297EC031B04425100CBD8CD /* BEFavouriteViewController.h */,
 				4297EC041B04425100CBD8CD /* BEFavouriteViewController.m */,
 				4297EC061B04427000CBD8CD /* BEWordBookViewController.h */,
@@ -389,6 +419,46 @@
 			path = Managers;
 			sourceTree = "<group>";
 		};
+		4295803A1B1FE59000C759D7 /* Animator */ = {
+			isa = PBXGroup;
+			children = (
+				4295803B1B1FE5CE00C759D7 /* DismissingAnimator */,
+				4295803C1B1FE5CE00C759D7 /* PresentingAnimator */,
+			);
+			path = Animator;
+			sourceTree = "<group>";
+		};
+		4295803B1B1FE5CE00C759D7 /* DismissingAnimator */ = {
+			isa = PBXGroup;
+			children = (
+				429580401B1FE79100C759D7 /* DismissingAnimator.h */,
+				429580411B1FE79100C759D7 /* DismissingAnimator.m */,
+			);
+			path = DismissingAnimator;
+			sourceTree = "<group>";
+		};
+		4295803C1B1FE5CE00C759D7 /* PresentingAnimator */ = {
+			isa = PBXGroup;
+			children = (
+				4295803D1B1FE5E900C759D7 /* PresentingAnimator.h */,
+				4295803E1B1FE5E900C759D7 /* PresentingAnimator.m */,
+			);
+			path = PresentingAnimator;
+			sourceTree = "<group>";
+		};
+		4295804C1B20397900C759D7 /* GetRead */ = {
+			isa = PBXGroup;
+			children = (
+				4295804D1B2039D600C759D7 /* BEReadModel.h */,
+				4295804E1B2039D600C759D7 /* BEReadModel.m */,
+				429580501B203A7000C759D7 /* BEReadDetailModel.h */,
+				429580511B203A7000C759D7 /* BEReadDetailModel.m */,
+				429580531B203B4000C759D7 /* BEReadDetailDataModel.h */,
+				429580541B203B4000C759D7 /* BEReadDetailDataModel.m */,
+			);
+			path = GetRead;
+			sourceTree = "<group>";
+		};
 		4297EC091B04868900CBD8CD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -442,6 +512,8 @@
 			children = (
 				42BF68491B1EA73A00255496 /* BEDailyDetailViewController.h */,
 				42BF684A1B1EA73A00255496 /* BEDailyDetailViewController.m */,
+				429580491B20341500C759D7 /* BEReadDetailViewController.h */,
+				4295804A1B20341500C759D7 /* BEReadDetailViewController.m */,
 			);
 			path = Contents;
 			sourceTree = "<group>";
@@ -625,6 +697,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4295804B1B20341500C759D7 /* BEReadDetailViewController.m in Sources */,
 				42BA9D8D1B13180B00FB55BF /* UIScrollView+MJExtension.m in Sources */,
 				4204C9151B02088400169446 /* AppDelegate.m in Sources */,
 				429575751B02E2EB0064FC69 /* BEMenuSectionView.m in Sources */,
@@ -637,25 +710,30 @@
 				4297EC081B04427000CBD8CD /* BEWordBookViewController.m in Sources */,
 				423854A71B18083400567BC3 /* BEFavouriteViewCell.m in Sources */,
 				42BA9D861B13180B00FB55BF /* MJRefreshConst.m in Sources */,
+				429580551B203B4000C759D7 /* BEReadDetailDataModel.m in Sources */,
 				42B57F6B1B0D874600E85DD6 /* ResponseSuper.m in Sources */,
 				42BA9D851B13180B00FB55BF /* MJRefreshComponent.m in Sources */,
 				429575621B02DE830064FC69 /* BERootViewController.m in Sources */,
 				42DED9351B15C22A005A5A0A /* LoveModel.m in Sources */,
 				42DED93F1B15C2F2005A5A0A /* BEDailyDetailModel.m in Sources */,
 				42BA9D8B1B13180B00FB55BF /* MJRefreshLegendFooter.m in Sources */,
+				4295803F1B1FE5E900C759D7 /* PresentingAnimator.m in Sources */,
 				429575721B02E2660064FC69 /* BEMenuView.m in Sources */,
 				42BA9D8F1B13180B00FB55BF /* UIView+MJExtension.m in Sources */,
 				42DCBAA81B1EFBB700572474 /* BEUserViewController.m in Sources */,
 				42908FBA1B0C8CA1000F29FB /* BELazyScrollView.m in Sources */,
 				4295758B1B02EB1E0064FC69 /* EXTScope.m in Sources */,
+				429580521B203A7000C759D7 /* BEReadDetailModel.m in Sources */,
 				429575911B02EC620064FC69 /* UIImage+Tint.m in Sources */,
 				429575951B02F7EE0064FC69 /* BEDailyViewController.m in Sources */,
 				42DCBAAB1B1EFC2E00572474 /* BELoginViewController.m in Sources */,
 				4297EC051B04425100CBD8CD /* BEFavouriteViewController.m in Sources */,
+				429580421B1FE79100C759D7 /* DismissingAnimator.m in Sources */,
 				42DED9431B15C340005A5A0A /* BEDiscussModel.m in Sources */,
 				42DED9461B15C39D005A5A0A /* BEDiscussMessageModel.m in Sources */,
 				42BA9D8C1B13180B00FB55BF /* MJRefreshLegendHeader.m in Sources */,
 				42E52F091B1449CB00DAADF8 /* CacheManager.m in Sources */,
+				429580451B2028E100C759D7 /* BEReadViewController.m in Sources */,
 				4204C9121B02088400169446 /* main.m in Sources */,
 				429575991B0335840064FC69 /* SettingManager.m in Sources */,
 				42BA9D8A1B13180B00FB55BF /* MJRefreshHeader.m in Sources */,
@@ -665,8 +743,10 @@
 				42DED9381B15C22B005A5A0A /* FavourModel.m in Sources */,
 				42BF684B1B1EA73A00255496 /* BEDailyDetailViewController.m in Sources */,
 				4295756D1B02DF690064FC69 /* BETranslateViewController.m in Sources */,
+				4295804F1B2039D600C759D7 /* BEReadModel.m in Sources */,
 				429575781B02E3D90064FC69 /* BEMenuSectionCell.m in Sources */,
 				42BA9D871B13180B00FB55BF /* MJRefreshFooter.m in Sources */,
+				429580481B202E6C00C759D7 /* BEReadViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

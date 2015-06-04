@@ -26,7 +26,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.title = @"收藏";
-//        [self fetchedResultsController];
     }
     return self;
 }
@@ -70,6 +69,8 @@
     return cell;
 }
 
+#pragma mark - UITableViewDelegate
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     BEDailyDetailViewController *controller = [[BEDailyDetailViewController alloc] init];
@@ -77,17 +78,6 @@
     [self.navigationController pushViewController:controller animated:YES];
     [controller loadFavourModelData:(FavourModel *)object];
 }
-
-//- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-//    return @"   ";
-//}
-
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    BEFavouriteViewCell *cell = (BEFavouriteViewCell *)[self tableView:tableView cellForRowAtIndexPath:indexPath];
-//    NSLog(@"%@", cell.content);
-////    return cell.frame.size.height;
-//    return 200;
-//}
 
 #pragma mark - Fetched results controller
 

@@ -44,7 +44,6 @@
 }
 
 - (void)configureViews {
-
     [self.contentView addSubview:self.labelDate];
     [self.contentView addSubview:self.labelContent];
     [self.contentView addSubview:self.labelNote];
@@ -56,21 +55,18 @@
         make.right.equalTo(self.contentView).with.offset(-10);
         make.bottom.equalTo(self.labelContent.mas_top).with.offset(-5);
     }];
-    
     [self.labelContent mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.labelDate.mas_bottom).with.offset(5);
         make.left.equalTo(self.contentView).with.offset(10);
         make.right.equalTo(self.contentView).with.offset(-10);
         make.bottom.equalTo(self.labelNote.mas_top).with.offset(-10);
     }];
-    
     [self.labelNote mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.labelContent.mas_bottom).with.offset(10);
         make.left.equalTo(self.contentView).with.offset(10);
         make.right.equalTo(self.contentView).with.offset(-10);
         make.bottom.equalTo(self.imageSeparator.mas_top).with.offset(-10);
     }];
-    
     [self.imageSeparator mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.labelNote.mas_bottom).with.offset(10);
         make.left.equalTo(self.contentView).with.offset(20);
