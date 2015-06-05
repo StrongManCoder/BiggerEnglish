@@ -16,6 +16,9 @@
     
     NSInteger pageIndex;//页数索引
     NSInteger pageSize;//每页条数
+    
+    CGPoint tableViewScrollOffset;
+
 }
 @property (strong, nonatomic) NSMutableArray *readArray;
 
@@ -49,7 +52,7 @@
     
     self.view.backgroundColor = [UIColor BEFrenchGrayColor];
     self.navigationController.navigationBar.translucent = NO;
-    
+
     [self.tableView.header beginRefreshing];
 }
 
@@ -76,14 +79,14 @@
 - (void)networkRequest {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager GET:ReadList((int)pageIndex, (int)pageSize) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        pageIndex++;
+        
         //json转换model
         NSString *result = operation.responseString;
         result = [result stringByReplacingOccurrencesOfString:@"description" withString:@"descript"];
         BEReadModel *model = [BEReadModel jsonToObject:result];
         BEReadDetailModel *detailModel = (BEReadDetailModel *)model.message;
         //第一页移除些乱七八糟的东西
-        if (pageIndex == 2) {
+        if (pageIndex == 1) {
             [detailModel.data removeObjectAtIndex:0];
         }
         NSArray *array = [BEReadDetailDataModel objectArrayWithKeyValuesArray:detailModel.data];
@@ -92,9 +95,14 @@
             [self.readArray addObject: detailDataModel];
         }
         
-        [self.tableView.header endRefreshing];
-        [self.tableView.footer endRefreshing];
         [self.tableView reloadData];
+        if (pageIndex == 1) {
+            [self.tableView.header endRefreshing];
+        } else {
+            [self.tableView.footer endRefreshing];
+        }
+        pageIndex++;
+        
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 //        self.imageLoading.hidden = YES;
 //        self.imageError.hidden = NO;
@@ -125,6 +133,8 @@
     return cell;
 }
 
+
+
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -142,14 +152,13 @@
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, self.view.frame.size.height - 64)];
     _tableView.showsVerticalScrollIndicator = NO;
+    _tableView.backgroundColor = [UIColor BEFrenchGrayColor];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     _tableView.estimatedRowHeight = 44.0f;
     _tableView.rowHeight = UITableViewAutomaticDimension;
-    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 1)];
-    footerView.backgroundColor = [UIColor whiteColor];
-    _tableView.tableFooterView = footerView;
+
     //下拉刷新
     @weakify(self);
     [_tableView addLegendHeaderWithRefreshingBlock:^{

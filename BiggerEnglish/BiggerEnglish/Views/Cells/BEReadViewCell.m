@@ -29,7 +29,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        self.backgroundColor = [UIColor BEFrenchGrayColor];
+//        self.backgroundColor = [UIColor BEFrenchGrayColor];
         [self configureViews];
     }
     return self;
@@ -46,14 +46,14 @@
     [self.contentView addSubview:self.labelContent];
     
     //iphone
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+//    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         int width = (ScreenWidth - 40) * 5 / 8;
         [self.imagePic mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.contentView).with.offset(20);
             make.left.equalTo(self.contentView).with.offset(20);
             make.right.equalTo(self.contentView).with.offset(-20);
             make.bottom.equalTo(self.labelTitle.mas_top).with.offset(-10);
-            make.height.mas_equalTo(width);
+            make.height.mas_equalTo(20);
         }];
         [self.labelTitle mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.imagePic.mas_bottom).with.offset(10);
@@ -73,10 +73,10 @@
             make.right.equalTo(self.contentView).with.offset(-10);
             make.bottom.equalTo(self.contentView).with.offset(0);
         }];
-    }
-    else {  //ipad
-        
-    }
+//    }
+//    else {  //ipad
+//        
+//    }
 }
 
 - (void)layoutSubviews {
@@ -96,7 +96,7 @@
     _viewBackground.backgroundColor = [UIColor whiteColor];
     _viewBackground.layer.borderWidth = 0.5;
     _viewBackground.layer.borderColor = [UIColor BEDeepFontColor].CGColor;
-    _viewBackground.layer.cornerRadius = 3;
+//    _viewBackground.layer.cornerRadius = 3;
     return _viewBackground;
 }
 

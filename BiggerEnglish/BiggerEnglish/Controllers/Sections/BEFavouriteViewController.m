@@ -45,11 +45,15 @@
 }
 
 #pragma mark - UITableViewDataSource
-
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+//    [self.tableView reloadData]; // to reload selected cell
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
+    NSLog(@"%d",[sectionInfo numberOfObjects]);
     return [sectionInfo numberOfObjects];
 }
 
