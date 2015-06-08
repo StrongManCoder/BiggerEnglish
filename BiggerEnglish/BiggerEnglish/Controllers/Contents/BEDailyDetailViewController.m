@@ -269,7 +269,7 @@
 }
 
 - (void)loadCommentData {
-    [[AFHTTPRequestOperationManager manager] GET:DailyWordCommentUrl(dailyModel.sid, (int)++pageIndex, (int)pageSize) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [[AFHTTPRequestOperationManager manager] GET:GetDiscussList(dailyModel.sid, (int)++pageIndex, (int)pageSize) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         BEDiscussModel *discussModel = [BEDiscussModel jsonToObject:operation.responseString];
         BEDiscussMessageModel *discussMessageModel = (BEDiscussMessageModel *)discussModel.message;
         NSArray *array = [BEDiscussDetailModel objectArrayWithKeyValuesArray:discussMessageModel.data];
@@ -289,7 +289,7 @@
     [self.tableView reloadData];
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:DailyWordUrl(self.date) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [manager GET:GetSentence(self.date) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         //json转换model
         BEDailyModel *model = [BEDailyModel jsonToObject:operation.responseString];
         BEDailyDetailModel *detailModel = (BEDailyDetailModel *)model.message;
@@ -335,7 +335,7 @@
             NSLog(@"save ok.");
         }
         //Get
-        [[AFHTTPRequestOperationManager manager] GET:DailyWordLoveUrl(dailyModel.sid) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [[AFHTTPRequestOperationManager manager] GET:SetPraise(dailyModel.sid) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"love ok.");
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"error!");

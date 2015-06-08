@@ -16,9 +16,6 @@
     
     NSInteger pageIndex;//页数索引
     NSInteger pageSize;//每页条数
-    
-    CGPoint tableViewScrollOffset;
-
 }
 @property (strong, nonatomic) NSMutableArray *readArray;
 
@@ -34,7 +31,13 @@
     if (self) {
         _readArray = [NSMutableArray array];
         pageIndex = 1;
-        pageSize = 10;
+        
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            pageSize = 10;
+        }
+        else {
+            pageSize = 20;
+        }
     }
     return self;
 }
@@ -52,7 +55,8 @@
     
     self.view.backgroundColor = [UIColor BEFrenchGrayColor];
     self.navigationController.navigationBar.translucent = NO;
-
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    
     [self.tableView.header beginRefreshing];
 }
 
@@ -78,7 +82,7 @@
 
 - (void)networkRequest {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:ReadList((int)pageIndex, (int)pageSize) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [manager GET:GetRecommendList((int)pageIndex, (int)pageSize) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
         //json转换model
         NSString *result = operation.responseString;
@@ -104,9 +108,9 @@
         pageIndex++;
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//        self.imageLoading.hidden = YES;
-//        self.imageError.hidden = NO;
-//        [self.tableView.header endRefreshing];
+        //        self.imageLoading.hidden = YES;
+        //        self.imageError.hidden = NO;
+        //        [self.tableView.header endRefreshing];
     }];
 }
 
@@ -133,14 +137,15 @@
     return cell;
 }
 
-
-
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     BEReadDetailViewController *controller = [[BEReadDetailViewController alloc] init];
+    BEReadDetailDataModel *model = (BEReadDetailDataModel *)self.readArray[indexPath.row];
+    controller.contentID = [model.id intValue];
     [self.navigationController pushViewController:controller animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - Getter / Setter
@@ -158,7 +163,7 @@
     _tableView.delegate = self;
     _tableView.estimatedRowHeight = 44.0f;
     _tableView.rowHeight = UITableViewAutomaticDimension;
-
+    
     //下拉刷新
     @weakify(self);
     [_tableView addLegendHeaderWithRefreshingBlock:^{
@@ -174,10 +179,10 @@
         [self networkRequest];
     }];
     _tableView.footer.automaticallyRefresh = NO;
-//    [_tableView.footer setTitle:@"点击或上拉加载更多！" forState:MJRefreshFooterStateIdle];
-//    [_tableView.footer setTitle:@"正在加载中 ..." forState:MJRefreshFooterStateRefreshing];
-//    [_tableView.footer setTitle:@"No more data" forState:MJRefreshFooterStateNoMoreData];
-
+    //    [_tableView.footer setTitle:@"点击或上拉加载更多！" forState:MJRefreshFooterStateIdle];
+    //    [_tableView.footer setTitle:@"正在加载中 ..." forState:MJRefreshFooterStateRefreshing];
+    //    [_tableView.footer setTitle:@"No more data" forState:MJRefreshFooterStateNoMoreData];
+    
     return _tableView;
 }
 

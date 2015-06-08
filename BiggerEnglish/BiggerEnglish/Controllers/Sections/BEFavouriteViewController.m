@@ -81,6 +81,7 @@
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self.navigationController pushViewController:controller animated:YES];
     [controller loadFavourModelData:(FavourModel *)object];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - Fetched results controller

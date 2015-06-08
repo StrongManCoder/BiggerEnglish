@@ -10,4 +10,6 @@
 
 @interface BEReadDetailViewController : UIViewController
 
+@property (nonatomic, assign) int contentID;
+
 @end
