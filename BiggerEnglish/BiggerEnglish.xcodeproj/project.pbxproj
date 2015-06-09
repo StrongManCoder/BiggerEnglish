@@ -13,11 +13,11 @@
 		4204C9231B02088400169446 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4204C9221B02088400169446 /* Images.xcassets */; };
 		4204C9261B02088400169446 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4204C9241B02088400169446 /* LaunchScreen.xib */; };
 		4204C9321B02088400169446 /* BiggerEnglishTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4204C9311B02088400169446 /* BiggerEnglishTests.m */; };
+		422CC52B1B26FA3C0070F4FA /* ReadContentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 422CC52A1B26FA3C0070F4FA /* ReadContentModel.m */; };
 		423854A71B18083400567BC3 /* BEFavouriteViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 423854A61B18083400567BC3 /* BEFavouriteViewCell.m */; };
 		423854AA1B1811CD00567BC3 /* BEDailyCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 423854A91B1811CD00567BC3 /* BEDailyCommentCell.m */; };
 		4286CBEC1B2582E200E7C568 /* BEGetContentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4286CBEB1B2582E200E7C568 /* BEGetContentModel.m */; };
 		4286CBEF1B2582FE00E7C568 /* BEGetContentDetailModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4286CBEE1B2582FE00E7C568 /* BEGetContentDetailModel.m */; };
-		4286CBF51B25988300E7C568 /* BEReadContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4286CBF41B25988300E7C568 /* BEReadContentView.m */; };
 		42908FBA1B0C8CA1000F29FB /* BELazyScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 42908FB91B0C8CA1000F29FB /* BELazyScrollView.m */; };
 		429575621B02DE830064FC69 /* BERootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575611B02DE830064FC69 /* BERootViewController.m */; };
 		4295756D1B02DF690064FC69 /* BETranslateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295756C1B02DF690064FC69 /* BETranslateViewController.m */; };
@@ -90,6 +90,8 @@
 		4204C92B1B02088400169446 /* BiggerEnglishTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BiggerEnglishTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4204C9301B02088400169446 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4204C9311B02088400169446 /* BiggerEnglishTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BiggerEnglishTests.m; sourceTree = "<group>"; };
+		422CC5291B26FA3C0070F4FA /* ReadContentModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadContentModel.h; sourceTree = "<group>"; };
+		422CC52A1B26FA3C0070F4FA /* ReadContentModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadContentModel.m; sourceTree = "<group>"; };
 		423854A51B18083400567BC3 /* BEFavouriteViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEFavouriteViewCell.h; sourceTree = "<group>"; };
 		423854A61B18083400567BC3 /* BEFavouriteViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEFavouriteViewCell.m; sourceTree = "<group>"; };
 		423854A81B1811CD00567BC3 /* BEDailyCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEDailyCommentCell.h; sourceTree = "<group>"; };
@@ -98,8 +100,6 @@
 		4286CBEB1B2582E200E7C568 /* BEGetContentModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEGetContentModel.m; sourceTree = "<group>"; };
 		4286CBED1B2582FE00E7C568 /* BEGetContentDetailModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEGetContentDetailModel.h; sourceTree = "<group>"; };
 		4286CBEE1B2582FE00E7C568 /* BEGetContentDetailModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEGetContentDetailModel.m; sourceTree = "<group>"; };
-		4286CBF31B25988300E7C568 /* BEReadContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEReadContentView.h; sourceTree = "<group>"; };
-		4286CBF41B25988300E7C568 /* BEReadContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEReadContentView.m; sourceTree = "<group>"; };
 		42908FB81B0C8CA1000F29FB /* BELazyScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BELazyScrollView.h; sourceTree = "<group>"; };
 		42908FB91B0C8CA1000F29FB /* BELazyScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BELazyScrollView.m; sourceTree = "<group>"; };
 		429575601B02DE830064FC69 /* BERootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BERootViewController.h; sourceTree = "<group>"; };
@@ -313,8 +313,6 @@
 			isa = PBXGroup;
 			children = (
 				423854A41B18080300567BC3 /* Cells */,
-				4286CBF31B25988300E7C568 /* BEReadContentView.h */,
-				4286CBF41B25988300E7C568 /* BEReadContentView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -548,6 +546,8 @@
 				42DED9371B15C22B005A5A0A /* FavourModel.m */,
 				42DED9331B15C22A005A5A0A /* LoveModel.h */,
 				42DED9341B15C22A005A5A0A /* LoveModel.m */,
+				422CC5291B26FA3C0070F4FA /* ReadContentModel.h */,
+				422CC52A1B26FA3C0070F4FA /* ReadContentModel.m */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -764,7 +764,6 @@
 				42BF684E1B1EED7500255496 /* BESettingViewController.m in Sources */,
 				4286CBEF1B2582FE00E7C568 /* BEGetContentDetailModel.m in Sources */,
 				4204C9181B02088400169446 /* BiggerEnglish.xcdatamodeld in Sources */,
-				4286CBF51B25988300E7C568 /* BEReadContentView.m in Sources */,
 				429E52AA1B16F5E200D9828F /* RTLabel.m in Sources */,
 				42DED9381B15C22B005A5A0A /* FavourModel.m in Sources */,
 				42BF684B1B1EA73A00255496 /* BEDailyDetailViewController.m in Sources */,
@@ -772,6 +771,7 @@
 				4295804F1B2039D600C759D7 /* BEReadModel.m in Sources */,
 				429575781B02E3D90064FC69 /* BEMenuSectionCell.m in Sources */,
 				42BA9D871B13180B00FB55BF /* MJRefreshFooter.m in Sources */,
+				422CC52B1B26FA3C0070F4FA /* ReadContentModel.m in Sources */,
 				429580481B202E6C00C759D7 /* BEReadViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

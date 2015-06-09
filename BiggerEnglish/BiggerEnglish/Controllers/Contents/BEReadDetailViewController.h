@@ -11,5 +11,6 @@
 @interface BEReadDetailViewController : UIViewController
 
 @property (nonatomic, assign) int contentID;
+@property (nonatomic, copy) NSString *descript;
 
 @end

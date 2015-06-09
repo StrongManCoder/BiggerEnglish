@@ -64,6 +64,8 @@
     [super didReceiveMemoryWarning];
 }
 
+#pragma mark - Private Method
+
 -(void)configureLeftButton {
     UIButton *leftButton   = [UIButton buttonWithType:UIButtonTypeCustom];
     leftButton.frame       = CGRectMake(0, 0, 25, 25);
@@ -83,7 +85,6 @@
 - (void)networkRequest {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager GET:GetRecommendList((int)pageIndex, (int)pageSize) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
         //json转换model
         NSString *result = operation.responseString;
         result = [result stringByReplacingOccurrencesOfString:@"description" withString:@"descript"];
@@ -94,23 +95,24 @@
             [detailModel.data removeObjectAtIndex:0];
         }
         NSArray *array = [BEReadDetailDataModel objectArrayWithKeyValuesArray:detailModel.data];
-        for (BEReadDetailDataModel *detailDataModel in array) {
-            NSLog(@"%@",detailDataModel.thumb);
-            [self.readArray addObject: detailDataModel];
-        }
-        
-        [self.tableView reloadData];
         if (pageIndex == 1) {
             [self.tableView.header endRefreshing];
+            [self.readArray removeAllObjects];
+            self.tableView.footer.hidden = NO;
         } else {
             [self.tableView.footer endRefreshing];
         }
+        for (BEReadDetailDataModel *detailDataModel in array) {
+            [self.readArray addObject: detailDataModel];
+        }
+        [self.tableView reloadData];
         pageIndex++;
-        
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         //        self.imageLoading.hidden = YES;
         //        self.imageError.hidden = NO;
         //        [self.tableView.header endRefreshing];
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
     }];
 }
 
@@ -144,6 +146,7 @@
     BEReadDetailViewController *controller = [[BEReadDetailViewController alloc] init];
     BEReadDetailDataModel *model = (BEReadDetailDataModel *)self.readArray[indexPath.row];
     controller.contentID = [model.id intValue];
+    controller.descript = model.descript;
     [self.navigationController pushViewController:controller animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -168,9 +171,10 @@
     @weakify(self);
     [_tableView addLegendHeaderWithRefreshingBlock:^{
         @strongify(self);
-        [self.readArray removeAllObjects];
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         pageIndex = 1;
         [self.tableView.footer endRefreshing];
+        self.tableView.footer.hidden = YES;
         [self networkRequest];
     }];
     //上拉刷新
@@ -179,9 +183,9 @@
         [self networkRequest];
     }];
     _tableView.footer.automaticallyRefresh = NO;
-    //    [_tableView.footer setTitle:@"点击或上拉加载更多！" forState:MJRefreshFooterStateIdle];
-    //    [_tableView.footer setTitle:@"正在加载中 ..." forState:MJRefreshFooterStateRefreshing];
-    //    [_tableView.footer setTitle:@"No more data" forState:MJRefreshFooterStateNoMoreData];
+    [_tableView.footer setTitle:@"点击或上拉加载更多！" forState:MJRefreshFooterStateIdle];
+    [_tableView.footer setTitle:@"正在加载中 ..." forState:MJRefreshFooterStateRefreshing];
+    _tableView.footer.hidden = YES;
     
     return _tableView;
 }

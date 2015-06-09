@@ -17,8 +17,18 @@
         </attribute>
         <userInfo/>
     </entity>
+    <entity name="ReadContentModel" representedClassName="ReadContentModel" syncable="YES">
+        <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="contentid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="descript" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="favour" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="img" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="inputtime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <elements>
         <element name="FavourModel" positionX="261" positionY="198" width="128" height="180"/>
         <element name="LoveModel" positionX="261" positionY="189" width="128" height="58"/>
+        <element name="ReadContentModel" positionX="261" positionY="261" width="128" height="150"/>
     </elements>
 </model>

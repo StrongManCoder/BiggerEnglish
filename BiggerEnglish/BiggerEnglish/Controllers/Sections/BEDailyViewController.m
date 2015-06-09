@@ -68,6 +68,7 @@ static int const MaxPage = 100;
     self.automaticallyAdjustsScrollViewInsets = NO;
 //    self.extendedLayoutIncludesOpaqueBars = NO;
     
+    self.title = @"每日一句";
     [self configureLeftButton];
     
     viewControllerArray = [[NSMutableArray alloc] initWithCapacity:3];

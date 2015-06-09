@@ -62,19 +62,22 @@
     //导航条是否透明
     //[[UINavigationBar appearance] setTranslucent:NO];
 
-//    //导航条标题颜色
-//    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName]];
-//    //导航条左右按钮颜色
-//    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    ////导航条标题颜色
+    //[[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName]];
+    ////导航条左右按钮颜色
+    //[[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
 
     //导航返回按钮背景图
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[UIImage imageNamed:@"navi_back"]  forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    
-//    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"navi_back"] imageWithTintColor:[UIColor BEHighLightFontColor]] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+    //[[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"navi_back"] imageWithTintColor:[UIColor BEHighLightFontColor]] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
 
     //隐藏文字
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-500, 0)
                                                          forBarMetrics:UIBarMetricsDefault];
+    //导航栏标题颜色
+    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                     [UIColor BEDeepFontColor], NSForegroundColorAttributeName,
+                                                                     nil]];
 }
 
 
