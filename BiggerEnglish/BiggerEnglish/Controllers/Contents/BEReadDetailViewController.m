@@ -173,7 +173,7 @@
     self.labelTime.text = time;
     [self.imagePic sd_setImageWithURL:[NSURL URLWithString:img]
                      placeholderImage:nil
-                              options:SDWebImageHighPriority];
+                              options:SDWebImageRetryFailed];
     self.labelContent.text = content;
     
     _imageSeparator.hidden = NO;
@@ -234,8 +234,6 @@
     _scrollView.showsHorizontalScrollIndicator = NO;
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.pagingEnabled = NO;
-    //    _scrollView.bounces = NO;
-    //    _scrollView.contentSize = CGSizeMake(ScreenWidth, ScreenHeight);
     
     return _scrollView;
 }

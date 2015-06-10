@@ -109,9 +109,8 @@
         pageIndex++;
         [MBProgressHUD hideHUDForView:self.view animated:YES];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        //        self.imageLoading.hidden = YES;
-        //        self.imageError.hidden = NO;
-        //        [self.tableView.header endRefreshing];
+        [self.tableView.header endRefreshing];
+        [self.tableView.footer endRefreshing];
         [MBProgressHUD hideHUDForView:self.view animated:YES];
     }];
 }
@@ -125,7 +124,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *ID = @"cell";
+    static NSString *ID = @"BEReadViewCell";
     BEReadViewCell *cell = (BEReadViewCell *)[tableView dequeueReusableCellWithIdentifier:ID];
     if (cell == nil) {
         cell = [[BEReadViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];

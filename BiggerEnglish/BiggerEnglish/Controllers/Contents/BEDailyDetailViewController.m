@@ -19,6 +19,8 @@
 #import "BEDailyDetailModel.h"
 #import "BEDiscussModel.h"
 #import "BEDailyCommentCell.h"
+#import "PresentingAnimator.h"
+#import "DismissingAnimator.h"
 
 @interface BEDailyDetailViewController() <AVAudioPlayerDelegate> {
     
@@ -32,8 +34,8 @@
     
     NSString *textStyle;
     NSString *textStyleWithNoReplyName;
-
-//    NSArray *soundImageArray;
+    
+    //    NSArray *soundImageArray;
 }
 
 @property (nonatomic, strong) UITableView *tableView;
@@ -70,10 +72,10 @@
         textStyle = @"<p><font color=#93B4DA>%@</font> <font color=#333333>回复: %@</font></p>";
         textStyleWithNoReplyName = @"<p><font color=#93B4DA>%@</font> <font color=#333333>回复</font> <font color=#93B4DA>%@</font><font color=#333333>: %@</font></p>";
         
-//        soundImageArray = [NSArray arrayWithObjects:[[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,
-//                           [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,
-//                           [[UIImage imageNamed:@"icon_sound3"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,
-//                           [[UIImage imageNamed:@"icon_sound4"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,nil];
+        //        soundImageArray = [NSArray arrayWithObjects:[[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,
+        //                           [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,
+        //                           [[UIImage imageNamed:@"icon_sound3"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,
+        //                           [[UIImage imageNamed:@"icon_sound4"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,nil];
     }
     return self;
 }
@@ -83,11 +85,12 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationController.navigationBar.translucent = NO;
-    [self configureHeaderView];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self configureHeaderView];
 }
 
 - (void)setDailyModel:(BEDailyDetailModel *)model {
@@ -130,17 +133,19 @@
 }
 
 - (void)loadData:(NSString *)date {
-    self.date = date;
-    [commentArray removeAllObjects];
-    [self.tableView reloadData];
-    [self.tableView.header endRefreshing];
-    NSObject *object = [[CacheManager manager].arrayData objectForKey:date];
-    if (object == nil) {
-        self.imageLoading.hidden = NO;
-        [self networkRequest];
-    } else {
-        BEDailyDetailModel *model = (BEDailyDetailModel*)object;
-        self.dailyModel = model;
+    if (![self.date isEqual:date]) {
+        self.date = date;
+        [commentArray removeAllObjects];
+        [self.tableView reloadData];
+        [self.tableView.header endRefreshing];
+        NSObject *object = [[CacheManager manager].arrayData objectForKey:date];
+        if (object == nil) {
+            self.imageLoading.hidden = NO;
+            [self networkRequest];
+        } else {
+            BEDailyDetailModel *model = (BEDailyDetailModel*)object;
+            self.dailyModel = model;
+        }
     }
 }
 
@@ -205,7 +210,7 @@
     //播放结束时执行的动作
 }
 
-#pragma mark - Private Method
+#pragma mark - Private Methods
 
 - (void)configureHeaderView {
     [self.headerView addSubview:self.imageView];
@@ -402,7 +407,7 @@
 
 //分享
 - (void) onImageShareClick {
-    
+
 }
 
 //播放mp3
@@ -420,14 +425,14 @@
     self.player.delegate = self;
     [self.player play];
     
-//    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
-//    animation.calculationMode = kCAAnimationDiscrete;
-//    animation.duration = 3.0f;
-//    animation.values = soundImageArray;
-//    animation.repeatCount = 8;
-//    animation.removedOnCompletion = false;
-//    animation.fillMode = kCAFillModeForwards;
-//    [self.imagePlay.layer addAnimation:animation forKey:@"frameAnimation"];
+    //    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
+    //    animation.calculationMode = kCAAnimationDiscrete;
+    //    animation.duration = 3.0f;
+    //    animation.values = soundImageArray;
+    //    animation.repeatCount = 8;
+    //    animation.removedOnCompletion = false;
+    //    animation.fillMode = kCAFillModeForwards;
+    //    [self.imagePlay.layer addAnimation:animation forKey:@"frameAnimation"];
 }
 
 //计算Label高度
@@ -438,7 +443,7 @@
     return size;
 }
 
-#pragma mark - Getter
+#pragma mark - Getters and Setters
 
 - (UITableView *)tableView {
     if (_tableView != nil) {

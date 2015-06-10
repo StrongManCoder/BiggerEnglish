@@ -45,22 +45,16 @@ int width;
     [self.contentView addSubview:self.labelContent];
     [self.contentView addSubview:self.imageSeparator];
     
-    [self updateConstraintsIfNeeded];
-}
-
-- (void)updateConstraints {
-    
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         
         _labelTitle.preferredMaxLayoutWidth = ScreenWidth - 90;
         _labelContent.preferredMaxLayoutWidth = ScreenWidth - 90;
-
+        
         [self.imagePic mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.contentView).with.offset(10);
             make.left.equalTo(self.contentView).with.offset(10);
-            make.bottom.equalTo(self.labelContent.mas_top).with.offset(0);
-            make.height.mas_equalTo(60);
-            make.width.mas_equalTo(60);
+            make.height.mas_equalTo(50);
+            make.width.mas_equalTo(80);
         }];
         [self.labelTitle mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.contentView).with.offset(10);
@@ -69,13 +63,12 @@ int width;
             make.bottom.equalTo(self.labelContent.mas_top).with.offset(-5);
         }];
         [self.labelContent mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.imagePic.mas_bottom).with.offset(0);
+            make.top.equalTo(self.imagePic.mas_bottom).with.offset(5);
             make.left.equalTo(self.contentView).with.offset(10);
             make.right.equalTo(self.contentView).with.offset(-10);
             make.bottom.equalTo(self.imageSeparator.mas_top).with.offset(-5);
         }];
         [self.imageSeparator mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.labelContent.mas_bottom).with.offset(5);
             make.left.equalTo(self.contentView).with.offset(10);
             make.right.equalTo(self.contentView).with.offset(0);
             make.bottom.equalTo(self.contentView).with.offset(0);
@@ -84,15 +77,15 @@ int width;
     }
     else {
         
-        _labelTitle.preferredMaxLayoutWidth = ScreenWidth - 110;
-        _labelContent.preferredMaxLayoutWidth = ScreenWidth - 110;
+        _labelTitle.preferredMaxLayoutWidth = ScreenWidth - 150;
+        _labelContent.preferredMaxLayoutWidth = ScreenWidth - 150;
         
         [self.imagePic mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.contentView).with.offset(10);
             make.left.equalTo(self.contentView).with.offset(10);
-            make.bottom.equalTo(self.imageSeparator.mas_top).with.offset(-10);
-            make.height.mas_equalTo(50);
-            make.width.mas_equalTo(80);
+            make.bottom.equalTo(self.contentView).with.offset(-10);
+            make.height.mas_equalTo(75);
+            make.width.mas_equalTo(120);
         }];
         [self.labelTitle mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.contentView).with.offset(10);
@@ -104,10 +97,9 @@ int width;
             make.top.equalTo(self.labelTitle.mas_bottom).with.offset(5);
             make.left.equalTo(self.imagePic.mas_right).with.offset(10);
             make.right.equalTo(self.contentView).with.offset(-10);
-            make.bottom.equalTo(self.imageSeparator.mas_top).with.offset(-5);
+            make.bottom.equalTo(self.contentView).with.offset(-10);
         }];
         [self.imageSeparator mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.labelContent.mas_bottom).with.offset(5);
             make.left.equalTo(self.contentView).with.offset(10);
             make.right.equalTo(self.contentView).with.offset(0);
             make.bottom.equalTo(self.contentView).with.offset(0);
@@ -115,15 +107,7 @@ int width;
         }];
     }
     
-    [super updateConstraints];
 }
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    
-    [self updateConstraintsIfNeeded];
-}
-
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
@@ -151,7 +135,8 @@ int width;
     _labelTitle.textColor = [UIColor BEFontColor];
     _labelTitle.font = [UIFont systemFontOfSize:16];
     _labelTitle.numberOfLines = 0;
-    _labelTitle.preferredMaxLayoutWidth = ScreenWidth - 90;
+//    _labelTitle.lineBreakMode = NSLineBreakByWordWrapping;
+    //    _labelTitle.preferredMaxLayoutWidth = ScreenWidth - 90;
     
     return _labelTitle;
 }
@@ -165,7 +150,9 @@ int width;
     _labelContent.textColor = [UIColor BEDeepFontColor];
     _labelContent.font = [UIFont systemFontOfSize:14];
     _labelContent.numberOfLines = 0;
-    _labelContent.preferredMaxLayoutWidth = ScreenWidth - 90;
+//    _labelContent.lineBreakMode = NSLineBreakByWordWrapping;
+
+    //    _labelContent.preferredMaxLayoutWidth = ScreenWidth - 90;
     
     return _labelContent;
 }
@@ -179,7 +166,7 @@ int width;
     _imageSeparator.contentMode = UIViewContentModeScaleAspectFill;
     _imageSeparator.image = [UIImage imageNamed:@"section_divide"];
     _imageSeparator.clipsToBounds = YES;
-
+    
     return _imageSeparator;
 }
 

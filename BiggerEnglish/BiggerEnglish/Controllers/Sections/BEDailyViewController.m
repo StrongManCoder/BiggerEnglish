@@ -14,18 +14,14 @@
 #import "FavourModel.h"
 #import "LoveModel.h"
 
-typedef NS_ENUM(NSInteger, DirectionMode) {
-    ForwardDirection,
-    BackwardDirection,
-};
-
 static int const MaxPage = 100;
+static int const ViewControllerArrayCount = 3;
 
-@interface BEDailyViewController() <BELazyScrollViewDelegate> {
-    
-    BELazyScrollView *lazyScrollView;
-    NSMutableArray *viewControllerArray;
-}
+@interface BEDailyViewController()
+
+@property (strong, nonatomic) NSMutableArray *viewControllerArray;
+@property (strong, nonatomic) BELazyScrollView *lazyScrollView;
+
 @end
 
 @implementation BEDailyViewController
@@ -38,6 +34,23 @@ static int const MaxPage = 100;
     return self;
 }
 
+- (void)loadView {
+    [super loadView];
+
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.title = @"每日一句";
+    
+    [self configureLeftButton];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self.view addSubview:self.lazyScrollView];
+}
+
+#pragma mark - Private Methods
+
 - (void)initCacheData {
     NSFetchRequest *request=[[NSFetchRequest alloc] init];
     id delegate = [[UIApplication sharedApplication] delegate];
@@ -49,66 +62,13 @@ static int const MaxPage = 100;
     for (FavourModel *favour in favourResults) {
         [[CacheManager manager].arrayFavour addObject:favour.title];
     }
-
+    
     entity = [NSEntityDescription entityForName:@"LoveModel" inManagedObjectContext:managedObjectContext];
     [request setEntity:entity];
     NSArray *loveResults=[[managedObjectContext executeFetchRequest:request error:nil] copy];
     for (LoveModel *love in loveResults) {
         [[CacheManager manager].arrayLove addObject:love.date];
     }
-}
-
-- (void)loadView {
-    [super loadView];
-
-//    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
-//        self.edgesForExtendedLayout = UIRectEdgeNone;
-//    }
-//    self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.automaticallyAdjustsScrollViewInsets = NO;
-//    self.extendedLayoutIncludesOpaqueBars = NO;
-    
-    self.title = @"每日一句";
-    [self configureLeftButton];
-    
-    viewControllerArray = [[NSMutableArray alloc] initWithCapacity:3];
-    for (NSUInteger k = 0; k < 3; ++k) {
-        [viewControllerArray addObject:[[BEDailyDetailViewController alloc] init]];
-    }
-
-    CGRect rect = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height);
-    lazyScrollView = [[BELazyScrollView alloc] initWithFrame:rect];
-    lazyScrollView.enableCircularScroll = NO;
-    lazyScrollView.autoPlay = NO;
-    
-    @weakify(self);
-    lazyScrollView.dataSource = ^(NSUInteger index) {
-        @strongify(self);
-        return [self controllerAtIndex:index];
-    };
-    lazyScrollView.numberOfPages = MaxPage;
-    [self.view addSubview:lazyScrollView];
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-}
-
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super   viewWillAppear:animated];
-}
-
-- (UIViewController *) controllerAtIndex:(NSInteger) index {
-    if (index == MaxPage - 1) {
-        return nil;
-    }
-    BEDailyDetailViewController *controller = [viewControllerArray objectAtIndex:index % 3];
-    NSString *date = [self getPredate:[self getDate] dateCount:index];
-    if (![controller.date  isEqual: date]) {
-        [controller loadData:date];
-    }
-    return controller;
 }
 
 -(void)configureLeftButton {
@@ -122,8 +82,6 @@ static int const MaxPage = 100;
     UIBarButtonItem *barItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
     self.navigationItem.leftBarButtonItem = barItem;
 }
-
-#pragma mark - Private Method
 
 //获取当天日期
 -(NSString *)getDate {
@@ -143,10 +101,51 @@ static int const MaxPage = 100;
     return locationString;
 }
 
-#pragma mark - Notifications
+#pragma mark - Event Response
 
 - (void)navigateSetting {
     [[NSNotificationCenter defaultCenter] postNotificationName:kShowMenuNotification object:nil];
+}
+
+- (UIViewController *) controllerAtIndex:(NSInteger) index {
+    if (index == MaxPage - 1) {
+        return nil;
+    }
+    BEDailyDetailViewController *controller = [self.viewControllerArray objectAtIndex:index % ViewControllerArrayCount];
+    NSString *date = [self getPredate:[self getDate] dateCount:index];
+    [controller loadData:date];
+    return controller;
+}
+
+#pragma mark - Getters and Setters
+
+- (NSMutableArray *)viewControllerArray {
+    if (_viewControllerArray != nil) {
+        return _viewControllerArray;
+    }
+    _viewControllerArray = [[NSMutableArray alloc] initWithCapacity:ViewControllerArrayCount];
+    for (NSUInteger k = 0; k < ViewControllerArrayCount; ++k) {
+        [_viewControllerArray addObject:[[BEDailyDetailViewController alloc] init]];
+    }
+
+    return _viewControllerArray;
+}
+
+- (BELazyScrollView *)lazyScrollView {
+    if (_lazyScrollView != nil) {
+        return _lazyScrollView;
+    }
+    _lazyScrollView = [[BELazyScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height)];
+    _lazyScrollView.enableCircularScroll = NO;
+    _lazyScrollView.autoPlay = NO;
+    @weakify(self);
+    _lazyScrollView.dataSource = ^(NSUInteger index) {
+        @strongify(self);
+        return [self controllerAtIndex:index];
+    };
+    _lazyScrollView.numberOfPages = MaxPage;
+
+    return _lazyScrollView;
 }
 
 @end

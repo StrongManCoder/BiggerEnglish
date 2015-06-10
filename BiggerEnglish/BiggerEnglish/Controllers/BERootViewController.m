@@ -126,9 +126,7 @@ CGFloat sildeMenuWidth;
     [self.rootBackgroundButton bk_whenTapped:^{
         @strongify(self);
         
-        [UIView animateWithDuration:0.3 animations:^{
-            [self setMenuOffset:0.0f];
-        }];
+        [self recoverMenu];
     }];
     
     //侧边栏切换
@@ -307,6 +305,12 @@ CGFloat sildeMenuWidth;
     previousViewController.view.x            = offset/8.0;
 }
 
+- (void)recoverMenu {
+    [UIView animateWithDuration:0.3 animations:^{
+        [self setMenuOffset:0.0f];
+    }];
+}
+
 #pragma mark - Gestures
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
@@ -409,6 +413,7 @@ CGFloat sildeMenuWidth;
     [self.navigationController presentViewController:navigationController
                                             animated:YES
                                           completion:NULL];
+    [self recoverMenu];
 }
 
 - (void)didReceiveShowLoginViewControllerNotification {
@@ -418,6 +423,7 @@ CGFloat sildeMenuWidth;
     [self.navigationController presentViewController:controller
                                             animated:YES
                                           completion:NULL];
+    [self recoverMenu];
 }
 
 - (void)didReceiveResetInactiveDelegateNotification {
