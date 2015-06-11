@@ -95,20 +95,20 @@
         make.top.equalTo(self.labelContent.mas_bottom).with.offset(20);
         make.left.equalTo(self.scrollView.mas_left).with.offset(10);
         make.right.equalTo(self.scrollView.mas_right).with.offset(-10);
-        make.bottom.equalTo(self.imageFavour.mas_top).with.offset(-10);
-        make.bottom.equalTo(self.imageShare.mas_top).with.offset(-10);
+        make.bottom.equalTo(self.scrollView.mas_bottom).with.offset(-60);
+//        make.bottom.equalTo(self.imageShare.mas_top).with.offset(-10);
         
         make.height.mas_equalTo(@0.6);
     }];
     [self.imageFavour mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.imageSeparator.mas_bottom).with.offset(20);
+//        make.top.equalTo(self.imageSeparator.mas_bottom).with.offset(20);
         make.right.equalTo(self.scrollView.mas_right).with.offset(-100);
         make.bottom.equalTo(self.scrollView.mas_bottom).with.offset(-20);
         make.width.mas_equalTo(30);
         make.height.mas_equalTo(30);
     }];
     [self.imageShare mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.imageSeparator.mas_bottom).with.offset(20);
+//        make.top.equalTo(self.imageSeparator.mas_bottom).with.offset(20);
         make.right.equalTo(self.scrollView.mas_right).with.offset(-40);
         make.bottom.equalTo(self.scrollView.mas_bottom).with.offset(-20);
         make.width.mas_equalTo(30);
@@ -144,6 +144,7 @@
             NSString *inputtime = [dateFormat stringFromDate:[NSDate dateWithTimeIntervalSince1970:[detailModel.inputtime intValue]]];
             NSString *img = detailModel.img;
             NSString *content = [detailModel.content componentsJoinedByString:@"\n\n"];
+            
             //界面更新
             [self setPage:title time:inputtime image:img content:content];
             //数据库新增数据
@@ -286,7 +287,7 @@
     _labelContent.font = [UIFont systemFontOfSize:16];
     _labelContent.numberOfLines = 0;
     _labelContent.preferredMaxLayoutWidth = ScreenWidth - 20;
-    
+
     return _labelContent;
 }
 

@@ -13,7 +13,6 @@
 
 #import "BEDailyDetailViewController.h"
 #import "MJRefresh.h"
-#import "FavourModel.h"
 #import "LoveModel.h"
 #import "BEDailyModel.h"
 #import "BEDailyDetailModel.h"
@@ -21,8 +20,9 @@
 #import "BEDailyCommentCell.h"
 #import "PresentingAnimator.h"
 #import "DismissingAnimator.h"
+#import "DailyDetailModel.h"
 
-@interface BEDailyDetailViewController() <AVAudioPlayerDelegate> {
+@interface BEDailyDetailViewController() <AVAudioPlayerDelegate, MBProgressHUDDelegate> {
     
     NSDictionary *dictionaryMonth;
     BEDailyDetailModel *dailyModel;
@@ -37,6 +37,8 @@
     
     //    NSArray *soundImageArray;
 }
+
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *headerView;
@@ -93,11 +95,19 @@
     [self configureHeaderView];
 }
 
+//- (void)viewWillAppear:(BOOL)animated {
+//    [super viewWillAppear:animated];
+//    if (self.imageError.hidden == NO) {
+//        [self networkRequest];
+//    }
+//}
+
 - (void)setDailyModel:(BEDailyDetailModel *)model {
     dailyModel = model;
     
     [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.picture2]
-                      placeholderImage:nil];
+                      placeholderImage:nil
+                               options:SDWebImageRetryFailed];
     
     NSArray * array = [self.date componentsSeparatedByString:@"-"];
     NSString *stringDay = [array objectAtIndex:2];
@@ -149,8 +159,8 @@
     }
 }
 
-- (void)loadFavourModelData:(FavourModel *)favour {
-    self.date = favour.title;
+- (void)loadFavourModelData:(DailyDetailModel *)favour {
+    self.date = favour.date;
     
     BEDailyDetailModel *model = [[BEDailyDetailModel alloc] init];
     model.title = favour.title;
@@ -179,7 +189,6 @@
     if (cell == nil) {
         cell = [[BEDailyCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
     }
-    
     BEDiscussDetailModel *discussDetailModel = (BEDiscussDetailModel *)commentArray[indexPath.row];
     if ([discussDetailModel.reply_name isEqualToString:@""]) {
         cell.rtLabel.text = [NSString stringWithFormat:textStyle, discussDetailModel.user_name, discussDetailModel.restext];
@@ -208,6 +217,14 @@
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer*)player successfully:(BOOL)flag{
     //播放结束时执行的动作
+}
+
+#pragma mark - MBProgressHUDDelegate
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud.delegate = nil;
+    hud = nil;
 }
 
 #pragma mark - Private Methods
@@ -267,10 +284,88 @@
     
     UIView *view                   = self.tableView.tableHeaderView;
     view.frame                     = self.headerView.frame;
-    [self.tableView beginUpdates];
     self.tableView.tableHeaderView = view;
-    [self.tableView endUpdates];
+    
     [self.tableView reloadData];
+}
+
+- (void)networkRequest {
+    [commentArray removeAllObjects];
+    [self.tableView reloadData];
+    
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DailyDetailModel" inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    request.entity = entity;
+    request.predicate = [NSPredicate predicateWithFormat:@"date == %@", self.date];
+    NSArray *dailyDetailResults = [[self.managedObjectContext executeFetchRequest:request error:nil] copy];
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager GET:GetSentence(self.date) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        //json转换model
+        BEDailyModel *model = [BEDailyModel jsonToObject:operation.responseString];
+        BEDailyDetailModel *detailModel = (BEDailyDetailModel *)model.message;
+        self.dailyModel = detailModel;
+        //加入缓存字典
+        [[CacheManager manager].arrayData setObject:detailModel forKey:self.date];
+        
+        if ([dailyDetailResults count] == 1) {
+            //更新点赞数
+            DailyDetailModel *dailyDetailModel = (DailyDetailModel *)[dailyDetailResults objectAtIndex:0];
+            dailyDetailModel.love = detailModel.love;
+            if (![self.managedObjectContext save:nil]) {
+                NSLog(@"error!");
+            } else {
+                NSLog(@"update ok.");
+            }
+        } else {
+            //加入数据库
+            DailyDetailModel *dailyDetailModel=(DailyDetailModel *)[NSEntityDescription insertNewObjectForEntityForName:@"DailyDetailModel" inManagedObjectContext:self.managedObjectContext];
+            dailyDetailModel.date = self.date;
+            dailyDetailModel.title = detailModel.title;
+            dailyDetailModel.dateline = detailModel.dateline;
+            dailyDetailModel.content = detailModel.content;
+            dailyDetailModel.note = detailModel.note;
+            dailyDetailModel.translation = detailModel.translation;
+            dailyDetailModel.picture2 = detailModel.picture2;
+            dailyDetailModel.love = detailModel.love;
+            dailyDetailModel.tts = detailModel.tts;
+            dailyDetailModel.ttsSize = detailModel.ttsSize;
+            dailyDetailModel.sid = detailModel.sid;
+            dailyDetailModel.ttsMd5 = detailModel.ttsMd5;
+            dailyDetailModel.url = detailModel.url;
+            if (![self.managedObjectContext save:nil]) {
+                NSLog(@"error!");
+            } else {
+                NSLog(@"save ok.");
+            }
+        }
+        
+        [self.tableView.header endRefreshing];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        //从数据库读
+        if ([dailyDetailResults count] == 1) {
+            DailyDetailModel *dailyDetailModel = (DailyDetailModel *)[dailyDetailResults objectAtIndex:0];
+            BEDailyDetailModel *detailModel = [[BEDailyDetailModel alloc] init];
+            detailModel.title = dailyDetailModel.title;
+            detailModel.dateline = dailyDetailModel.dateline;
+            detailModel.content = dailyDetailModel.content;
+            detailModel.note = dailyDetailModel.note;
+            detailModel.translation = dailyDetailModel.translation;
+            detailModel.picture2 = dailyDetailModel.picture2;
+            detailModel.love = dailyDetailModel.love;
+            detailModel.tts = dailyDetailModel.tts;
+            detailModel.ttsSize = dailyDetailModel.ttsSize;
+            detailModel.sid = dailyDetailModel.sid;
+            detailModel.ttsMd5 = dailyDetailModel.ttsMd5;
+            detailModel.url = dailyDetailModel.url;
+            self.dailyModel = detailModel;
+        } else {
+            self.imageLoading.hidden = YES;
+            self.imageError.hidden = NO;
+            self.tableView.hidden = YES;
+        }
+        [self.tableView.header endRefreshing];
+    }];
 }
 
 - (void)loadCommentData {
@@ -283,36 +378,36 @@
         }
         [self.tableView reloadData];
         [self.tableView.footer endRefreshing];
+//        [_tableView.footer setTitle:@"点击或上拉加载更多评论！" forState:MJRefreshFooterStateIdle];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"loadCommentData Error: %@", error);
+//        [_tableView.footer setTitle:@"没有网络连接哦！" forState:MJRefreshFooterStateIdle];
         [self.tableView.footer endRefreshing];
     }];
 }
 
-- (void)networkRequest {
-    [commentArray removeAllObjects];
-    [self.tableView reloadData];
+- (void)showText:(NSString *)text {
     
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:GetSentence(self.date) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        //json转换model
-        BEDailyModel *model = [BEDailyModel jsonToObject:operation.responseString];
-        BEDailyDetailModel *detailModel = (BEDailyDetailModel *)model.message;
-        self.dailyModel = detailModel;
-        //加入缓存字典
-        [[CacheManager manager].arrayData setObject:detailModel forKey:self.date];
-        [self.tableView.header endRefreshing];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        self.imageLoading.hidden = YES;
-        self.imageError.hidden = NO;
-        [self.tableView.header endRefreshing];
-    }];
+    //    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    //    hud.mode = MBProgressHUDModeText;
+    //    hud.labelText = text;
+    //    hud.margin = 10.f;
+    //    hud.removeFromSuperViewOnHide = YES;
+    //    hud.delegate = self;
+    //    [hud hide:YES afterDelay:1.5];
 }
+
+//计算Label高度
+- (CGSize)calculateLabelHeight:(NSString *)value FontSize:(CGFloat) font {
+    NSDictionary *attribute = @{NSFontAttributeName: [UIFont systemFontOfSize:font]};
+    CGSize size = [value boundingRectWithSize:CGSizeMake(ScreenWidth - 20, MAXFLOAT) options: NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attribute context:nil].size;
+    
+    return size;
+}
+
+#pragma mark - Event Response
 
 //点赞
 - (void) onImageLoveClick {
-    id delegate = [[UIApplication sharedApplication] delegate];
-    NSManagedObjectContext *managedObjectContext = [delegate managedObjectContext];
     if ([[CacheManager manager].arrayLove containsObject:self.date]) {
         
     } else {
@@ -332,9 +427,9 @@
         //加入缓存
         [[CacheManager manager].arrayLove addObject:self.date];
         //添加到数据库
-        LoveModel *model=(LoveModel *)[NSEntityDescription insertNewObjectForEntityForName:@"LoveModel" inManagedObjectContext:managedObjectContext];
+        LoveModel *model=(LoveModel *)[NSEntityDescription insertNewObjectForEntityForName:@"LoveModel" inManagedObjectContext:self.managedObjectContext];
         model.date = self.date;
-        if (![managedObjectContext save:nil]) {
+        if (![self.managedObjectContext save:nil]) {
             NSLog(@"error!");
         } else {
             NSLog(@"save ok.");
@@ -350,30 +445,27 @@
 
 //收藏
 - (void) onImageFavourClick {
-    id delegate = [[UIApplication sharedApplication] delegate];
-    NSManagedObjectContext *managedObjectContext = [delegate managedObjectContext];
-    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"DailyDetailModel" inManagedObjectContext:self.managedObjectContext]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"date==%@", self.date]];
+    NSArray* results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
     if ([[CacheManager manager].arrayFavour containsObject:self.date]) {
         self.imageFavour.image = [[UIImage imageNamed:@"icon_favour"] imageWithTintColor:[UIColor BEHighLightFontColor]];
         //移除缓存
         [[CacheManager manager].arrayFavour removeObject:self.date];
-        //数据库删除
-        
-        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-        [fetchRequest setEntity:[NSEntityDescription entityForName:@"FavourModel" inManagedObjectContext:managedObjectContext]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", self.date]];
-        NSArray* results = [managedObjectContext executeFetchRequest:fetchRequest error:nil];
+        //数据库更新
         if ([results count] > 0) {
-            [managedObjectContext deleteObject:[results objectAtIndex:0]];
-            if (![managedObjectContext save:nil]) {
+            DailyDetailModel *dailyDetailModel = [results objectAtIndex:0];
+            dailyDetailModel.boolLove = [NSNumber numberWithBool:NO];
+            if (![self.managedObjectContext save:nil]) {
                 NSLog(@"error!");
             } else {
-                NSLog(@"deleteObject ok.");
+                NSLog(@"updateLoveNO ok.");
             }
         }
     } else {
         self.imageFavour.image = [[UIImage imageNamed:@"icon_favour_highlight"] imageWithTintColor:[UIColor BEHighLightFontColor]];
-        
+        //动画
         CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
         animation.values =  [[NSArray alloc] initWithObjects:[NSNumber numberWithDouble:1.0],
                              [NSNumber numberWithDouble:1.4],
@@ -387,27 +479,21 @@
         //加入缓存
         [[CacheManager manager].arrayFavour addObject:self.date];
         //添加到数据库
-        FavourModel *model = (FavourModel *)[NSEntityDescription insertNewObjectForEntityForName:@"FavourModel" inManagedObjectContext:managedObjectContext];
-        model.title = self.date;
-        model.sid = dailyModel.sid;
-        model.tts = dailyModel.tts;
-        model.content = dailyModel.content;
-        model.note = dailyModel.note;
-        model.love = dailyModel.love;
-        model.translation = dailyModel.translation;
-        model.picture2 = dailyModel.picture2;
-        model.url = dailyModel.url;
-        if (![managedObjectContext save:nil]) {
-            NSLog(@"error!");
-        } else {
-            NSLog(@"save ok.");
+        if ([results count] > 0) {
+            DailyDetailModel *dailyDetailModel = [results objectAtIndex:0];
+            dailyDetailModel.boolLove = [NSNumber numberWithBool:YES];
+            if (![self.managedObjectContext save:nil]) {
+                NSLog(@"error!");
+            } else {
+                NSLog(@"updateLoveYES ok.");
+            }
         }
     }
 }
 
 //分享
 - (void) onImageShareClick {
-
+    
 }
 
 //播放mp3
@@ -435,21 +521,12 @@
     //    [self.imagePlay.layer addAnimation:animation forKey:@"frameAnimation"];
 }
 
-//计算Label高度
-- (CGSize)calculateLabelHeight:(NSString *)value FontSize:(CGFloat) font {
-    NSDictionary *attribute = @{NSFontAttributeName: [UIFont systemFontOfSize:font]};
-    CGSize size = [value boundingRectWithSize:CGSizeMake(ScreenWidth - 20, MAXFLOAT) options: NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attribute context:nil].size;
-    
-    return size;
-}
-
 #pragma mark - Getters and Setters
 
 - (UITableView *)tableView {
     if (_tableView != nil) {
         return _tableView;
     }
-    
     _tableView =[[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64) style:UITableViewStylePlain];
     _tableView.showsVerticalScrollIndicator = NO;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -464,7 +541,10 @@
         [self networkRequest];
     }];
     //上拉加载评论
-    [_tableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(loadCommentData)];
+    [_tableView addLegendFooterWithRefreshingBlock:^{
+        @strongify(self);
+        [self loadCommentData];
+    }];
     _tableView.footer.automaticallyRefresh = NO;
     _tableView.footer.textColor = [UIColor BEDeepFontColor];
     [_tableView.footer setTitle:@"点击或上拉加载更多评论！" forState:MJRefreshFooterStateIdle];
@@ -478,9 +558,9 @@
     if (_headerView != nil) {
         return _headerView;
     }
-    
     _headerView = [[UIView alloc] init];
     _headerView.backgroundColor = [UIColor whiteColor];
+    
     return _headerView;
 }
 
@@ -488,9 +568,9 @@
     if (_imageView != nil) {
         return _imageView;
     }
-    
     _imageView = [[UIImageView alloc] init];
     _imageView.contentMode = UIViewContentModeScaleAspectFit;
+    
     return _imageView;
 }
 
@@ -498,11 +578,11 @@
     if (_labelDate != nil) {
         return _labelDate;
     }
-    
     _labelDate = [[UILabel alloc] init];
     _labelDate.textAlignment = NSTextAlignmentLeft;
     _labelDate.textColor = [UIColor BEHighLightFontColor];
     _labelDate.font = [UIFont boldSystemFontOfSize:20];
+    
     return _labelDate;
 }
 
@@ -510,12 +590,12 @@
     if (_labelContent != nil) {
         return _labelContent;
     }
-    
     _labelContent = [[UILabel alloc] init];
     _labelContent.textAlignment = NSTextAlignmentLeft;
     _labelContent.textColor = [UIColor BEFontColor];
     _labelContent.font = [UIFont systemFontOfSize:16];
     _labelContent.numberOfLines = 0;
+    
     return _labelContent;
 }
 
@@ -523,12 +603,12 @@
     if (_labelNote != nil) {
         return _labelNote;
     }
-    
     _labelNote = [[UILabel alloc] init];
     _labelNote.textAlignment = NSTextAlignmentLeft;
     _labelNote.textColor = [UIColor BEDeepFontColor];
     _labelNote.font = [UIFont systemFontOfSize:16];
     _labelNote.numberOfLines = 0;
+    
     return _labelNote;
 }
 
@@ -536,12 +616,12 @@
     if (_imageLove != nil) {
         return _imageLove;
     }
-    
     _imageLove  = [[UIImageView alloc] init];
     _imageLove.image = [[UIImage imageNamed:@"icon_love"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _imageLove.userInteractionEnabled = YES;
     UITapGestureRecognizer *imageLoveSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageLoveClick)];
     [_imageLove addGestureRecognizer:imageLoveSingleTap];
+    
     return _imageLove;
 }
 
@@ -549,12 +629,12 @@
     if (_labelLoveCount != nil) {
         return _labelLoveCount;
     }
-    
     _labelLoveCount = [[UILabel alloc] init];
     _labelLoveCount.textAlignment = NSTextAlignmentLeft;
     _labelLoveCount.textColor = [UIColor BEHighLightFontColor];
     _labelLoveCount.font = [UIFont systemFontOfSize:14];
     _labelLoveCount.numberOfLines = 0;
+    
     return _labelLoveCount;
 }
 
@@ -562,7 +642,6 @@
     if (_imageFavour != nil) {
         return _imageFavour;
     }
-    
     _imageFavour = [[UIImageView alloc] init];
     _imageFavour.image = [[UIImage imageNamed:@"icon_favour"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _imageFavour.userInteractionEnabled = YES;
@@ -576,12 +655,12 @@
     if (_imageShare != nil) {
         return _imageShare;
     }
-    
     _imageShare = [[UIImageView alloc] init];
     _imageShare.image = [[UIImage imageNamed:@"icon_share"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _imageShare.userInteractionEnabled = YES;
     UITapGestureRecognizer *imageShareSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageShareClick)];
     [_imageShare addGestureRecognizer:imageShareSingleTap];
+    
     return _imageShare;
 }
 
@@ -589,12 +668,12 @@
     if (_imagePlay != nil) {
         return _imagePlay;
     }
-    
     _imagePlay = [[UIImageView alloc] init];
     _imagePlay.image = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _imagePlay.userInteractionEnabled = YES;
     UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
     [_imagePlay addGestureRecognizer:imagePlaySingleTap];
+    
     return _imagePlay;
 }
 
@@ -602,12 +681,12 @@
     if (_imageDivideLine != nil) {
         return _imageDivideLine;
     }
-    
     _imageDivideLine = [[UIImageView alloc] init];
     _imageDivideLine.backgroundColor = [UIColor BEHighLightFontColor];
     _imageDivideLine.contentMode = UIViewContentModeScaleAspectFill;
     _imageDivideLine.image = [UIImage imageNamed:@"section_divide"];
     _imageDivideLine.clipsToBounds = YES;
+    
     return _imageDivideLine;
 }
 
@@ -615,12 +694,12 @@
     if (_labelTranslation != nil) {
         return _labelTranslation;
     }
-    
     _labelTranslation = [[UILabel alloc] init];
     _labelTranslation.textAlignment = NSTextAlignmentLeft;
     _labelTranslation.textColor = [UIColor BEFontColor];
     _labelTranslation.font = [UIFont systemFontOfSize:14];
     _labelTranslation.numberOfLines = 0;
+    
     return _labelTranslation;
 }
 
@@ -628,12 +707,12 @@
     if (_imageError != nil) {
         return _imageError;
     }
-    
     _imageError = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
     _imageError.hidden = YES;
     _imageError.image = [UIImage imageNamed:@"image_error"];
     _imageError.backgroundColor = [UIColor whiteColor];
     _imageError.contentMode = UIViewContentModeScaleAspectFit;
+    
     return _imageError;
 }
 
@@ -641,13 +720,24 @@
     if (_imageLoading != nil) {
         return _imageLoading;
     }
-    
     _imageLoading = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
     _imageLoading.hidden = NO;
     _imageLoading.image = [UIImage imageNamed:@"image_loading"];
     _imageLoading.backgroundColor = [UIColor whiteColor];
     _imageLoading.contentMode = UIViewContentModeScaleAspectFit;
+    
     return _imageLoading;
 }
+
+- (NSManagedObjectContext *)managedObjectContext {
+    if (_managedObjectContext != nil) {
+        return _managedObjectContext;
+    }
+    id delegate = [[UIApplication sharedApplication] delegate];
+    _managedObjectContext = [delegate managedObjectContext];
+    
+    return _managedObjectContext;
+}
+
 
 @end

@@ -135,8 +135,6 @@ int width;
     _labelTitle.textColor = [UIColor BEFontColor];
     _labelTitle.font = [UIFont systemFontOfSize:16];
     _labelTitle.numberOfLines = 0;
-//    _labelTitle.lineBreakMode = NSLineBreakByWordWrapping;
-    //    _labelTitle.preferredMaxLayoutWidth = ScreenWidth - 90;
     
     return _labelTitle;
 }
@@ -150,9 +148,6 @@ int width;
     _labelContent.textColor = [UIColor BEDeepFontColor];
     _labelContent.font = [UIFont systemFontOfSize:14];
     _labelContent.numberOfLines = 0;
-//    _labelContent.lineBreakMode = NSLineBreakByWordWrapping;
-
-    //    _labelContent.preferredMaxLayoutWidth = ScreenWidth - 90;
     
     return _labelContent;
 }
@@ -174,7 +169,7 @@ int width;
     _pic = pic;
     [_imagePic sd_setImageWithURL:[NSURL URLWithString:pic]
                  placeholderImage:nil
-                          options:SDWebImageCacheMemoryOnly];
+                          options:SDWebImageRetryFailed];
 }
 
 - (void)setTitle:(NSString *)title {

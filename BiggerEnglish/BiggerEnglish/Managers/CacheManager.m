@@ -9,6 +9,25 @@
 #import "CacheManager.h"
 
 @implementation CacheManager
+@synthesize lastReadList = _lastReadList;
+
+- (void)setLastReadList:(NSString *)code {
+    NSUserDefaults * settings = [NSUserDefaults standardUserDefaults];
+    [settings removeObjectForKey:@"lastReadList"];
+    [settings setObject:code forKey:@"lastReadList"];
+    [settings synchronize];
+}
+
+- (NSString *)lastReadList {
+    if(_lastReadList != nil){
+        return _lastReadList;
+    }
+    NSUserDefaults * setting = [NSUserDefaults standardUserDefaults];
+    NSString *value = [setting objectForKey:@"lastReadList"];
+    _lastReadList = value;
+    
+    return _lastReadList;
+}
 
 - (instancetype)init {
     if (self = [super init]) {

@@ -17,4 +17,9 @@
 @property (copy, nonatomic) NSString *recommend;
 @property (copy, nonatomic) NSString *catid;
 
+@property (copy, nonatomic) NSString *starttime;
+@property (copy, nonatomic) NSString *newsid;
+@property (copy, nonatomic) NSString *skip;
+@property (copy, nonatomic) NSString *link;
+
 @end

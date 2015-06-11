@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14C109" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="DailyDetailModel" representedClassName="DailyDetailModel" syncable="YES">
+        <attribute name="boolLove" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dateline" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="love" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="picture2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="translation" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tts" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ttsMd5" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ttsSize" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="FavourModel" representedClassName="FavourModel" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="love" optional="YES" attributeType="String" syncable="YES"/>
@@ -30,5 +46,6 @@
         <element name="FavourModel" positionX="261" positionY="198" width="128" height="180"/>
         <element name="LoveModel" positionX="261" positionY="189" width="128" height="58"/>
         <element name="ReadContentModel" positionX="261" positionY="261" width="128" height="150"/>
+        <element name="DailyDetailModel" positionX="261" positionY="279" width="128" height="255"/>
     </elements>
 </model>

@@ -11,8 +11,8 @@
 #import "BELazyScrollView.h"
 #import "BEDailyModel.h"
 #import <CoreData/CoreData.h>
-#import "FavourModel.h"
 #import "LoveModel.h"
+#import "DailyDetailModel.h"
 
 static int const MaxPage = 100;
 static int const ViewControllerArrayCount = 3;
@@ -55,12 +55,14 @@ static int const ViewControllerArrayCount = 3;
     NSFetchRequest *request=[[NSFetchRequest alloc] init];
     id delegate = [[UIApplication sharedApplication] delegate];
     NSManagedObjectContext *managedObjectContext = [delegate managedObjectContext];
-    NSEntityDescription *entity=[NSEntityDescription entityForName:@"FavourModel" inManagedObjectContext:managedObjectContext];
+    NSEntityDescription *entity=[NSEntityDescription entityForName:@"DailyDetailModel" inManagedObjectContext:managedObjectContext];
     [request setEntity:entity];
     NSArray *favourResults=[[managedObjectContext executeFetchRequest:request error:nil] copy];
     
-    for (FavourModel *favour in favourResults) {
-        [[CacheManager manager].arrayFavour addObject:favour.title];
+    for (DailyDetailModel *favour in favourResults) {
+        if ([favour.boolLove isEqualToNumber:[NSNumber numberWithBool:YES]]) {
+            [[CacheManager manager].arrayFavour addObject:favour.date];
+        }
     }
     
     entity = [NSEntityDescription entityForName:@"LoveModel" inManagedObjectContext:managedObjectContext];

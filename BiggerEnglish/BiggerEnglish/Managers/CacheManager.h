@@ -18,4 +18,6 @@
 
 @property (nonatomic, strong) NSMutableArray *arrayFavour;
 
+@property (nonatomic, copy) NSString *lastReadList;
+
 @end

@@ -8,11 +8,11 @@
 
 #import "BEFavouriteViewController.h"
 #import "BEFavouriteViewCell.h"
-#import "FavourModel.h"
 #import "BEDailyDetailViewController.h"
 #import "BEReadViewCell.h"
 #import "BEReadDetailViewController.h"  
 #import "ReadContentModel.h"
+#import "DailyDetailModel.h"
 
 @interface BEFavouriteViewController() <UITableViewDelegate, UITableViewDataSource>
 
@@ -103,7 +103,7 @@
         BEDailyDetailViewController *controller = [[BEDailyDetailViewController alloc] init];
         NSManagedObject *object = [self.favourModelResults objectAtIndexPath:indexPath];
         [self.navigationController pushViewController:controller animated:YES];
-        [controller loadFavourModelData:(FavourModel *)object];
+        [controller loadFavourModelData:(DailyDetailModel *)object];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else {
         BEReadDetailViewController *controller = [[BEReadDetailViewController alloc] init];
@@ -118,7 +118,7 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
-    if ([controller.fetchRequest.entityName isEqualToString:@"FavourModel"]) {
+    if ([controller.fetchRequest.entityName isEqualToString:@"DailyDetailModel"]) {
         [self.dailyTableView beginUpdates];
     } else {
         [self.readTableView beginUpdates];
@@ -130,7 +130,7 @@
       newIndexPath:(NSIndexPath *)newIndexPath
 {
     UITableView *tableView;
-    if ([controller.fetchRequest.entityName isEqualToString:@"FavourModel"]) {
+    if ([controller.fetchRequest.entityName isEqualToString:@"DailyDetailModel"]) {
         tableView = self.dailyTableView;
     } else {
         tableView = self.readTableView;
@@ -155,7 +155,7 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    if ([controller.fetchRequest.entityName isEqualToString:@"FavourModel"]) {
+    if ([controller.fetchRequest.entityName isEqualToString:@"DailyDetailModel"]) {
         [self.dailyTableView endUpdates];
     } else {
         [self.readTableView endUpdates];
@@ -254,11 +254,12 @@
         return _favourModelResults;
     }
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"FavourModel" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DailyDetailModel" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     [fetchRequest setFetchBatchSize:20];
-    
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:NO];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"boolLove==%d", 1]];
+
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
     NSArray *sortDescriptors = @[sortDescriptor];
     [fetchRequest setSortDescriptors:sortDescriptors];
     

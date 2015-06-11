@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FavourModel.h" 
+#import "DailyDetailModel.h"
 
 @interface BEDailyDetailViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
@@ -15,6 +15,6 @@
 
 - (void)loadData:(NSString *)date;
 
-- (void)loadFavourModelData:(FavourModel *)favour;
+- (void)loadFavourModelData:(DailyDetailModel *)favour;
 
 @end

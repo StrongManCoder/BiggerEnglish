@@ -11,8 +11,9 @@
 #import "MJRefresh.h"
 #import "BEReadDetailViewController.h"
 #import "BEReadModel.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
-@interface BEReadViewController () <UITableViewDelegate, UITableViewDataSource> {
+@interface BEReadViewController () <UITableViewDelegate, UITableViewDataSource, MBProgressHUDDelegate> {
     
     NSInteger pageIndex;//页数索引
     NSInteger pageSize;//每页条数
@@ -20,6 +21,8 @@
 @property (strong, nonatomic) NSMutableArray *readArray;
 
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UILabel *labelTitle;
 
 @end
 
@@ -90,9 +93,17 @@
         result = [result stringByReplacingOccurrencesOfString:@"description" withString:@"descript"];
         BEReadModel *model = [BEReadModel jsonToObject:result];
         BEReadDetailModel *detailModel = (BEReadDetailModel *)model.message;
-        //第一页移除些乱七八糟的东西
         if (pageIndex == 1) {
+            NSDictionary *dicFirstData = (NSDictionary *)[detailModel.data objectAtIndex:0];
+
+            [self.imageView sd_setImageWithURL:[NSURL URLWithString:[dicFirstData objectForKey:@"thumb"]]
+                              placeholderImage:nil
+                                       options:SDWebImageRetryFailed];
+            self.labelTitle.text = [dicFirstData objectForKey:@"title"];
+            //移除第一页头一条head数据
             [detailModel.data removeObjectAtIndex:0];
+            //保存到userdefault，无网络的时候使用
+            [CacheManager manager].lastReadList = result;
         }
         NSArray *array = [BEReadDetailDataModel objectArrayWithKeyValuesArray:detailModel.data];
         if (pageIndex == 1) {
@@ -109,10 +120,38 @@
         pageIndex++;
         [MBProgressHUD hideHUDForView:self.view animated:YES];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (pageIndex == 1) {
+            NSString *result = [CacheManager manager].lastReadList;
+            if (result != nil) {
+                BEReadModel *model = [BEReadModel jsonToObject:result];
+                BEReadDetailModel *detailModel = (BEReadDetailModel *)model.message;
+                [detailModel.data removeObjectAtIndex:0];
+                NSArray *array = [BEReadDetailDataModel objectArrayWithKeyValuesArray:detailModel.data];
+                [self.readArray removeAllObjects];
+                self.tableView.footer.hidden = NO;
+                for (BEReadDetailDataModel *detailDataModel in array) {
+                    [self.readArray addObject: detailDataModel];
+                }
+                [self.tableView reloadData];
+                pageIndex++;
+            }
+        }
+        
         [self.tableView.header endRefreshing];
         [self.tableView.footer endRefreshing];
         [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [self showText:@"没有网络连接哦！"];
     }];
+}
+
+- (void)showText:(NSString *)text {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    hud.mode = MBProgressHUDModeText;
+    hud.labelText = text;
+    hud.margin = 10.f;
+    hud.removeFromSuperViewOnHide = YES;
+    hud.delegate = self;
+    [hud hide:YES afterDelay:1.5];
 }
 
 #pragma mark - UITableViewDataSource
@@ -150,13 +189,20 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
+#pragma mark - MBProgressHUDDelegate
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud.delegate = nil;
+    hud = nil;
+}
+
 #pragma mark - Getter / Setter
 
 - (UITableView *)tableView {
     if (_tableView !=nil) {
         return _tableView;
     }
-    
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, self.view.frame.size.height - 64)];
     _tableView.showsVerticalScrollIndicator = NO;
     _tableView.backgroundColor = [UIColor BEFrenchGrayColor];
@@ -165,7 +211,6 @@
     _tableView.delegate = self;
     _tableView.estimatedRowHeight = 44.0f;
     _tableView.rowHeight = UITableViewAutomaticDimension;
-    
     //下拉刷新
     @weakify(self);
     [_tableView addLegendHeaderWithRefreshingBlock:^{
@@ -186,7 +231,34 @@
     [_tableView.footer setTitle:@"正在加载中 ..." forState:MJRefreshFooterStateRefreshing];
     _tableView.footer.hidden = YES;
     
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenWidth / 2)];
+    headerView.backgroundColor = [UIColor clearColor];
+    [headerView addSubview:self.imageView];
+    [headerView addSubview:self.labelTitle];
+    _tableView.tableHeaderView = headerView;
+
     return _tableView;
+}
+
+- (UIImageView *)imageView {
+    if (_imageView != nil) {
+        return _imageView;
+    }
+    _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenWidth / 2)];
+    
+    return _imageView;
+}
+
+- (UILabel *)labelTitle {
+    if (_labelTitle != nil) {
+        return _labelTitle;
+    }
+    _labelTitle = [[UILabel alloc] initWithFrame:CGRectMake(10, (ScreenWidth / 2) - 30, ScreenWidth, 30)];
+    _labelTitle.textAlignment = NSTextAlignmentLeft;
+    _labelTitle.textColor = [UIColor whiteColor];
+    _labelTitle.font = [UIFont systemFontOfSize:16];
+    
+    return _labelTitle;
 }
 
 @end
