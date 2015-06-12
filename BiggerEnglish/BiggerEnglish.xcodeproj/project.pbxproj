@@ -39,6 +39,7 @@
 		4297EC051B04425100CBD8CD /* BEFavouriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4297EC041B04425100CBD8CD /* BEFavouriteViewController.m */; };
 		4297EC081B04427000CBD8CD /* BEWordBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4297EC071B04427000CBD8CD /* BEWordBookViewController.m */; };
 		429E52AA1B16F5E200D9828F /* RTLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 429E52A91B16F5E200D9828F /* RTLabel.m */; };
+		42A1F5841B2A72A9000EEB3B /* BEWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A1F5831B2A72A9000EEB3B /* BEWebViewController.m */; };
 		42B57F6B1B0D874600E85DD6 /* ResponseSuper.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B57F6A1B0D874600E85DD6 /* ResponseSuper.m */; };
 		42BA9D841B13180B00FB55BF /* MJRefresh.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 42BA9D6C1B13180B00FB55BF /* MJRefresh.bundle */; };
 		42BA9D851B13180B00FB55BF /* MJRefreshComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BA9D6F1B13180B00FB55BF /* MJRefreshComponent.m */; };
@@ -145,6 +146,8 @@
 		4297EC0A1B04871B00CBD8CD /* CustomColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomColor.h; sourceTree = "<group>"; };
 		429E52A81B16F5E200D9828F /* RTLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTLabel.h; sourceTree = "<group>"; };
 		429E52A91B16F5E200D9828F /* RTLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTLabel.m; sourceTree = "<group>"; };
+		42A1F5821B2A72A9000EEB3B /* BEWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEWebViewController.h; sourceTree = "<group>"; };
+		42A1F5831B2A72A9000EEB3B /* BEWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEWebViewController.m; sourceTree = "<group>"; };
 		42B57F691B0D874600E85DD6 /* ResponseSuper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResponseSuper.h; sourceTree = "<group>"; };
 		42B57F6A1B0D874600E85DD6 /* ResponseSuper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseSuper.m; sourceTree = "<group>"; };
 		42BA9D691B1300AA00FB55BF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -363,6 +366,7 @@
 				42DCBAAA1B1EFC2E00572474 /* BELoginViewController.m */,
 				4295756A1B02DF5D0064FC69 /* Sections */,
 				42BF68481B1EA70F00255496 /* Contents */,
+				42A1F5811B2A720E000EEB3B /* Others */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -495,6 +499,15 @@
 				429E52A91B16F5E200D9828F /* RTLabel.m */,
 			);
 			path = RTLabel;
+			sourceTree = "<group>";
+		};
+		42A1F5811B2A720E000EEB3B /* Others */ = {
+			isa = PBXGroup;
+			children = (
+				42A1F5821B2A72A9000EEB3B /* BEWebViewController.h */,
+				42A1F5831B2A72A9000EEB3B /* BEWebViewController.m */,
+			);
+			path = Others;
 			sourceTree = "<group>";
 		};
 		42BA9D6B1B13180B00FB55BF /* MJRefresh */ = {
@@ -750,6 +763,7 @@
 				429580521B203A7000C759D7 /* BEReadDetailModel.m in Sources */,
 				429575911B02EC620064FC69 /* UIImage+Tint.m in Sources */,
 				429575951B02F7EE0064FC69 /* BEDailyViewController.m in Sources */,
+				42A1F5841B2A72A9000EEB3B /* BEWebViewController.m in Sources */,
 				42DCBAAB1B1EFC2E00572474 /* BELoginViewController.m in Sources */,
 				4297EC051B04425100CBD8CD /* BEFavouriteViewController.m in Sources */,
 				42BAFDD31B298B1800427CE4 /* DailyDetailModel.m in Sources */,

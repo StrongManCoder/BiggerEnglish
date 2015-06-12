@@ -30,6 +30,7 @@ int width;
     if (self) {
         width = (ScreenWidth - 40) * 5 / 8;
         self.selectionStyle = UITableViewCellSelectionStyleDefault;
+        self.contentView.opaque = YES;
         [self configureViews];
     }
     return self;

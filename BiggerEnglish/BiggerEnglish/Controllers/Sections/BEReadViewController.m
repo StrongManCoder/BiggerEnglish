@@ -12,17 +12,20 @@
 #import "BEReadDetailViewController.h"
 #import "BEReadModel.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "BEWebViewController.h"
 
 @interface BEReadViewController () <UITableViewDelegate, UITableViewDataSource, MBProgressHUDDelegate> {
     
     NSInteger pageIndex;//页数索引
     NSInteger pageSize;//每页条数
 }
-@property (strong, nonatomic) NSMutableArray *readArray;
+@property (nonatomic, strong) NSMutableArray *readArray;
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UILabel *labelTitle;
+
+@property (nonatomic, copy) NSString *headerUrl;
 
 @end
 
@@ -95,11 +98,12 @@
         BEReadDetailModel *detailModel = (BEReadDetailModel *)model.message;
         if (pageIndex == 1) {
             NSDictionary *dicFirstData = (NSDictionary *)[detailModel.data objectAtIndex:0];
-
+            //配置headerView
             [self.imageView sd_setImageWithURL:[NSURL URLWithString:[dicFirstData objectForKey:@"thumb"]]
                               placeholderImage:nil
                                        options:SDWebImageRetryFailed];
             self.labelTitle.text = [dicFirstData objectForKey:@"title"];
+            self.headerUrl = [dicFirstData objectForKey:@"link"];
             //移除第一页头一条head数据
             [detailModel.data removeObjectAtIndex:0];
             //保存到userdefault，无网络的时候使用
@@ -197,6 +201,14 @@
     hud = nil;
 }
 
+#pragma mark - Event Response
+
+- (void)onHeaderViewClick {
+    BEWebViewController *controller = [[BEWebViewController alloc] init];
+    controller.url = [NSURL URLWithString:self.headerUrl];
+    [self.navigationController pushViewController:controller animated:YES];
+}
+
 #pragma mark - Getter / Setter
 
 - (UITableView *)tableView {
@@ -205,7 +217,7 @@
     }
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, self.view.frame.size.height - 64)];
     _tableView.showsVerticalScrollIndicator = NO;
-    _tableView.backgroundColor = [UIColor BEFrenchGrayColor];
+    _tableView.backgroundColor = [UIColor clearColor];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
@@ -245,7 +257,10 @@
         return _imageView;
     }
     _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenWidth / 2)];
-    
+    _imageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onHeaderViewClick)];
+    [_imageView addGestureRecognizer:tap];
+
     return _imageView;
 }
 
