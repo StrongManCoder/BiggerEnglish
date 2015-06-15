@@ -89,8 +89,7 @@
 }
 
 - (void)networkRequest {
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:GetRecommendList((int)pageIndex, (int)pageSize) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [[AFHTTPRequestOperationManager manager] GET:GetRecommendList((int)pageIndex, (int)pageSize) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         //json转换model
         NSString *result = operation.responseString;
         result = [result stringByReplacingOccurrencesOfString:@"description" withString:@"descript"];

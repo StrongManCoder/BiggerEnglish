@@ -7,6 +7,7 @@
 //
 
 #import "BETranslateViewController.h"
+#import "BETranslationModel.h"
 
 @implementation BETranslateViewController
 
@@ -20,6 +21,8 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    [self networkRequest];
 }
 
 -(void)configureLeftButton {
@@ -36,6 +39,33 @@
 
 - (void)navigateSetting {
     [[NSNotificationCenter defaultCenter] postNotificationName:kShowMenuNotification object:nil];
+}
+
+- (void)networkRequest {
+
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:@"mainstream",@"word", nil];
+    
+    [[AFHTTPRequestOperationManager manager] POST:@"http://dict-mobile.iciba.com/interface/index.php?client=4&type=1&timestamp=1434339925&sign=278e1fd748b1441a&c=word&m=index&list=1,7,2002,8,21,22"
+       parameters:dic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+           
+           BETranslationModel *model = [BETranslationModel jsonToObject:operation.responseString];
+           NSLog(@"%@",model.message.baesInfo.word_name);
+           NSLog(@"%@",[model.message.baesInfo.exchange.word_pl objectAtIndex:0]);
+           NSLog(@"%@",model.message.sentence );
+           
+           
+           
+           NSArray *array = [BETranslationSentenceModel objectArrayWithKeyValuesArray:model.message.sentence];
+           for (BETranslationSentenceModel *translationSentenceModel in array) {
+               NSLog(@"%@",translationSentenceModel.Network_en);
+           }
+
+       } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+           
+           NSLog(@"%@ error", operation.description);
+           
+       }];
+
 }
 
 @end
