@@ -53,7 +53,7 @@
     [self.view addSubview:self.webView];
 }
 
-#pragma mark - Getter
+#pragma mark - Getters and Setters
 
 - (UIWebView *)webView {
     if (_webView != nil) {

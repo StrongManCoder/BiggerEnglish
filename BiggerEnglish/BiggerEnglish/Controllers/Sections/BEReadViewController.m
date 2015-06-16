@@ -208,7 +208,7 @@
     [self.navigationController pushViewController:controller animated:YES];
 }
 
-#pragma mark - Getter / Setter
+#pragma mark - Getters and Setters
 
 - (UITableView *)tableView {
     if (_tableView !=nil) {

@@ -28,6 +28,11 @@
  
     [self initAppearance];
     
+    
+    NSURL * url = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSLog(url);
+    
+    
     return YES;
 }
 

@@ -225,7 +225,7 @@
 }
 
 
-#pragma mark - Getter
+#pragma mark - Getters / Setters
 
 - (UIScrollView *)scrollView {
     if (_scrollView != nil) {

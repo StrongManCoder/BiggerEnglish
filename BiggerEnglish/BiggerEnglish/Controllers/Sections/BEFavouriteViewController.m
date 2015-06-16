@@ -206,7 +206,7 @@
     }
 }
 
-#pragma mark - Getter / Setter
+#pragma mark - Getters / Setters
 
 - (UITableView *)dailyTableView {
     if (_dailyTableView !=nil) {
