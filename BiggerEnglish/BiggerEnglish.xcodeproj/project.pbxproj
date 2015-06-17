@@ -40,6 +40,7 @@
 		4297EC081B04427000CBD8CD /* BEWordBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4297EC071B04427000CBD8CD /* BEWordBookViewController.m */; };
 		429E52AA1B16F5E200D9828F /* RTLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 429E52A91B16F5E200D9828F /* RTLabel.m */; };
 		42A1F5841B2A72A9000EEB3B /* BEWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A1F5831B2A72A9000EEB3B /* BEWebViewController.m */; };
+		42A2F69D1B3175EE0054ED27 /* NSString+NSString_Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A2F69C1B3175EE0054ED27 /* NSString+NSString_Tools.m */; };
 		42A7A1001B2EC5C2005D7AD1 /* BETranslationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7A0FF1B2EC5C2005D7AD1 /* BETranslationModel.m */; };
 		42A7A1031B2EC5D6005D7AD1 /* BETranslationMessageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7A1021B2EC5D6005D7AD1 /* BETranslationMessageModel.m */; };
 		42A7A1061B2EC6B8005D7AD1 /* BETranslationBaesInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7A1051B2EC6B8005D7AD1 /* BETranslationBaesInfoModel.m */; };
@@ -160,6 +161,8 @@
 		429E52A91B16F5E200D9828F /* RTLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTLabel.m; sourceTree = "<group>"; };
 		42A1F5821B2A72A9000EEB3B /* BEWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEWebViewController.h; sourceTree = "<group>"; };
 		42A1F5831B2A72A9000EEB3B /* BEWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEWebViewController.m; sourceTree = "<group>"; };
+		42A2F69B1B3175EE0054ED27 /* NSString+NSString_Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+NSString_Tools.h"; sourceTree = "<group>"; };
+		42A2F69C1B3175EE0054ED27 /* NSString+NSString_Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+NSString_Tools.m"; sourceTree = "<group>"; };
 		42A7A0FE1B2EC5C2005D7AD1 /* BETranslationModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BETranslationModel.h; sourceTree = "<group>"; };
 		42A7A0FF1B2EC5C2005D7AD1 /* BETranslationModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BETranslationModel.m; sourceTree = "<group>"; };
 		42A7A1011B2EC5D6005D7AD1 /* BETranslationMessageModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BETranslationMessageModel.h; sourceTree = "<group>"; };
@@ -466,6 +469,8 @@
 			children = (
 				4295758D1B02EC620064FC69 /* UIImage+Tint.h */,
 				4295758E1B02EC620064FC69 /* UIImage+Tint.m */,
+				42A2F69B1B3175EE0054ED27 /* NSString+NSString_Tools.h */,
+				42A2F69C1B3175EE0054ED27 /* NSString+NSString_Tools.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -851,6 +856,7 @@
 				429580451B2028E100C759D7 /* BEReadViewController.m in Sources */,
 				4204C9121B02088400169446 /* main.m in Sources */,
 				429575991B0335840064FC69 /* SettingManager.m in Sources */,
+				42A2F69D1B3175EE0054ED27 /* NSString+NSString_Tools.m in Sources */,
 				42BA9D8A1B13180B00FB55BF /* MJRefreshHeader.m in Sources */,
 				42BF684E1B1EED7500255496 /* BESettingViewController.m in Sources */,
 				42A7A1001B2EC5C2005D7AD1 /* BETranslationModel.m in Sources */,

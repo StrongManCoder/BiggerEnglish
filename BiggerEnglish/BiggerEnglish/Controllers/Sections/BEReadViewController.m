@@ -174,8 +174,8 @@
     
     BEReadDetailDataModel *model = (BEReadDetailDataModel *)self.readArray[indexPath.row];
     cell.pic = model.thumb;
-    cell.title = model.title;
-    cell.content = model.descript;
+    cell.title = [model.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    cell.content = [model.descript stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
     return cell;
 }

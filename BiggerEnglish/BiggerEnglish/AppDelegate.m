@@ -22,16 +22,10 @@
     self.rootViewController = [[BERootViewController alloc] init];
    UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:self.rootViewController];
     navigation.navigationBarHidden = YES;
-//    [[UINavigationController alloc] initWithRootViewController:self.rootViewController];
     self.window.rootViewController = navigation;
     [self.window makeKeyAndVisible];
  
     [self initAppearance];
-    
-    
-    NSURL * url = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    NSLog(url);
-    
     
     return YES;
 }

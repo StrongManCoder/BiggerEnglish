@@ -88,7 +88,7 @@
         NSManagedObject *object = [self.readContentModelResults objectAtIndexPath:indexPath];
 
         cell.pic = [object valueForKey:@"img"];
-        cell.title = [object valueForKey:@"title"];
+        cell.title = [object valueForKey:@"title"] ;
         cell.content = [object valueForKey:@"descript"];
 
         return cell;

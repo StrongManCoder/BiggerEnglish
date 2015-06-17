@@ -194,6 +194,8 @@
     NSArray *results = [[managedObjectContext executeFetchRequest:request error:nil] copy];
     if ([results count] == 1) {
         ReadContentModel *model = (ReadContentModel *)[results objectAtIndex:0];
+        model.title = [model.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        model.descript = [model.descript stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         if ([model.favour isEqualToNumber: [NSNumber numberWithInteger:0]]) {
             model.favour = [NSNumber numberWithInteger:1];
             self.imageFavour.image = [[UIImage imageNamed:@"icon_favour_highlight"] imageWithTintColor:[UIColor BEHighLightFontColor]];
