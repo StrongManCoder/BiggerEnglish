@@ -13,4 +13,5 @@
 @property (copy, nonatomic) NSString *part;
 @property (copy, nonatomic) NSArray *means;
 
+
 @end

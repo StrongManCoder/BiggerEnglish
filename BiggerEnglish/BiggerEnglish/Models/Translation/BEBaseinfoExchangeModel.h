@@ -24,4 +24,6 @@
 @property (nonatomic,strong) NSArray *word_adj;
 @property (nonatomic,strong) NSArray *word_conn;
 
+- (NSString *)stringWithFormat;
+
 @end

@@ -9,7 +9,7 @@
 #import "BETranslateViewController.h"
 #import "BETranslationModel.h"
 
-@interface BETranslateViewController() <UITextFieldDelegate>
+@interface BETranslateViewController() <UITextFieldDelegate, UITextViewDelegate>
 
 @property (nonatomic, strong) UITextField *searchTextField;
 
@@ -26,8 +26,13 @@
 @property (nonatomic, strong) UIView *chineseView;
 @property (nonatomic, strong) UIView *englishView;
 @property (nonatomic, strong) UILabel *phenLabel;
+@property (nonatomic, strong) UIImageView *phenPlayImage;
 @property (nonatomic, strong) UILabel *phamLabel;
-@property (nonatomic, strong) UILabel *chineseResultLabel;
+@property (nonatomic, strong) UIImageView *phamPlayImage;
+
+
+@property (nonatomic, strong) UITextView *chineseResultLabel;
+@property (nonatomic, strong) UILabel *exchangeLabel;
 
 
 @property (nonatomic, strong) UIView *sentenceView;
@@ -59,8 +64,23 @@
     [self configureView];
     [self configureLayout];
     
-//    [self networkRequest];
+    //    [self networkRequest];
+    
+    //    [self.view addSubview:self.chineseResultLabel];
+    
 }
+
+
+//-(void)textViewDidChange:(UITextView *)textView {
+//    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+//    paragraphStyle.lineSpacing = 5;
+//    NSDictionary *attributes = @{
+//                                 NSFontAttributeName:[UIFont systemFontOfSize:16],
+//                                 NSParagraphStyleAttributeName:paragraphStyle
+//                                 };
+//    textView.attributedText = [[NSAttributedString alloc] initWithString:textView.text attributes:attributes];
+//}
+
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
     [self textFieldResignFirstResponder];
@@ -105,50 +125,34 @@
         
         NSArray *phModelArray = [BEBaseinfoSymbolsModel objectArrayWithKeyValuesArray:model.message.baesInfo.symbols];
         BEBaseinfoSymbolsModel *phModel = [phModelArray objectAtIndex:0];
-        if ([phModel.ph_en isEqualToString:@""]) {
-            self.phenLabel.hidden = YES;
+        if ([phModel.ph_en isEqualToString:@""] || phModel == nil) {
             self.phenLabel.text = nil;
         }
         else {
-            self.phenLabel.hidden = NO;
-            self.phenLabel.text = [NSString stringWithFormat:@"英 ［%@］", phModel.ph_en];
+            self.phenLabel.text = [NSString stringWithFormat:@"英 [%@]", phModel.ph_en];
         }
-        if ([phModel.ph_am isEqualToString:@""]) {
-            self.phamLabel.hidden = YES;
+        if ([phModel.ph_am isEqualToString:@""] || phModel == nil) {
             self.phamLabel.text = nil;
         }
         else {
-            self.phamLabel.hidden = NO;
-            self.phamLabel.text = [NSString stringWithFormat:@"美 ［%@］", phModel.ph_am];
+            self.phamLabel.text = [NSString stringWithFormat:@"美 [%@]", phModel.ph_am];
         }
         
-        NSArray *partsModelArray = [BESymbolsPartsModel objectArrayWithKeyValuesArray:phModel.parts];
+        self.chineseResultLabel.text = [phModel partsStringWithFormat];
+        [self resetUITextViewContent:self.chineseResultLabel];
         
-        NSString *chineseResultTemp = @"";
-        BESymbolsPartsModel *partsModelTemp;
-        int partsModelArrayCount = (int)[partsModelArray count];
-        for (int i = 0; i < partsModelArrayCount; i++) {
-            partsModelTemp = (BESymbolsPartsModel*)partsModelArray[i];
-            chineseResultTemp = [NSString stringWithFormat:@"%@ %@ %@", chineseResultTemp,
-                                 partsModelTemp.part,
-                                 [partsModelTemp.means componentsJoinedByString:@"；"]];
-            if (partsModelArrayCount > 0 && i != partsModelArrayCount - 1) {
-                chineseResultTemp = [NSString stringWithFormat:@"%@%@", chineseResultTemp, @"\n"];
-            }
-        }
+        BEBaseinfoExchangeModel *exchangeModel = model.message.baesInfo.exchange;
+        self.exchangeLabel.text = [exchangeModel stringWithFormat];
+        [self resetUILabelContent:self.exchangeLabel];
         
-        self.chineseResultLabel.text = [chineseResultTemp trim];
-        
-        [self configureLayout];
-        
-//        NSLog(@"%@",model.message.baesInfo.word_name);
-//        NSLog(@"%@",[model.message.baesInfo.exchange.word_pl objectAtIndex:0]);
-//        NSLog(@"%@",model.message.sentence );
-//        
-//        NSArray *array = [BETranslationSentenceModel objectArrayWithKeyValuesArray:model.message.sentence];
-//        for (BETranslationSentenceModel *translationSentenceModel in array) {
-//            NSLog(@"%@",translationSentenceModel.Network_en);
-//        }
+        //        NSLog(@"%@",model.message.baesInfo.word_name);
+        //        NSLog(@"%@",[model.message.baesInfo.exchange.word_pl objectAtIndex:0]);
+        //        NSLog(@"%@",model.message.sentence );
+        //
+        //        NSArray *array = [BETranslationSentenceModel objectArrayWithKeyValuesArray:model.message.sentence];
+        //        for (BETranslationSentenceModel *translationSentenceModel in array) {
+        //            NSLog(@"%@",translationSentenceModel.Network_en);
+        //        }
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@ error", operation.description);
@@ -184,9 +188,12 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     [self.englishView addSubview:self.phenLabel];
+    [self.englishView addSubview:self.phenPlayImage];
     [self.englishView addSubview:self.phamLabel];
+    [self.englishView addSubview:self.phamPlayImage];
     [self.englishView addSubview:self.chineseResultLabel];
-
+    [self.englishView addSubview:self.exchangeLabel];
+    
     [self.baseInfoView addSubview:self.chineseView];
     [self.baseInfoView addSubview:self.englishView];
     [self.scrollView addSubview:self.searchLabel];
@@ -206,7 +213,7 @@
         make.bottom.equalTo(self.baseInfoView.mas_top).with.offset(-10);
     }];
     [self.baseInfoView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.searchLabel.mas_bottom).with.offset(0);
+        make.top.equalTo(self.searchLabel.mas_bottom).with.offset(10);
         make.left.equalTo(self.scrollView.mas_left).with.offset(0);
         make.right.equalTo(self.scrollView.mas_right).with.offset(0);
         make.bottom.equalTo(self.sentenceView.mas_top).with.offset(0);
@@ -234,38 +241,67 @@
     [self.phenLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.englishView.mas_top).with.offset(0);
         make.left.equalTo(self.englishView.mas_left).with.offset(10);
-        make.right.equalTo(self.englishView.mas_right).with.offset(0);
-        make.bottom.equalTo(self.phamLabel.mas_top).with.offset(-5);
-    }];
-    [self.phamLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.phenLabel.mas_bottom).with.offset(5);
-        make.left.equalTo(self.englishView.mas_left).with.offset(10);
-        make.right.equalTo(self.englishView.mas_right).with.offset(0);
+        make.right.equalTo(self.phenPlayImage.mas_left).with.offset(-5);
         make.bottom.equalTo(self.chineseResultLabel.mas_top).with.offset(-10);
     }];
-
-    [self.chineseResultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.phamLabel.mas_bottom).with.offset(10);
-        make.left.equalTo(self.englishView.mas_left).with.offset(10);
-        make.right.equalTo(self.englishView.mas_right).with.offset(0);
-        make.bottom.equalTo(self.englishView.mas_bottom).with.offset(-10);
+    [self.phenPlayImage mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.phenLabel);
+        make.left.equalTo(self.phenLabel.mas_right).with.offset(5);
+        make.right.equalTo(self.phamLabel.mas_left).with.offset(-10);
+        make.width.equalTo(@30);
+        make.height.equalTo(@30);
+    }];
+    [self.phamLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.englishView.mas_top).with.offset(0);
+        make.left.equalTo(self.phenPlayImage.mas_right).with.offset(10);
+        make.right.equalTo(self.phamPlayImage.mas_left).with.offset(-5);
+        make.bottom.equalTo(self.chineseResultLabel.mas_top).with.offset(-10);
+    }];
+    [self.phamPlayImage mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.phamLabel);
+        make.left.equalTo(self.phamLabel.mas_right).with.offset(5);
+        make.right.equalTo(self.englishView.mas_right).with.offset(-10);
+        make.width.equalTo(@30);
+        make.height.equalTo(@30);
     }];
 
+    
+    [self.chineseResultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.phamLabel.mas_bottom).with.offset(10);
+        make.left.equalTo(self.englishView.mas_left).with.offset(6);
+        make.width.mas_equalTo(ScreenWidth - 12);
+        make.bottom.equalTo(self.exchangeLabel.mas_top).with.offset(-10);
+    }];
+    [self.exchangeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.chineseResultLabel.mas_bottom).with.offset(10);
+        make.left.equalTo(self.englishView.mas_left).with.offset(10);
+        make.right.equalTo(self.englishView.mas_right).with.offset(-10);
+        make.bottom.equalTo(self.englishView.mas_bottom).with.offset(-10);
+    }];
 }
 
-//判断中文还是英文
-- (BOOL)containChinese:(NSString*)str {
-    int length = (int)[str length];
-    for (int i = 0; i < length; ++i) {
-        NSRange range = NSMakeRange(i, 1);
-        NSString *subString = [str substringWithRange:range];
-        const char *cString = [subString UTF8String];
-        if (strlen(cString) == 3) {
-            return YES;
-        }
+- ( void )resetUILabelContent:(UILabel *)label {
+    if (label.text) {
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:label.text];
+        NSMutableParagraphStyle *paragraphStyle = [[ NSMutableParagraphStyle alloc] init];
+        paragraphStyle.alignment = NSTextAlignmentLeft;
+        paragraphStyle.lineSpacing = 5;
+        [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [label.text length])];
+        label.attributedText = attributedString;
+        [label sizeToFit];
     }
-    return NO;
 }
+
+- ( void )resetUITextViewContent:(UITextView *)textView {
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineSpacing = 5;
+    NSDictionary *attributes = @{
+                                 NSFontAttributeName:[UIFont systemFontOfSize:16],
+                                 NSParagraphStyleAttributeName:paragraphStyle
+                                 };
+    textView.attributedText = [[NSAttributedString alloc] initWithString:textView.text attributes:attributes];
+}
+
 
 #pragma mark - Getters and Setters
 
@@ -316,7 +352,6 @@
     }
     
     _baseInfoView = [[UIView alloc] init];
-    
     return _baseInfoView;
 }
 
@@ -348,7 +383,7 @@
     _searchLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     _searchLabel.textAlignment = NSTextAlignmentLeft;
     _searchLabel.textColor = [UIColor BEFontColor];
-    _searchLabel.font = [UIFont systemFontOfSize:20];
+    _searchLabel.font = [UIFont systemFontOfSize:22];
     return _searchLabel;
 }
 
@@ -365,6 +400,19 @@
     return _phenLabel;
 }
 
+- (UIImageView *)phenPlayImage {
+    if (_phenPlayImage != nil) {
+        return _phenPlayImage;
+    }
+    _phenPlayImage = [[UIImageView alloc] init];
+    _phenPlayImage.image = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _phenPlayImage.userInteractionEnabled = YES;
+    UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
+    [_phenPlayImage addGestureRecognizer:imagePlaySingleTap];
+    
+    return _phenPlayImage;
+}
+
 - (UILabel *)phamLabel {
     if (_phamLabel != nil) {
         return _phamLabel;
@@ -378,19 +426,47 @@
     return _phamLabel;
 }
 
-- (UILabel *)chineseResultLabel {
+- (UIImageView *)phamPlayImage {
+    if (_phamPlayImage != nil) {
+        return _phamPlayImage;
+    }
+    _phamPlayImage = [[UIImageView alloc] init];
+    _phamPlayImage.image = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _phamPlayImage.userInteractionEnabled = YES;
+    UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
+    [_phamPlayImage addGestureRecognizer:imagePlaySingleTap];
+    
+    return _phamPlayImage;
+}
+
+- (UITextView *)chineseResultLabel {
     if (_chineseResultLabel != nil) {
         return _chineseResultLabel;
     }
     
-    _chineseResultLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    _chineseResultLabel.textAlignment = NSTextAlignmentLeft;
+    _chineseResultLabel = [[UITextView alloc] init];
     _chineseResultLabel.textColor = [UIColor BEFontColor];
-    _chineseResultLabel.font = [UIFont systemFontOfSize:18];
-    _chineseResultLabel.numberOfLines = 0;
-    _chineseResultLabel.preferredMaxLayoutWidth = ScreenWidth - 20;
+    _chineseResultLabel.font = [UIFont systemFontOfSize:16];
+    _chineseResultLabel.scrollEnabled = NO;
+    _chineseResultLabel.editable = NO;
+    _chineseResultLabel.delegate = self;
     return _chineseResultLabel;
 }
+
+- (UILabel *)exchangeLabel {
+    if (_exchangeLabel != nil) {
+        return _exchangeLabel;
+    }
+    
+    _exchangeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _exchangeLabel.textAlignment = NSTextAlignmentLeft;
+    _exchangeLabel.textColor = [UIColor BEFontColor];
+    _exchangeLabel.font = [UIFont systemFontOfSize:16];
+    _exchangeLabel.numberOfLines = 0;
+    
+    return _exchangeLabel;
+}
+
 
 - (UIView *)sentenceView {
     if (_sentenceView != nil) {

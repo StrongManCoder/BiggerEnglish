@@ -18,4 +18,6 @@
 @property (copy, nonatomic) NSString *ph_tts_mp3;
 @property (strong, nonatomic) NSArray *parts;
 
+- (NSString *)partsStringWithFormat;
+
 @end
