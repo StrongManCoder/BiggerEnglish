@@ -61,5 +61,7 @@ static NSString * const kIgnoreTopicSuccessNotification = @"IgnoreTopicSuccessNo
 #define GetContent(id) [NSString stringWithFormat:@"http://dict-mobile.iciba.com/interface/index.php?client=4&type=1&timestamp=1433386946&c=bilingual&m=getcontent&sign=560caa9bbeedbae4&field=1,2,4,5,7,11,12&id=%d", (id)]
 //翻译Post
 #define Translater @"http://dict-mobile.iciba.com/interface/index.php?client=4&type=1&timestamp=1434339925&sign=278e1fd748b1441a&c=word&m=index&list=1,7,2002,8,21,22"
+//百度翻译
+#define BaiduTranslater(query, from, to) [NSString stringWithFormat:@"http://openapi.baidu.com/public/2.0/bmt/translate?client_id=00Xw5HpwIh9WeryeVRiBb6ee&q=%@&from=%@&to=%@", (query), (from), (to)]
 
 #endif

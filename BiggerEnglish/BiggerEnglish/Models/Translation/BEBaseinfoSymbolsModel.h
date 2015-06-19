@@ -16,6 +16,10 @@
 @property (copy, nonatomic) NSString *ph_en_mp3;
 @property (copy, nonatomic) NSString *ph_am_mp3;
 @property (copy, nonatomic) NSString *ph_tts_mp3;
+
+@property (copy, nonatomic) NSString *word_symbol;
+@property (copy, nonatomic) NSString *symbol_mp3;
+
 @property (strong, nonatomic) NSArray *parts;
 
 - (NSString *)partsStringWithFormat;

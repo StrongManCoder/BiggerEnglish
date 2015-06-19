@@ -67,6 +67,8 @@
 		42BA9D8E1B13180B00FB55BF /* UIScrollView+MJRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BA9D811B13180B00FB55BF /* UIScrollView+MJRefresh.m */; };
 		42BA9D8F1B13180B00FB55BF /* UIView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BA9D831B13180B00FB55BF /* UIView+MJExtension.m */; };
 		42BAFDD31B298B1800427CE4 /* DailyDetailModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BAFDD21B298B1800427CE4 /* DailyDetailModel.m */; };
+		42BE9DB81B33F4F80042680D /* BEBaiduTranslaterModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BE9DB71B33F4F80042680D /* BEBaiduTranslaterModel.m */; };
+		42BE9DBB1B33F57E0042680D /* BEBaiduTranslaterResultModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BE9DBA1B33F57E0042680D /* BEBaiduTranslaterResultModel.m */; };
 		42BF684B1B1EA73A00255496 /* BEDailyDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BF684A1B1EA73A00255496 /* BEDailyDetailViewController.m */; };
 		42BF684E1B1EED7500255496 /* BESettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BF684D1B1EED7500255496 /* BESettingViewController.m */; };
 		42DCBAA81B1EFBB700572474 /* BEUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DCBAA71B1EFBB700572474 /* BEUserViewController.m */; };
@@ -216,6 +218,10 @@
 		42BA9D831B13180B00FB55BF /* UIView+MJExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MJExtension.m"; sourceTree = "<group>"; };
 		42BAFDD11B298B1800427CE4 /* DailyDetailModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DailyDetailModel.h; sourceTree = "<group>"; };
 		42BAFDD21B298B1800427CE4 /* DailyDetailModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DailyDetailModel.m; sourceTree = "<group>"; };
+		42BE9DB61B33F4F80042680D /* BEBaiduTranslaterModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEBaiduTranslaterModel.h; sourceTree = "<group>"; };
+		42BE9DB71B33F4F80042680D /* BEBaiduTranslaterModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEBaiduTranslaterModel.m; sourceTree = "<group>"; };
+		42BE9DB91B33F57E0042680D /* BEBaiduTranslaterResultModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEBaiduTranslaterResultModel.h; sourceTree = "<group>"; };
+		42BE9DBA1B33F57E0042680D /* BEBaiduTranslaterResultModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEBaiduTranslaterResultModel.m; sourceTree = "<group>"; };
 		42BF68491B1EA73A00255496 /* BEDailyDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEDailyDetailViewController.h; sourceTree = "<group>"; };
 		42BF684A1B1EA73A00255496 /* BEDailyDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEDailyDetailViewController.m; sourceTree = "<group>"; };
 		42BF684C1B1EED7500255496 /* BESettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BESettingViewController.h; sourceTree = "<group>"; };
@@ -340,6 +346,7 @@
 		421B7E3B1B09F0C0009FB3F7 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				42BE9DAF1B33F4780042680D /* BaiduTranslater */,
 				42A7A0FD1B2EC592005D7AD1 /* Translation */,
 				4286CBE91B25824400E7C568 /* GetContent */,
 				4295804C1B20397900C759D7 /* GetRead */,
@@ -614,6 +621,17 @@
 			path = MJRefresh;
 			sourceTree = "<group>";
 		};
+		42BE9DAF1B33F4780042680D /* BaiduTranslater */ = {
+			isa = PBXGroup;
+			children = (
+				42BE9DB61B33F4F80042680D /* BEBaiduTranslaterModel.h */,
+				42BE9DB71B33F4F80042680D /* BEBaiduTranslaterModel.m */,
+				42BE9DB91B33F57E0042680D /* BEBaiduTranslaterResultModel.h */,
+				42BE9DBA1B33F57E0042680D /* BEBaiduTranslaterResultModel.m */,
+			);
+			path = BaiduTranslater;
+			sourceTree = "<group>";
+		};
 		42BF68481B1EA70F00255496 /* Contents */ = {
 			isa = PBXGroup;
 			children = (
@@ -840,8 +858,10 @@
 				42908FBA1B0C8CA1000F29FB /* BELazyScrollView.m in Sources */,
 				4295758B1B02EB1E0064FC69 /* EXTScope.m in Sources */,
 				429580521B203A7000C759D7 /* BEReadDetailModel.m in Sources */,
+				42BE9DBB1B33F57E0042680D /* BEBaiduTranslaterResultModel.m in Sources */,
 				42A7A1151B2EC873005D7AD1 /* BESentenceDetailModel.m in Sources */,
 				429575911B02EC620064FC69 /* UIImage+Tint.m in Sources */,
+				42BE9DB81B33F4F80042680D /* BEBaiduTranslaterModel.m in Sources */,
 				429575951B02F7EE0064FC69 /* BEDailyViewController.m in Sources */,
 				42A1F5841B2A72A9000EEB3B /* BEWebViewController.m in Sources */,
 				42DCBAAB1B1EFC2E00572474 /* BELoginViewController.m in Sources */,
