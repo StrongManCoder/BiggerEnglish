@@ -151,6 +151,8 @@
         NSObject *object = [[CacheManager manager].arrayData objectForKey:date];
         if (object == nil) {
             self.imageLoading.hidden = NO;
+            self.imageError.hidden = YES;
+            self.tableView.hidden = YES;
             [self networkRequest];
         } else {
             BEDailyDetailModel *model = (BEDailyDetailModel*)object;

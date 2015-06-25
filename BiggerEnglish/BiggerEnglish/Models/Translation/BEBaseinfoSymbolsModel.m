@@ -21,7 +21,7 @@
         partsModelTemp = (BESymbolsPartsModel*)partsModelArray[i];
         chineseResultTemp = [NSString stringWithFormat:@"%@%@ %@", chineseResultTemp,
                              [partsModelTemp.part trim],
-                             [[partsModelTemp.means componentsJoinedByString:@"；"] trim]];
+                             [[partsModelTemp.means componentsJoinedByString:@"；\n"] trim]];
         if (partsModelArrayCount > 0 && i != partsModelArrayCount - 1) {
             chineseResultTemp = [NSString stringWithFormat:@"%@%@", chineseResultTemp, @"\n"];
         }
