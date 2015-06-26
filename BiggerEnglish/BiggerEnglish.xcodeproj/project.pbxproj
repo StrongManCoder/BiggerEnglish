@@ -14,6 +14,10 @@
 		4204C9261B02088400169446 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4204C9241B02088400169446 /* LaunchScreen.xib */; };
 		4204C9321B02088400169446 /* BiggerEnglishTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4204C9311B02088400169446 /* BiggerEnglishTests.m */; };
 		422CC52B1B26FA3C0070F4FA /* ReadContentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 422CC52A1B26FA3C0070F4FA /* ReadContentModel.m */; };
+		422F21C61B3CF98B0030561F /* BETranslateSentenceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 422F21C51B3CF98B0030561F /* BETranslateSentenceViewController.m */; };
+		422F21C91B3D37B60030561F /* BETranslateCETSentenceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 422F21C81B3D37B60030561F /* BETranslateCETSentenceCell.m */; };
+		422F21CC1B3D383E0030561F /* BETranslateCheckMoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 422F21CB1B3D383E0030561F /* BETranslateCheckMoreCell.m */; };
+		422F21CF1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 422F21CE1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m */; };
 		423854A71B18083400567BC3 /* BEFavouriteViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 423854A61B18083400567BC3 /* BEFavouriteViewCell.m */; };
 		423854AA1B1811CD00567BC3 /* BEDailyCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 423854A91B1811CD00567BC3 /* BEDailyCommentCell.m */; };
 		4286CBEC1B2582E200E7C568 /* BEGetContentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4286CBEB1B2582E200E7C568 /* BEGetContentModel.m */; };
@@ -108,6 +112,14 @@
 		4204C9311B02088400169446 /* BiggerEnglishTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BiggerEnglishTests.m; sourceTree = "<group>"; };
 		422CC5291B26FA3C0070F4FA /* ReadContentModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadContentModel.h; sourceTree = "<group>"; };
 		422CC52A1B26FA3C0070F4FA /* ReadContentModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadContentModel.m; sourceTree = "<group>"; };
+		422F21C41B3CF98B0030561F /* BETranslateSentenceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BETranslateSentenceViewController.h; sourceTree = "<group>"; };
+		422F21C51B3CF98B0030561F /* BETranslateSentenceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BETranslateSentenceViewController.m; sourceTree = "<group>"; };
+		422F21C71B3D37B60030561F /* BETranslateCETSentenceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BETranslateCETSentenceCell.h; sourceTree = "<group>"; };
+		422F21C81B3D37B60030561F /* BETranslateCETSentenceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BETranslateCETSentenceCell.m; sourceTree = "<group>"; };
+		422F21CA1B3D383E0030561F /* BETranslateCheckMoreCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BETranslateCheckMoreCell.h; sourceTree = "<group>"; };
+		422F21CB1B3D383E0030561F /* BETranslateCheckMoreCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BETranslateCheckMoreCell.m; sourceTree = "<group>"; };
+		422F21CD1B3D3ABB0030561F /* BETranslateExampleSentenceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BETranslateExampleSentenceCell.h; sourceTree = "<group>"; };
+		422F21CE1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BETranslateExampleSentenceCell.m; sourceTree = "<group>"; };
 		423854A51B18083400567BC3 /* BEFavouriteViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEFavouriteViewCell.h; sourceTree = "<group>"; };
 		423854A61B18083400567BC3 /* BEFavouriteViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEFavouriteViewCell.m; sourceTree = "<group>"; };
 		423854A81B1811CD00567BC3 /* BEDailyCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEDailyCommentCell.h; sourceTree = "<group>"; };
@@ -376,6 +388,12 @@
 				423854A61B18083400567BC3 /* BEFavouriteViewCell.m */,
 				429580461B202E6C00C759D7 /* BEReadViewCell.h */,
 				429580471B202E6C00C759D7 /* BEReadViewCell.m */,
+				422F21C71B3D37B60030561F /* BETranslateCETSentenceCell.h */,
+				422F21C81B3D37B60030561F /* BETranslateCETSentenceCell.m */,
+				422F21CA1B3D383E0030561F /* BETranslateCheckMoreCell.h */,
+				422F21CB1B3D383E0030561F /* BETranslateCheckMoreCell.m */,
+				422F21CD1B3D3ABB0030561F /* BETranslateExampleSentenceCell.h */,
+				422F21CE1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -639,6 +657,8 @@
 				42BF684A1B1EA73A00255496 /* BEDailyDetailViewController.m */,
 				429580491B20341500C759D7 /* BEReadDetailViewController.h */,
 				4295804A1B20341500C759D7 /* BEReadDetailViewController.m */,
+				422F21C41B3CF98B0030561F /* BETranslateSentenceViewController.h */,
+				422F21C51B3CF98B0030561F /* BETranslateSentenceViewController.m */,
 			);
 			path = Contents;
 			sourceTree = "<group>";
@@ -849,6 +869,7 @@
 				42A7A1031B2EC5D6005D7AD1 /* BETranslationMessageModel.m in Sources */,
 				42DED9351B15C22A005A5A0A /* LoveModel.m in Sources */,
 				42DED93F1B15C2F2005A5A0A /* BEDailyDetailModel.m in Sources */,
+				422F21C91B3D37B60030561F /* BETranslateCETSentenceCell.m in Sources */,
 				42BA9D8B1B13180B00FB55BF /* MJRefreshLegendFooter.m in Sources */,
 				4295803F1B1FE5E900C759D7 /* PresentingAnimator.m in Sources */,
 				42A7A1271B2ED38F005D7AD1 /* BECETSentenceModel.m in Sources */,
@@ -857,11 +878,14 @@
 				42DCBAA81B1EFBB700572474 /* BEUserViewController.m in Sources */,
 				42908FBA1B0C8CA1000F29FB /* BELazyScrollView.m in Sources */,
 				4295758B1B02EB1E0064FC69 /* EXTScope.m in Sources */,
+				422F21CC1B3D383E0030561F /* BETranslateCheckMoreCell.m in Sources */,
+				422F21CF1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m in Sources */,
 				429580521B203A7000C759D7 /* BEReadDetailModel.m in Sources */,
 				42BE9DBB1B33F57E0042680D /* BEBaiduTranslaterResultModel.m in Sources */,
 				42A7A1151B2EC873005D7AD1 /* BESentenceDetailModel.m in Sources */,
 				429575911B02EC620064FC69 /* UIImage+Tint.m in Sources */,
 				42BE9DB81B33F4F80042680D /* BEBaiduTranslaterModel.m in Sources */,
+				422F21C61B3CF98B0030561F /* BETranslateSentenceViewController.m in Sources */,
 				429575951B02F7EE0064FC69 /* BEDailyViewController.m in Sources */,
 				42A1F5841B2A72A9000EEB3B /* BEWebViewController.m in Sources */,
 				42DCBAAB1B1EFC2E00572474 /* BELoginViewController.m in Sources */,

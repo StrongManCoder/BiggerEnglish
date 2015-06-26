@@ -9,18 +9,29 @@
 #import "BETranslateViewController.h"
 #import "BETranslationModel.h"
 #import "BEBaiduTranslaterModel.h"
+#import "BETranslateCETSentenceCell.h"
+#import "BETranslateExampleSentenceCell.h"
+#import "BETranslateCheckMoreCell.h"
+#import "BETranslateSentenceViewController.h"
 
 typedef NS_ENUM(NSInteger, BETransLateType) {
     BETransLateTypeEnglish,
     BETransLateTypeChinese
 };
 
+typedef NS_ENUM(NSInteger, BESentenceExampleType) {
+    BESentenceExample,
+    BESentenceCETFourExample,
+    BESentenceCETSixExample
+};
+
+static NSString * const SENTENCEEXAMPLE = @"例句";
+static NSString * const SENTENCECETFOUREXAMPLE = @"CET-4";
+static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 
 @interface BETranslateViewController() <UITextFieldDelegate, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UIView *blankView;
-
-
 
 @property (nonatomic, strong) NSMutableDictionary *sentenceDicionary;
 
@@ -54,7 +65,7 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-//        self.sentenceDicionary = [[NSMutableDictionary alloc] init];
+        //        self.sentenceDicionary = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -113,7 +124,7 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
         self.chineseView.hidden = YES;
         
         self.searchEnglishLabel.text = self.searchTextField.text;
-
+        
         [self englishTranslator:self.searchEnglishLabel.text];
     }
     
@@ -139,8 +150,8 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSArray *array = [self.sentenceDicionary objectForKey:[[self.sentenceDicionary allKeys] objectAtIndex:section]];
-    if ([array count] > 2) {
-        return 2;
+    if ([array count] > 3) {
+        return 3;
     }
     else {
         return [array count];
@@ -149,31 +160,82 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *ID = @"cell";
-    UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:ID];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
-    }
-    
     NSArray *array = [self.sentenceDicionary objectForKey:[[self.sentenceDicionary allKeys] objectAtIndex:indexPath.section]];
-    if ([[[self.sentenceDicionary allKeys] objectAtIndex:indexPath.section] isEqual: @"例句"]) {
-        BETranslationSentenceModel *model = array[indexPath.row];
-        cell.textLabel.text = model.Network_en;
+    NSString *sectionKey = [[self.sentenceDicionary allKeys] objectAtIndex:indexPath.section];
+    if ([sectionKey isEqual: SENTENCECETFOUREXAMPLE]){
+        return [self configureCell:BESentenceCETFourExample tableView:tableView cellForRowAtIndexPath:indexPath data:array];
+    }
+    else if ([sectionKey isEqual: SENTENCECETSIXEXAMPLE]){
+        return [self configureCell:BESentenceCETSixExample tableView:tableView cellForRowAtIndexPath:indexPath data:array];
+    }
+    else //例句
+    {
+        return [self configureCell:BESentenceExample tableView:tableView cellForRowAtIndexPath:indexPath data:array];
+    }
+}
+
+- (UITableViewCell *)configureCell:(BESentenceExampleType)type tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath data:(NSArray *)array {
+    if (indexPath.row == 2) {
+        static NSString *ID = @"checkMoreCell";
+        BETranslateCheckMoreCell *cell = (BETranslateCheckMoreCell *)[tableView dequeueReusableCellWithIdentifier:ID];
+        if (cell == nil) {
+            cell = [[BETranslateCheckMoreCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+        }
+        switch (type) {
+            case BESentenceExample:
+                cell.checkMoreButton.tag = 0;
+                [cell.checkMoreButton addTarget:self action:@selector(navigateSentenceDetailView:) forControlEvents:UIControlEventTouchUpInside];
+                break;
+            case BESentenceCETFourExample:
+                cell.checkMoreButton.tag = 1;
+                [cell.checkMoreButton addTarget:self action:@selector(navigateSentenceDetailView:) forControlEvents:UIControlEventTouchUpInside];
+                break;
+            case BESentenceCETSixExample:
+                cell.checkMoreButton.tag = 2;
+                [cell.checkMoreButton addTarget:self action:@selector(navigateSentenceDetailView:) forControlEvents:UIControlEventTouchUpInside];
+                break;
+        }
         return cell;
     }
     else {
-        BECETSentenceModel *model = array[indexPath.row];
-        cell.textLabel.text = model.sentence;
-        return cell;
+        if (type == BESentenceExample) {
+            static NSString *ID = @"ExampleSentenceCell";
+            BETranslateExampleSentenceCell *cell = (BETranslateExampleSentenceCell *)[tableView dequeueReusableCellWithIdentifier:ID];
+            if (cell == nil) {
+                cell = [[BETranslateExampleSentenceCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+            }
+            BETranslationSentenceModel *model = array[indexPath.row];
+            cell.content = model.Network_en;
+            cell.translate = model.Network_cn;
+            cell.mp3 = model.tts_mp3;
+            cell.size = model.tts_size;
+            return cell;
+        }
+        else {
+            static NSString *ID = @"CETSentenceCell";
+            BETranslateCETSentenceCell *cell = (BETranslateCETSentenceCell *)[tableView dequeueReusableCellWithIdentifier:ID];
+            if (cell == nil) {
+                cell = [[BETranslateCETSentenceCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+            }
+            BECETSentenceModel *model = array[indexPath.row];
+            cell.content = model.sentence;
+            cell.translate = model.come;
+            return cell;
+        }
     }
 }
 
-#pragma mark - UITableViewDelegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
+    UIView *view               = [[UIView alloc] init];
+    view.backgroundColor       = [UIColor BEFrenchGrayColor];
+    UILabel *titleLabel        = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 100, 20)];
+    titleLabel.textColor       = [UIColor BEDeepFontColor];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.text            = [[self.sentenceDicionary allKeys] objectAtIndex:section];
+    [view addSubview:titleLabel];
+    return view;
 }
-
 
 #pragma mark - Event Response
 
@@ -181,6 +243,27 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
     [self.searchTextField resignFirstResponder];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kShowMenuNotification object:nil];
+}
+
+- (void)navigateSentenceDetailView:(UIButton *)sender {
+    BETranslateSentenceViewController *controller = [[BETranslateSentenceViewController alloc] init];
+    switch (sender.tag) {
+        case 0:
+            controller.title = SENTENCEEXAMPLE;
+            controller.array = [self.sentenceDicionary objectForKey:SENTENCEEXAMPLE];
+            break;
+        case 1:
+            controller.title = SENTENCECETFOUREXAMPLE;
+            controller.array = [self.sentenceDicionary objectForKey:SENTENCECETFOUREXAMPLE];
+            break;
+        case 2:
+            controller.title = SENTENCECETSIXEXAMPLE;
+            controller.array = [self.sentenceDicionary objectForKey:SENTENCECETSIXEXAMPLE];
+            break;
+        default:
+            break;
+    }
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 - (void)chineseTranslator:(NSString *)str {
@@ -197,6 +280,14 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
         self.otherLanguageResultLabel.text = [phModel partsStringWithFormat];
         
         [self updateLayout:BETransLateTypeChinese];
+        
+        [self translatorRequest:str success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            BETranslationModel *model = [BETranslationModel jsonToObject:operation.responseString];
+            [self configureSentence:model];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"%@ error", operation.description);
+        }];
+
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@ error", operation.description);
@@ -226,54 +317,13 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
         }
         
         self.chineseResultLabel.text = [phModel partsStringWithFormat];
-//        [self resetUITextViewContent:self.chineseResultLabel];
         
         BEBaseinfoExchangeModel *exchangeModel = model.message.baesInfo.exchange;
         self.exchangeLabel.text = [exchangeModel stringWithFormat];
-//        [self resetUILabelContent:self.exchangeLabel];
         
         [self updateLayout:BETransLateTypeEnglish];
-        
-        self.sentenceDicionary = nil;
-        
-        self.sentenceDicionary = [[NSMutableDictionary alloc] init];
-        
-        NSArray *sentenceArray = [BETranslationSentenceModel objectArrayWithKeyValuesArray:model.message.sentence];
-        [self.sentenceDicionary setValue:sentenceArray forKey:@"例句"];
-        NSArray *cetFourArray = [BETranslationCETModel objectArrayWithKeyValuesArray:model.message.cetFour];
-        if ([cetFourArray count] == 1) {
-            BETranslationCETModel *cetFourModel = (BETranslationCETModel *)[cetFourArray objectAtIndex:0];
-            NSArray *cetFourSentenceArray = [BECETSentenceModel objectArrayWithKeyValuesArray:cetFourModel.Sentence];
-            
-            [self.sentenceDicionary setValue:cetFourSentenceArray forKey:@"CET-4"];
+        [self configureSentence:model];
 
-        }
-        else {
-            
-        }
-        
-        NSArray *cetSixArray = [BETranslationCETModel objectArrayWithKeyValuesArray:model.message.cetSix];
-        if ([cetSixArray count] == 1) {
-            BETranslationCETModel *cetSixModel = (BETranslationCETModel *)[cetSixArray objectAtIndex:0];
-            NSArray *cetSixSentenceArray = [BECETSentenceModel objectArrayWithKeyValuesArray:cetSixModel.Sentence];
-            
-            [self.sentenceDicionary setValue:cetSixSentenceArray forKey:@"CET-6"];
-        }
-        else {
-            
-        }
-
-        //        NSLog(@"%@",model.message.baesInfo.word_name);
-        //        NSLog(@"%@",[model.message.baesInfo.exchange.word_pl objectAtIndex:0]);
-        //        NSLog(@"%@",model.message.sentence );
-        //
-        //        NSArray *array = [BETranslationSentenceModel objectArrayWithKeyValuesArray:model.message.sentence];
-        //        for (BETranslationSentenceModel *translationSentenceModel in array) {
-        //            NSLog(@"%@",translationSentenceModel.Network_en);
-        //        }
-        
-        [self.tableView reloadData];
-        
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@ error", operation.description);
     }];
@@ -346,27 +396,27 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.view.backgroundColor = [UIColor whiteColor];
     
-//    [self.chineseView addSubview:self.symbolLabel];
-//    [self.chineseView addSubview:self.otherLanguageResultLabel];
-//    [self.chineseView addSubview:self.languageSegment];
-//    
-//    [self.englishView addSubview:self.phenLabel];
-//    [self.englishView addSubview:self.phenPlayImage];
-//    [self.englishView addSubview:self.phamLabel];
-//    [self.englishView addSubview:self.phamPlayImage];
-//    [self.englishView addSubview:self.chineseResultLabel];
-//    [self.englishView addSubview:self.exchangeLabel];
-//    
-//    [self.sentenceView addSubview:self.sentenceTableView];
-//    
-//    [self.baseInfoView addSubview:self.chineseView];
-//    [self.baseInfoView addSubview:self.englishView];
-//    [self.scrollView addSubview:self.searchLabel];
-//    [self.scrollView addSubview:self.baseInfoView];
-//    [self.scrollView addSubview:self.separatorImage];
-//    [self.scrollView addSubview:self.sentenceView];
-//    
-//    [self.view addSubview:self.scrollView];
+    //    [self.chineseView addSubview:self.symbolLabel];
+    //    [self.chineseView addSubview:self.otherLanguageResultLabel];
+    //    [self.chineseView addSubview:self.languageSegment];
+    //
+    //    [self.englishView addSubview:self.phenLabel];
+    //    [self.englishView addSubview:self.phenPlayImage];
+    //    [self.englishView addSubview:self.phamLabel];
+    //    [self.englishView addSubview:self.phamPlayImage];
+    //    [self.englishView addSubview:self.chineseResultLabel];
+    //    [self.englishView addSubview:self.exchangeLabel];
+    //
+    //    [self.sentenceView addSubview:self.sentenceTableView];
+    //
+    //    [self.baseInfoView addSubview:self.chineseView];
+    //    [self.baseInfoView addSubview:self.englishView];
+    //    [self.scrollView addSubview:self.searchLabel];
+    //    [self.scrollView addSubview:self.baseInfoView];
+    //    [self.scrollView addSubview:self.separatorImage];
+    //    [self.scrollView addSubview:self.sentenceView];
+    //
+    //    [self.view addSubview:self.scrollView];
     
     [self.view addSubview:self.tableView];
     //[self.view addSubview:self.blankView];
@@ -376,7 +426,7 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
     [self.chineseView addSubview:self.otherLanguageResultLabel];
     [self.chineseView addSubview:self.languageSegment];
     [self.chineseView addSubview:self.separatorChineseImage];
-
+    
     [self.englishView addSubview:self.searchEnglishLabel];
     [self.englishView addSubview:self.phenLabel];
     [self.englishView addSubview:self.phenPlayImage];
@@ -410,7 +460,7 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
         }
         self.exchangeLabel.frame            = CGRectMake(10, 70 + chineseResultLabelSize.height, ScreenWidth - 20, exchangeLabelSize.height);
         self.englishView.frame              = CGRectMake(0, 0, ScreenWidth, 70 + chineseResultLabelSize.height + exchangeLabelSize.height);
-        self.separatorEnglishImage.frame    = CGRectMake(10, self.englishView.frame.size.height - 0.5, ScreenWidth - 20, 0.5);
+        self.separatorEnglishImage.frame    = CGRectMake(0, self.englishView.frame.size.height - 0.5, ScreenWidth, 0.5);
         
         UIView *view                        = self.tableView.tableHeaderView;
         view.frame                          = self.englishView.frame;
@@ -424,8 +474,8 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
         CGSize otherLanguageResultLabelSize = [self calculateTextViewSize:self.otherLanguageResultLabel];
         self.otherLanguageResultLabel.frame = CGRectMake(5, 65, ScreenWidth - 10, otherLanguageResultLabelSize.height);
         self.languageSegment.frame          = CGRectMake(10, 90 + otherLanguageResultLabelSize.height, ScreenWidth - 20, 30);
-        self.chineseView.frame              = CGRectMake(0, 0, ScreenWidth, 80 + otherLanguageResultLabelSize.height + 40);
-        self.separatorChineseImage.frame    = CGRectMake(10, self.chineseView.frame.size.height - 0.5, ScreenWidth - 20, 0.5);
+        self.chineseView.frame              = CGRectMake(0, 0, ScreenWidth, 140 + otherLanguageResultLabelSize.height);
+        self.separatorChineseImage.frame    = CGRectMake(0, self.chineseView.frame.size.height - 0.5, ScreenWidth, 0.5);
         
         UIView *view                        = self.tableView.tableHeaderView;
         view.frame                          = self.chineseView.frame;
@@ -434,107 +484,136 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
 }
 
 - (void)configureLayout {
-//    [self.searchLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.scrollView.mas_top).with.offset(10);
-//        make.left.equalTo(self.scrollView.mas_left).with.offset(10);
-//        make.right.equalTo(self.scrollView.mas_right).with.offset(-10);
-//        make.bottom.equalTo(self.baseInfoView.mas_top).with.offset(-10);
-//    }];
-//    [self.baseInfoView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.searchLabel.mas_bottom).with.offset(10);
-//        make.left.equalTo(self.scrollView.mas_left).with.offset(0);
-//        make.width.equalTo(@ScreenWidth);
-//        make.bottom.equalTo(self.separatorImage.mas_top).with.offset(0);
-//    }];
-//    [self.separatorImage mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.baseInfoView.mas_bottom).with.offset(0);
-//        make.left.equalTo(self.scrollView.mas_left).with.offset(10);
-//        make.height.mas_equalTo(@0.6);
-//        make.width.mas_equalTo(ScreenWidth - 20);
-//    }];
-//    [self.sentenceView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.separatorImage.mas_bottom).with.offset(10);
-//        make.left.equalTo(self.scrollView.mas_left).with.offset(0);
-//        make.bottom.equalTo(self.scrollView.mas_bottom).with.offset(0);
-//        make.height.equalTo(@250);//fuck
-//        make.width.equalTo(@ScreenWidth);
-//    }];
-//
-//    [self.sentenceTableView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.sentenceView.mas_top).with.offset(0);
-//        make.left.equalTo(self.sentenceView.mas_left).with.offset(0);
-//        make.right.equalTo(self.sentenceView.mas_right).with.offset(0);
-//        make.bottom.equalTo(self.sentenceView.mas_bottom).with.offset(0);
-//    }];
-//    
-//    [self.chineseView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.baseInfoView.mas_top).with.offset(0);
-//        make.left.equalTo(self.baseInfoView.mas_left).with.offset(0);
-//        make.right.equalTo(self.baseInfoView.mas_right).with.offset(0);
-//        make.bottom.equalTo(self.baseInfoView.mas_bottom).with.offset(0);
-//    }];
-//    [self.symbolLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.chineseView.mas_top).with.offset(0);
-//        make.left.equalTo(self.chineseView.mas_left).with.offset(10);
-//        make.right.equalTo(self.chineseView.mas_right).with.offset(-10);
-//        make.bottom.equalTo(self.otherLanguageResultLabel.mas_top).with.offset(-10);
-//    }];
-//    [self.otherLanguageResultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.symbolLabel.mas_bottom).with.offset(10);
-//        make.left.equalTo(self.chineseView.mas_left).with.offset(10);
-//        make.right.equalTo(self.chineseView.mas_right).with.offset(-10);
-//        make.bottom.equalTo(self.languageSegment.mas_top).with.offset(-10);
-//    }];
-//    [self.languageSegment mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.otherLanguageResultLabel.mas_bottom).with.offset(10);
-//        make.left.equalTo(self.chineseView.mas_left).with.offset(10);
-//        make.right.equalTo(self.chineseView.mas_right).with.offset(-10);
-//        make.bottom.equalTo(self.chineseView.mas_bottom).with.offset(-10);
-//    }];
-//    
-//    [self.englishView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.baseInfoView.mas_top).with.offset(0);
-//        make.left.equalTo(self.baseInfoView.mas_left).with.offset(0);
-//        make.right.equalTo(self.baseInfoView.mas_right).with.offset(0);
-//        make.bottom.equalTo(self.baseInfoView.mas_bottom).with.offset(0);
-//    }];
-//    [self.phenLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.englishView.mas_top).with.offset(0);
-//        make.left.equalTo(self.englishView.mas_left).with.offset(10);
-//        make.right.equalTo(self.phenPlayImage.mas_left).with.offset(-5);
-//        make.bottom.equalTo(self.chineseResultLabel.mas_top).with.offset(-10);
-//    }];
-//    [self.phenPlayImage mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.centerY.equalTo(self.phenLabel);
-//        make.left.equalTo(self.phenLabel.mas_right).with.offset(5);
-//        make.right.equalTo(self.phamLabel.mas_left).with.offset(-10);
-//        make.width.equalTo(@30);
-//        make.height.equalTo(@30);
-//    }];
-//    [self.phamLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.englishView.mas_top).with.offset(0);
-//        make.left.equalTo(self.phenPlayImage.mas_right).with.offset(10);
-//        make.right.equalTo(self.phamPlayImage.mas_left).with.offset(-5);
-//        make.bottom.equalTo(self.chineseResultLabel.mas_top).with.offset(-10);
-//    }];
-//    [self.phamPlayImage mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.centerY.equalTo(self.phamLabel);
-//        make.left.equalTo(self.phamLabel.mas_right).with.offset(5);
-//        make.width.equalTo(@30);
-//        make.height.equalTo(@30);
-//    }];
-//    [self.chineseResultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.phamLabel.mas_bottom).with.offset(10);
-//        make.left.equalTo(self.englishView.mas_left).with.offset(6);
-//        make.width.mas_equalTo(ScreenWidth - 12);
-//        make.bottom.equalTo(self.exchangeLabel.mas_top).with.offset(-10);
-//    }];
-//    [self.exchangeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.chineseResultLabel.mas_bottom).with.offset(10);
-//        make.left.equalTo(self.englishView.mas_left).with.offset(10);
-//        make.right.equalTo(self.englishView.mas_right).with.offset(-10);
-//        make.bottom.equalTo(self.englishView.mas_bottom).with.offset(15);
-//    }];
+    //    [self.searchLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.scrollView.mas_top).with.offset(10);
+    //        make.left.equalTo(self.scrollView.mas_left).with.offset(10);
+    //        make.right.equalTo(self.scrollView.mas_right).with.offset(-10);
+    //        make.bottom.equalTo(self.baseInfoView.mas_top).with.offset(-10);
+    //    }];
+    //    [self.baseInfoView mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.searchLabel.mas_bottom).with.offset(10);
+    //        make.left.equalTo(self.scrollView.mas_left).with.offset(0);
+    //        make.width.equalTo(@ScreenWidth);
+    //        make.bottom.equalTo(self.separatorImage.mas_top).with.offset(0);
+    //    }];
+    //    [self.separatorImage mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.baseInfoView.mas_bottom).with.offset(0);
+    //        make.left.equalTo(self.scrollView.mas_left).with.offset(10);
+    //        make.height.mas_equalTo(@0.6);
+    //        make.width.mas_equalTo(ScreenWidth - 20);
+    //    }];
+    //    [self.sentenceView mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.separatorImage.mas_bottom).with.offset(10);
+    //        make.left.equalTo(self.scrollView.mas_left).with.offset(0);
+    //        make.bottom.equalTo(self.scrollView.mas_bottom).with.offset(0);
+    //        make.height.equalTo(@250);//fuck
+    //        make.width.equalTo(@ScreenWidth);
+    //    }];
+    //
+    //    [self.sentenceTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.sentenceView.mas_top).with.offset(0);
+    //        make.left.equalTo(self.sentenceView.mas_left).with.offset(0);
+    //        make.right.equalTo(self.sentenceView.mas_right).with.offset(0);
+    //        make.bottom.equalTo(self.sentenceView.mas_bottom).with.offset(0);
+    //    }];
+    //
+    //    [self.chineseView mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.baseInfoView.mas_top).with.offset(0);
+    //        make.left.equalTo(self.baseInfoView.mas_left).with.offset(0);
+    //        make.right.equalTo(self.baseInfoView.mas_right).with.offset(0);
+    //        make.bottom.equalTo(self.baseInfoView.mas_bottom).with.offset(0);
+    //    }];
+    //    [self.symbolLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.chineseView.mas_top).with.offset(0);
+    //        make.left.equalTo(self.chineseView.mas_left).with.offset(10);
+    //        make.right.equalTo(self.chineseView.mas_right).with.offset(-10);
+    //        make.bottom.equalTo(self.otherLanguageResultLabel.mas_top).with.offset(-10);
+    //    }];
+    //    [self.otherLanguageResultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.symbolLabel.mas_bottom).with.offset(10);
+    //        make.left.equalTo(self.chineseView.mas_left).with.offset(10);
+    //        make.right.equalTo(self.chineseView.mas_right).with.offset(-10);
+    //        make.bottom.equalTo(self.languageSegment.mas_top).with.offset(-10);
+    //    }];
+    //    [self.languageSegment mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.otherLanguageResultLabel.mas_bottom).with.offset(10);
+    //        make.left.equalTo(self.chineseView.mas_left).with.offset(10);
+    //        make.right.equalTo(self.chineseView.mas_right).with.offset(-10);
+    //        make.bottom.equalTo(self.chineseView.mas_bottom).with.offset(-10);
+    //    }];
+    //
+    //    [self.englishView mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.baseInfoView.mas_top).with.offset(0);
+    //        make.left.equalTo(self.baseInfoView.mas_left).with.offset(0);
+    //        make.right.equalTo(self.baseInfoView.mas_right).with.offset(0);
+    //        make.bottom.equalTo(self.baseInfoView.mas_bottom).with.offset(0);
+    //    }];
+    //    [self.phenLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.englishView.mas_top).with.offset(0);
+    //        make.left.equalTo(self.englishView.mas_left).with.offset(10);
+    //        make.right.equalTo(self.phenPlayImage.mas_left).with.offset(-5);
+    //        make.bottom.equalTo(self.chineseResultLabel.mas_top).with.offset(-10);
+    //    }];
+    //    [self.phenPlayImage mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.centerY.equalTo(self.phenLabel);
+    //        make.left.equalTo(self.phenLabel.mas_right).with.offset(5);
+    //        make.right.equalTo(self.phamLabel.mas_left).with.offset(-10);
+    //        make.width.equalTo(@30);
+    //        make.height.equalTo(@30);
+    //    }];
+    //    [self.phamLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.englishView.mas_top).with.offset(0);
+    //        make.left.equalTo(self.phenPlayImage.mas_right).with.offset(10);
+    //        make.right.equalTo(self.phamPlayImage.mas_left).with.offset(-5);
+    //        make.bottom.equalTo(self.chineseResultLabel.mas_top).with.offset(-10);
+    //    }];
+    //    [self.phamPlayImage mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.centerY.equalTo(self.phamLabel);
+    //        make.left.equalTo(self.phamLabel.mas_right).with.offset(5);
+    //        make.width.equalTo(@30);
+    //        make.height.equalTo(@30);
+    //    }];
+    //    [self.chineseResultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.phamLabel.mas_bottom).with.offset(10);
+    //        make.left.equalTo(self.englishView.mas_left).with.offset(6);
+    //        make.width.mas_equalTo(ScreenWidth - 12);
+    //        make.bottom.equalTo(self.exchangeLabel.mas_top).with.offset(-10);
+    //    }];
+    //    [self.exchangeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(self.chineseResultLabel.mas_bottom).with.offset(10);
+    //        make.left.equalTo(self.englishView.mas_left).with.offset(10);
+    //        make.right.equalTo(self.englishView.mas_right).with.offset(-10);
+    //        make.bottom.equalTo(self.englishView.mas_bottom).with.offset(15);
+    //    }];
+}
+
+- (void)configureSentence:(BETranslationModel *)model {
+    self.sentenceDicionary = nil;
+    self.sentenceDicionary = [[NSMutableDictionary alloc] init];
+    
+    NSArray *sentenceArray = [BETranslationSentenceModel objectArrayWithKeyValuesArray:model.message.sentence];
+    [self.sentenceDicionary setValue:sentenceArray forKey:SENTENCEEXAMPLE];
+    NSArray *cetFourArray = [BETranslationCETModel objectArrayWithKeyValuesArray:model.message.cetFour];
+    if ([cetFourArray count] == 1) {
+        BETranslationCETModel *cetFourModel = (BETranslationCETModel *)[cetFourArray objectAtIndex:0];
+        NSArray *cetFourSentenceArray = [BECETSentenceModel objectArrayWithKeyValuesArray:cetFourModel.Sentence];
+        
+        [self.sentenceDicionary setValue:cetFourSentenceArray forKey:SENTENCECETFOUREXAMPLE];
+    }
+    else {
+    }
+    
+    NSArray *cetSixArray = [BETranslationCETModel objectArrayWithKeyValuesArray:model.message.cetSix];
+    if ([cetSixArray count] == 1) {
+        BETranslationCETModel *cetSixModel = (BETranslationCETModel *)[cetSixArray objectAtIndex:0];
+        NSArray *cetSixSentenceArray = [BECETSentenceModel objectArrayWithKeyValuesArray:cetSixModel.Sentence];
+        
+        [self.sentenceDicionary setValue:cetSixSentenceArray forKey:SENTENCECETSIXEXAMPLE];
+    }
+    else {
+    }
+    
+    [self.tableView reloadData];
 }
 
 - (void)resetUILabelContent:(UILabel *)label {
@@ -617,7 +696,7 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
         return _chineseView;
     }
     _chineseView = [[UIView alloc] init];
-//    _chineseView.backgroundColor = [UIColor greenColor];
+    //    _chineseView.backgroundColor = [UIColor greenColor];
     
     return _chineseView;
 }
@@ -667,7 +746,7 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
     _languageSegment.tintColor = [UIColor BEHighLightFontColor];
     _languageSegment.selectedSegmentIndex = 0;
     [_languageSegment addTarget:self action:@selector(Segmentselected:) forControlEvents:UIControlEventValueChanged];
-
+    
     return _languageSegment;
 }
 
@@ -782,7 +861,7 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
     _separatorEnglishImage.contentMode = UIViewContentModeScaleAspectFill;
     _separatorEnglishImage.image = [UIImage imageNamed:@"section_divide"];
     _separatorEnglishImage.clipsToBounds = YES;
-    
+    _separatorEnglishImage.hidden = YES;
     return _separatorEnglishImage;
 }
 
@@ -795,6 +874,7 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
     _separatorChineseImage.contentMode = UIViewContentModeScaleAspectFill;
     _separatorChineseImage.image = [UIImage imageNamed:@"section_divide"];
     _separatorChineseImage.clipsToBounds = YES;
+    _separatorChineseImage.hidden = YES;
     
     return _separatorChineseImage;
 }
@@ -805,6 +885,7 @@ typedef NS_ENUM(NSInteger, BETransLateType) {
     }
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64)];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _tableView.showsVerticalScrollIndicator = NO;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     _tableView.estimatedRowHeight = 44.0f;
