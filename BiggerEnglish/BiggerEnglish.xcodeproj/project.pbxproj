@@ -43,6 +43,8 @@
 		4297EC051B04425100CBD8CD /* BEFavouriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4297EC041B04425100CBD8CD /* BEFavouriteViewController.m */; };
 		4297EC081B04427000CBD8CD /* BEWordBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4297EC071B04427000CBD8CD /* BEWordBookViewController.m */; };
 		429E52AA1B16F5E200D9828F /* RTLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 429E52A91B16F5E200D9828F /* RTLabel.m */; };
+		429FE1BD1B40E22D009AC149 /* EnglishDictionaryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 429FE1BC1B40E22D009AC149 /* EnglishDictionaryManager.m */; };
+		429FE1BF1B40E623009AC149 /* dictionary.db in Resources */ = {isa = PBXBuildFile; fileRef = 429FE1BE1B40E623009AC149 /* dictionary.db */; };
 		42A1F5841B2A72A9000EEB3B /* BEWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A1F5831B2A72A9000EEB3B /* BEWebViewController.m */; };
 		42A2F69D1B3175EE0054ED27 /* NSString+NSString_Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A2F69C1B3175EE0054ED27 /* NSString+NSString_Tools.m */; };
 		42A7A1001B2EC5C2005D7AD1 /* BETranslationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7A0FF1B2EC5C2005D7AD1 /* BETranslationModel.m */; };
@@ -77,6 +79,7 @@
 		42BF684E1B1EED7500255496 /* BESettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BF684D1B1EED7500255496 /* BESettingViewController.m */; };
 		42DCBAA81B1EFBB700572474 /* BEUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DCBAA71B1EFBB700572474 /* BEUserViewController.m */; };
 		42DCBAAB1B1EFC2E00572474 /* BELoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DCBAAA1B1EFC2E00572474 /* BELoginViewController.m */; };
+		42DE004B1B4247860039325F /* UIColor+Custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DE004A1B4247860039325F /* UIColor+Custom.m */; };
 		42DED9351B15C22A005A5A0A /* LoveModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DED9341B15C22A005A5A0A /* LoveModel.m */; };
 		42DED93F1B15C2F2005A5A0A /* BEDailyDetailModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DED93C1B15C2F2005A5A0A /* BEDailyDetailModel.m */; };
 		42DED9401B15C2F2005A5A0A /* BEDailyModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DED93E1B15C2F2005A5A0A /* BEDailyModel.m */; };
@@ -170,9 +173,11 @@
 		4297EC041B04425100CBD8CD /* BEFavouriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEFavouriteViewController.m; sourceTree = "<group>"; };
 		4297EC061B04427000CBD8CD /* BEWordBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEWordBookViewController.h; sourceTree = "<group>"; };
 		4297EC071B04427000CBD8CD /* BEWordBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEWordBookViewController.m; sourceTree = "<group>"; };
-		4297EC0A1B04871B00CBD8CD /* CustomColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomColor.h; sourceTree = "<group>"; };
 		429E52A81B16F5E200D9828F /* RTLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTLabel.h; sourceTree = "<group>"; };
 		429E52A91B16F5E200D9828F /* RTLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTLabel.m; sourceTree = "<group>"; };
+		429FE1BB1B40E22D009AC149 /* EnglishDictionaryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnglishDictionaryManager.h; sourceTree = "<group>"; };
+		429FE1BC1B40E22D009AC149 /* EnglishDictionaryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnglishDictionaryManager.m; sourceTree = "<group>"; };
+		429FE1BE1B40E623009AC149 /* dictionary.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = dictionary.db; sourceTree = "<group>"; };
 		42A1F5821B2A72A9000EEB3B /* BEWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEWebViewController.h; sourceTree = "<group>"; };
 		42A1F5831B2A72A9000EEB3B /* BEWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEWebViewController.m; sourceTree = "<group>"; };
 		42A2F69B1B3175EE0054ED27 /* NSString+NSString_Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+NSString_Tools.h"; sourceTree = "<group>"; };
@@ -242,6 +247,8 @@
 		42DCBAA71B1EFBB700572474 /* BEUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEUserViewController.m; sourceTree = "<group>"; };
 		42DCBAA91B1EFC2E00572474 /* BELoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BELoginViewController.h; sourceTree = "<group>"; };
 		42DCBAAA1B1EFC2E00572474 /* BELoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BELoginViewController.m; sourceTree = "<group>"; };
+		42DE00491B4247860039325F /* UIColor+Custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Custom.h"; sourceTree = "<group>"; };
+		42DE004A1B4247860039325F /* UIColor+Custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Custom.m"; sourceTree = "<group>"; };
 		42DED9331B15C22A005A5A0A /* LoveModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoveModel.h; sourceTree = "<group>"; };
 		42DED9341B15C22A005A5A0A /* LoveModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoveModel.m; sourceTree = "<group>"; };
 		42DED93B1B15C2F2005A5A0A /* BEDailyDetailModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEDailyDetailModel.h; sourceTree = "<group>"; };
@@ -507,6 +514,8 @@
 				429575981B0335840064FC69 /* SettingManager.m */,
 				42E52F071B1449CB00DAADF8 /* CacheManager.h */,
 				42E52F081B1449CB00DAADF8 /* CacheManager.m */,
+				429FE1BB1B40E22D009AC149 /* EnglishDictionaryManager.h */,
+				429FE1BC1B40E22D009AC149 /* EnglishDictionaryManager.m */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -554,7 +563,9 @@
 		4297EC091B04868900CBD8CD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				4297EC0A1B04871B00CBD8CD /* CustomColor.h */,
+				429FE1BE1B40E623009AC149 /* dictionary.db */,
+				42DE00491B4247860039325F /* UIColor+Custom.h */,
+				42DE004A1B4247860039325F /* UIColor+Custom.m */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -760,6 +771,11 @@
 				TargetAttributes = {
 					4204C90B1B02088400169446 = {
 						CreatedOnToolsVersion = 6.3.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+						};
 					};
 					4204C92A1B02088400169446 = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -794,6 +810,7 @@
 				4204C9261B02088400169446 /* LaunchScreen.xib in Resources */,
 				4204C9231B02088400169446 /* Images.xcassets in Resources */,
 				42BA9D841B13180B00FB55BF /* MJRefresh.bundle in Resources */,
+				429FE1BF1B40E623009AC149 /* dictionary.db in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -875,6 +892,7 @@
 				42A7A1271B2ED38F005D7AD1 /* BECETSentenceModel.m in Sources */,
 				429575721B02E2660064FC69 /* BEMenuView.m in Sources */,
 				42BA9D8F1B13180B00FB55BF /* UIView+MJExtension.m in Sources */,
+				42DE004B1B4247860039325F /* UIColor+Custom.m in Sources */,
 				42DCBAA81B1EFBB700572474 /* BEUserViewController.m in Sources */,
 				42908FBA1B0C8CA1000F29FB /* BELazyScrollView.m in Sources */,
 				4295758B1B02EB1E0064FC69 /* EXTScope.m in Sources */,
@@ -902,6 +920,7 @@
 				429575991B0335840064FC69 /* SettingManager.m in Sources */,
 				42A2F69D1B3175EE0054ED27 /* NSString+NSString_Tools.m in Sources */,
 				42BA9D8A1B13180B00FB55BF /* MJRefreshHeader.m in Sources */,
+				429FE1BD1B40E22D009AC149 /* EnglishDictionaryManager.m in Sources */,
 				42BF684E1B1EED7500255496 /* BESettingViewController.m in Sources */,
 				42A7A1001B2EC5C2005D7AD1 /* BETranslationModel.m in Sources */,
 				4286CBEF1B2582FE00E7C568 /* BEGetContentDetailModel.m in Sources */,

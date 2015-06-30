@@ -63,6 +63,7 @@
     self.navigationController.navigationBar.translucent = NO;
     self.automaticallyAdjustsScrollViewInsets = NO;
     
+    [self readCacheData];
     [self.tableView.header beginRefreshing];
 }
 
@@ -123,28 +124,44 @@
         pageIndex++;
         [MBProgressHUD hideHUDForView:self.view animated:YES];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (pageIndex == 1) {
-            NSString *result = [CacheManager manager].lastReadList;
-            if (result != nil) {
-                BEReadModel *model = [BEReadModel jsonToObject:result];
-                BEReadDetailModel *detailModel = (BEReadDetailModel *)model.message;
-                [detailModel.data removeObjectAtIndex:0];
-                NSArray *array = [BEReadDetailDataModel objectArrayWithKeyValuesArray:detailModel.data];
-                [self.readArray removeAllObjects];
-                self.tableView.footer.hidden = NO;
-                for (BEReadDetailDataModel *detailDataModel in array) {
-                    [self.readArray addObject: detailDataModel];
-                }
-                [self.tableView reloadData];
-                pageIndex++;
-            }
-        }
+//        if (pageIndex == 1) {
+//            NSString *result = [CacheManager manager].lastReadList;
+//            if (result != nil) {
+//                BEReadModel *model = [BEReadModel jsonToObject:result];
+//                BEReadDetailModel *detailModel = (BEReadDetailModel *)model.message;
+//                [detailModel.data removeObjectAtIndex:0];
+//                NSArray *array = [BEReadDetailDataModel objectArrayWithKeyValuesArray:detailModel.data];
+//                [self.readArray removeAllObjects];
+//                self.tableView.footer.hidden = NO;
+//                for (BEReadDetailDataModel *detailDataModel in array) {
+//                    [self.readArray addObject: detailDataModel];
+//                }
+//                [self.tableView reloadData];
+//                pageIndex++;
+//            }
+//        }
         
         [self.tableView.header endRefreshing];
         [self.tableView.footer endRefreshing];
         [MBProgressHUD hideHUDForView:self.view animated:YES];
         [self showText:@"没有网络连接哦！"];
     }];
+}
+
+- (void)readCacheData {
+    NSString *result = [CacheManager manager].lastReadList;
+    if (result != nil) {
+        BEReadModel *model = [BEReadModel jsonToObject:result];
+        BEReadDetailModel *detailModel = (BEReadDetailModel *)model.message;
+        [detailModel.data removeObjectAtIndex:0];
+        NSArray *array = [BEReadDetailDataModel objectArrayWithKeyValuesArray:detailModel.data];
+        [self.readArray removeAllObjects];
+        self.tableView.footer.hidden = NO;
+        for (BEReadDetailDataModel *detailDataModel in array) {
+            [self.readArray addObject: detailDataModel];
+        }
+        [self.tableView reloadData];
+    }
 }
 
 - (void)showText:(NSString *)text {

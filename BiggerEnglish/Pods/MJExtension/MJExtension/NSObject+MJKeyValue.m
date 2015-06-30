@@ -107,7 +107,7 @@ static NSNumberFormatter *_numberFormatter;
         NSArray *ignoredPropertyNames = [aClass totalIgnoredPropertyNames];
         
         //通过封装的方法回调一个通过运行时编写的，用于返回属性列表的方法。
-        [aClass enumeratePropertiesWithBlock:^(MJProperty *property, BOOL *stop) {
+        [aClass enumerateProperties:^(MJProperty *property, BOOL *stop) {
             // 0.检测是否被忽略
             if (allowedPropertyNames.count && ![allowedPropertyNames containsObject:property.name]) return;
             if ([ignoredPropertyNames containsObject:property.name]) return;
@@ -150,6 +150,8 @@ static NSNumberFormatter *_numberFormatter;
             } else if ([value isKindOfClass:[NSString class]]) {
                 if (typeClass == [NSURL class]) {
                     // NSString -> NSURL
+                    // 字符串转码
+                    value = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)value,(CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]", NULL,kCFStringEncodingUTF8));
                     value = [NSURL URLWithString:value];
                 } else if (type.isNumberType) {
                     NSString *oldValue = value;
@@ -299,7 +301,7 @@ static NSNumberFormatter *_numberFormatter;
         NSArray *allowedPropertyNames = [aClass totalAllowedPropertyNames];
         NSArray *ignoredPropertyNames = [aClass totalIgnoredPropertyNames];
         
-        [aClass enumeratePropertiesWithBlock:^(MJProperty *property, BOOL *stop) {
+        [aClass enumerateProperties:^(MJProperty *property, BOOL *stop) {
             // 0.检测是否被忽略
             if (allowedPropertyNames.count && ![allowedPropertyNames containsObject:property.name]) return;
             if ([ignoredPropertyNames containsObject:property.name]) return;
@@ -313,12 +315,11 @@ static NSNumberFormatter *_numberFormatter;
             // 2.如果是模型属性
             MJType *type = property.type;
             Class typeClass = type.typeClass;
-            Class objectClass = [property objectClassInArrayFromClass:[self class]];
             if (!type.isFromFoundation && typeClass) {
                 value = [value keyValues];
-            } else if (objectClass) {
+            } else if ([value isKindOfClass:[NSArray class]]) {
                 // 3.处理数组里面有模型的情况
-                value = [objectClass keyValuesArrayWithObjectArray:value];
+                value = [NSObject keyValuesArrayWithObjectArray:value];
             } else if (typeClass == [NSURL class]) {
                 value = [value absoluteString];
             }
@@ -415,6 +416,10 @@ static NSNumberFormatter *_numberFormatter;
 
 - (id)JSONObject
 {
+    if ([self isKindOfClass:[NSDictionary class]] || [self isKindOfClass:[NSArray class]]) {
+        return self;
+    }
+    
     if ([self isKindOfClass:[NSString class]]) {
         return [NSJSONSerialization JSONObjectWithData:[((NSString *)self) dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
     }

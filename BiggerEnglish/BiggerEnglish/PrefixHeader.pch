@@ -17,7 +17,7 @@
 #import <BlocksKit+UIKit.h>
 #import "AFNetworking.h"
 #import "NSObject+MJKeyValue.h"
-#import "CustomColor.h"
+#import "UIColor+Custom.h"
 #import "Masonry.h"
 #import "MBProgressHUD.h"
 

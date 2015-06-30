@@ -13,6 +13,7 @@
 #import "BETranslateExampleSentenceCell.h"
 #import "BETranslateCheckMoreCell.h"
 #import "BETranslateSentenceViewController.h"
+#import "EnglishDictionaryManager.h"
 
 typedef NS_ENUM(NSInteger, BETransLateType) {
     BETransLateTypeEnglish,
@@ -29,15 +30,20 @@ static NSString * const SENTENCEEXAMPLE = @"例句";
 static NSString * const SENTENCECETFOUREXAMPLE = @"CET-4";
 static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 
-@interface BETranslateViewController() <UITextFieldDelegate, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface BETranslateViewController() <UITextFieldDelegate, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIView *blankView;
+@property (nonatomic, strong) UILabel *jokeLabel;
+
+@property (nonatomic, strong) EnglishDictionaryManager *englishDictionaryManager;
 
 @property (nonatomic, strong) NSMutableDictionary *sentenceDicionary;
+@property (nonatomic, strong) NSMutableArray *wordArray;
 
 @property (nonatomic, strong) UITextField *searchTextField;
 
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UITableView *searchTableView;
 
 @property (nonatomic, strong) UIView *chineseView;
 @property (nonatomic, strong) UILabel *searchChineseLabel;
@@ -56,7 +62,6 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 @property (nonatomic, strong) UILabel *exchangeLabel;
 @property (nonatomic, strong) UIImageView *separatorEnglishImage;
 
-
 @end
 
 @implementation BETranslateViewController
@@ -65,7 +70,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        //        self.sentenceDicionary = [[NSMutableDictionary alloc] init];
+        _englishDictionaryManager = [[EnglishDictionaryManager alloc] init];
     }
     return self;
 }
@@ -73,104 +78,103 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 - (void)loadView {
     [super loadView];
     
-    [self configureLeftItems];
-    self.navigationItem.titleView = self.searchTextField;
+    [self configureNavigationItems];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     [self configureView];
-    [self configureLayout];
-    
-    //    [self networkRequest];
-    
-    //    [self.view addSubview:self.chineseResultLabel];
-    
+    [self configureGesture];
 }
 
+#pragma mark - UITextFieldDelegate
 
-//-(void)textViewDidChange:(UITextView *)textView {
-//    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-//    paragraphStyle.lineSpacing = 5;
-//    NSDictionary *attributes = @{
-//                                 NSFontAttributeName:[UIFont systemFontOfSize:16],
-//                                 NSParagraphStyleAttributeName:paragraphStyle
-//                                 };
-//    textView.attributedText = [[NSAttributedString alloc] initWithString:textView.text attributes:attributes];
-//}
-
-
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
-    [self textFieldResignFirstResponder];
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    [self.searchTextField addTarget:self action:@selector(searchTextFieldValueChanged:) forControlEvents:UIControlEventEditingChanged];
+    return YES;
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
     [textField resignFirstResponder];
-    
+    self.searchTableView.hidden = YES;
+    self.blankView.hidden = YES;
+    self.tableView.hidden = NO;
     if ([self.searchTextField.text containChinese]) { //中转其他
         self.chineseView.hidden = NO;
         self.englishView.hidden = YES;
         self.languageSegment.selectedSegmentIndex = 0;
         self.chineseResultLabel.text = @"";
         self.exchangeLabel.text = @"";
-        
         self.searchChineseLabel.text = self.searchTextField.text;
-        
         [self chineseTranslator:self.searchChineseLabel.text];
     }
     else { //英转中
-        self.englishView.hidden = NO;
-        self.chineseView.hidden = YES;
-        
+        self.englishView.hidden      = NO;
+        self.chineseView.hidden      = YES;
         self.searchEnglishLabel.text = self.searchTextField.text;
-        
         [self englishTranslator:self.searchEnglishLabel.text];
     }
-    
     return YES;
 }
 
-//收起键盘
-- (void) textFieldResignFirstResponder{
-    [self.searchTextField resignFirstResponder];
-}
 
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    
-    return [self.sentenceDicionary count];
+    if (tableView.tag == 0) {
+        return [self.sentenceDicionary count];
+    } else {
+        return 1;
+    }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return [[self.sentenceDicionary allKeys] objectAtIndex:section];
+    if (tableView.tag == 0) {
+        return [[self.sentenceDicionary allKeys] objectAtIndex:section];
+    } else {
+        return nil;
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSArray *array = [self.sentenceDicionary objectForKey:[[self.sentenceDicionary allKeys] objectAtIndex:section]];
-    if ([array count] > 3) {
-        return 3;
-    }
-    else {
-        return [array count];
+    if (tableView.tag == 0) {
+        NSArray *array = [self.sentenceDicionary objectForKey:[[self.sentenceDicionary allKeys] objectAtIndex:section]];
+        if ([array count] > 3) {
+            return 3;
+        } else {
+            return [array count];
+        }
+    } else {
+        return [self.wordArray count];
     }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSArray *array = [self.sentenceDicionary objectForKey:[[self.sentenceDicionary allKeys] objectAtIndex:indexPath.section]];
-    NSString *sectionKey = [[self.sentenceDicionary allKeys] objectAtIndex:indexPath.section];
-    if ([sectionKey isEqual: SENTENCECETFOUREXAMPLE]){
-        return [self configureCell:BESentenceCETFourExample tableView:tableView cellForRowAtIndexPath:indexPath data:array];
-    }
-    else if ([sectionKey isEqual: SENTENCECETSIXEXAMPLE]){
-        return [self configureCell:BESentenceCETSixExample tableView:tableView cellForRowAtIndexPath:indexPath data:array];
-    }
-    else //例句
-    {
-        return [self configureCell:BESentenceExample tableView:tableView cellForRowAtIndexPath:indexPath data:array];
+    if (tableView.tag == 0) {
+        NSArray *array = [self.sentenceDicionary objectForKey:[[self.sentenceDicionary allKeys] objectAtIndex:indexPath.section]];
+        NSString *sectionKey = [[self.sentenceDicionary allKeys] objectAtIndex:indexPath.section];
+        if ([sectionKey isEqual: SENTENCECETFOUREXAMPLE]){
+            return [self configureCell:BESentenceCETFourExample tableView:tableView cellForRowAtIndexPath:indexPath data:array];
+        }
+        else if ([sectionKey isEqual: SENTENCECETSIXEXAMPLE]){
+            return [self configureCell:BESentenceCETSixExample tableView:tableView cellForRowAtIndexPath:indexPath data:array];
+        }
+        else //例句
+        {
+            return [self configureCell:BESentenceExample tableView:tableView cellForRowAtIndexPath:indexPath data:array];
+        }
+    } else {
+        static NSString *ID = @"searchArrayCell";
+        UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:ID];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+        }
+        cell.textLabel.text = [self.wordArray objectAtIndex:indexPath.row];
+        cell.textLabel.textColor = [UIColor BEDeepFontColor];
+        return cell;
     }
 }
 
@@ -184,17 +188,15 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         switch (type) {
             case BESentenceExample:
                 cell.checkMoreButton.tag = 0;
-                [cell.checkMoreButton addTarget:self action:@selector(navigateSentenceDetailView:) forControlEvents:UIControlEventTouchUpInside];
                 break;
             case BESentenceCETFourExample:
                 cell.checkMoreButton.tag = 1;
-                [cell.checkMoreButton addTarget:self action:@selector(navigateSentenceDetailView:) forControlEvents:UIControlEventTouchUpInside];
                 break;
             case BESentenceCETSixExample:
                 cell.checkMoreButton.tag = 2;
-                [cell.checkMoreButton addTarget:self action:@selector(navigateSentenceDetailView:) forControlEvents:UIControlEventTouchUpInside];
                 break;
         }
+        [cell.checkMoreButton addTarget:self action:@selector(navigateSentenceDetailView:) forControlEvents:UIControlEventTouchUpInside];
         return cell;
     }
     else {
@@ -210,8 +212,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
             cell.mp3 = model.tts_mp3;
             cell.size = model.tts_size;
             return cell;
-        }
-        else {
+        } else {
             static NSString *ID = @"CETSentenceCell";
             BETranslateCETSentenceCell *cell = (BETranslateCETSentenceCell *)[tableView dequeueReusableCellWithIdentifier:ID];
             if (cell == nil) {
@@ -225,24 +226,59 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     }
 }
 
+#pragma mark - UITableViewDelegate
+
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *view               = [[UIView alloc] init];
-    view.backgroundColor       = [UIColor BEFrenchGrayColor];
-    UILabel *titleLabel        = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 100, 20)];
-    titleLabel.textColor       = [UIColor BEDeepFontColor];
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.text            = [[self.sentenceDicionary allKeys] objectAtIndex:section];
-    [view addSubview:titleLabel];
-    return view;
+    if (tableView.tag == 0) {
+        UIView *view               = [[UIView alloc] init];
+        view.backgroundColor       = [UIColor BEFrenchGrayColor];
+        UILabel *titleLabel        = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 100, 20)];
+        titleLabel.textColor       = [UIColor BEDeepFontColor];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.text            = [[self.sentenceDicionary allKeys] objectAtIndex:section];
+        [view addSubview:titleLabel];
+        return view;
+    } else {
+        return nil;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView.tag == 1) {
+        [self.searchTextField removeTarget:self action:@selector(searchTextFieldValueChanged:) forControlEvents:UIControlEventEditingChanged];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        self.tableView.hidden = NO;
+        self.blankView.hidden = YES;
+        self.englishView.hidden = NO;
+        self.chineseView.hidden = YES;
+        self.searchTableView.hidden = YES;
+        [self textFieldResignFirstResponder];
+        UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+        NSArray *array = [cell.textLabel.text split:@"；"];
+        self.searchTextField.text = [array objectAtIndex:0];
+        self.searchEnglishLabel.text = [array objectAtIndex:0];
+        [self englishTranslator:self.searchTextField.text];
+    }
+}
+
+#pragma mark - UIScrollViewDelegate
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [self.searchTextField resignFirstResponder];
 }
 
 #pragma mark - Event Response
 
 - (void)navigateSetting {
-    [self.searchTextField resignFirstResponder];
-    
+    [self textFieldResignFirstResponder];
     [[NSNotificationCenter defaultCenter] postNotificationName:kShowMenuNotification object:nil];
+}
+
+- (void) textFieldResignFirstResponder{
+    [self.searchTextField removeTarget:self action:@selector(searchTextFieldValueChanged:) forControlEvents:UIControlEventEditingChanged];
+    [self.searchTextField resignFirstResponder];
 }
 
 - (void)navigateSentenceDetailView:(UIButton *)sender {
@@ -287,7 +323,6 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"%@ error", operation.description);
         }];
-
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@ error", operation.description);
@@ -323,7 +358,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         
         [self updateLayout:BETransLateTypeEnglish];
         [self configureSentence:model];
-
+        
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@ error", operation.description);
     }];
@@ -341,7 +376,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 }
 
 - (void)Segmentselected:(id)sender{
-    UISegmentedControl* control = (UISegmentedControl*)sender;
+    UISegmentedControl* control = (UISegmentedControl *)sender;
     NSString *result;
     if (control.selectedSegmentIndex == 0) {
         [self chineseTranslator:self.searchChineseLabel.text];
@@ -367,10 +402,30 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     }
 }
 
+- (void)searchTextFieldValueChanged:(id)sender {
+    UITextField *textField = (UITextField *)sender;
+    if ([textField.text isEqualToString:@""]) {
+        if (self.tableView.hidden == YES) {
+            self.blankView.hidden = NO;
+        }
+        self.searchTableView.hidden = YES;
+        return;
+    }
+    if ([[textField.text trim] containChinese]) {
+        self.searchTableView.hidden = YES;
+        return;
+    }
+    
+    self.wordArray = [self.englishDictionaryManager translateEnglish:[textField.text trim]];
+    [self.searchTableView reloadData];
+    
+    self.blankView.hidden = YES;
+    self.searchTableView.hidden = NO;
+}
 
 #pragma mark - Private Methods
 
-- (void)configureLeftItems {
+- (void)configureNavigationItems {
     UIButton *leftButton                   = [UIButton buttonWithType:UIButtonTypeCustom];
     leftButton.frame                       = CGRectMake(0, 0, 25, 25);
     leftButton.adjustsImageWhenHighlighted = YES;
@@ -389,6 +444,8 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     
     NSArray *itemArray                     = [[NSArray alloc]initWithObjects:leftButtonItem, leftLabelItem, nil];
     self.navigationItem.leftBarButtonItems = itemArray;
+    
+    self.navigationItem.titleView = self.searchTextField;
 }
 
 - (void)configureView {
@@ -396,30 +453,22 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.view.backgroundColor = [UIColor whiteColor];
     
-    //    [self.chineseView addSubview:self.symbolLabel];
-    //    [self.chineseView addSubview:self.otherLanguageResultLabel];
-    //    [self.chineseView addSubview:self.languageSegment];
-    //
-    //    [self.englishView addSubview:self.phenLabel];
-    //    [self.englishView addSubview:self.phenPlayImage];
-    //    [self.englishView addSubview:self.phamLabel];
-    //    [self.englishView addSubview:self.phamPlayImage];
-    //    [self.englishView addSubview:self.chineseResultLabel];
-    //    [self.englishView addSubview:self.exchangeLabel];
-    //
-    //    [self.sentenceView addSubview:self.sentenceTableView];
-    //
-    //    [self.baseInfoView addSubview:self.chineseView];
-    //    [self.baseInfoView addSubview:self.englishView];
-    //    [self.scrollView addSubview:self.searchLabel];
-    //    [self.scrollView addSubview:self.baseInfoView];
-    //    [self.scrollView addSubview:self.separatorImage];
-    //    [self.scrollView addSubview:self.sentenceView];
-    //
-    //    [self.view addSubview:self.scrollView];
-    
     [self.view addSubview:self.tableView];
-    //[self.view addSubview:self.blankView];
+    [self.view addSubview:self.searchTableView];
+    [self.view addSubview:self.blankView];
+    [self.blankView addSubview:self.jokeLabel];
+
+    [self.blankView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top).with.offset(0);
+        make.left.equalTo(self.view.mas_left).with.offset(0);
+        make.right.equalTo(self.view.mas_right).with.offset(0);
+        make.bottom.equalTo(self.view.mas_bottom).with.offset(0);
+    }];
+    [self.jokeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.mas_equalTo(self.blankView.mas_centerX);
+        make.centerY.mas_equalTo(self.blankView.mas_centerY);
+        make.width.mas_equalTo(ScreenWidth - 20);
+    }];
     
     [self.chineseView addSubview:self.searchChineseLabel];
     [self.chineseView addSubview:self.symbolLabel];
@@ -437,8 +486,15 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     [self.englishView addSubview:self.separatorEnglishImage];
 }
 
+- (void)configureGesture {
+    UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(textFieldResignFirstResponder)];
+    gesture.numberOfTapsRequired = 1;
+    gesture.delegate = self;
+    [self.blankView addGestureRecognizer:gesture];
+    [self.tableView addGestureRecognizer:gesture];
+}
+
 - (void)updateLayout:(BETransLateType)type {
-    
     if (type == BETransLateTypeEnglish) {
         self.tableView.tableHeaderView      = self.englishView;
         
@@ -483,110 +539,6 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     }
 }
 
-- (void)configureLayout {
-    //    [self.searchLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.scrollView.mas_top).with.offset(10);
-    //        make.left.equalTo(self.scrollView.mas_left).with.offset(10);
-    //        make.right.equalTo(self.scrollView.mas_right).with.offset(-10);
-    //        make.bottom.equalTo(self.baseInfoView.mas_top).with.offset(-10);
-    //    }];
-    //    [self.baseInfoView mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.searchLabel.mas_bottom).with.offset(10);
-    //        make.left.equalTo(self.scrollView.mas_left).with.offset(0);
-    //        make.width.equalTo(@ScreenWidth);
-    //        make.bottom.equalTo(self.separatorImage.mas_top).with.offset(0);
-    //    }];
-    //    [self.separatorImage mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.baseInfoView.mas_bottom).with.offset(0);
-    //        make.left.equalTo(self.scrollView.mas_left).with.offset(10);
-    //        make.height.mas_equalTo(@0.6);
-    //        make.width.mas_equalTo(ScreenWidth - 20);
-    //    }];
-    //    [self.sentenceView mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.separatorImage.mas_bottom).with.offset(10);
-    //        make.left.equalTo(self.scrollView.mas_left).with.offset(0);
-    //        make.bottom.equalTo(self.scrollView.mas_bottom).with.offset(0);
-    //        make.height.equalTo(@250);//fuck
-    //        make.width.equalTo(@ScreenWidth);
-    //    }];
-    //
-    //    [self.sentenceTableView mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.sentenceView.mas_top).with.offset(0);
-    //        make.left.equalTo(self.sentenceView.mas_left).with.offset(0);
-    //        make.right.equalTo(self.sentenceView.mas_right).with.offset(0);
-    //        make.bottom.equalTo(self.sentenceView.mas_bottom).with.offset(0);
-    //    }];
-    //
-    //    [self.chineseView mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.baseInfoView.mas_top).with.offset(0);
-    //        make.left.equalTo(self.baseInfoView.mas_left).with.offset(0);
-    //        make.right.equalTo(self.baseInfoView.mas_right).with.offset(0);
-    //        make.bottom.equalTo(self.baseInfoView.mas_bottom).with.offset(0);
-    //    }];
-    //    [self.symbolLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.chineseView.mas_top).with.offset(0);
-    //        make.left.equalTo(self.chineseView.mas_left).with.offset(10);
-    //        make.right.equalTo(self.chineseView.mas_right).with.offset(-10);
-    //        make.bottom.equalTo(self.otherLanguageResultLabel.mas_top).with.offset(-10);
-    //    }];
-    //    [self.otherLanguageResultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.symbolLabel.mas_bottom).with.offset(10);
-    //        make.left.equalTo(self.chineseView.mas_left).with.offset(10);
-    //        make.right.equalTo(self.chineseView.mas_right).with.offset(-10);
-    //        make.bottom.equalTo(self.languageSegment.mas_top).with.offset(-10);
-    //    }];
-    //    [self.languageSegment mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.otherLanguageResultLabel.mas_bottom).with.offset(10);
-    //        make.left.equalTo(self.chineseView.mas_left).with.offset(10);
-    //        make.right.equalTo(self.chineseView.mas_right).with.offset(-10);
-    //        make.bottom.equalTo(self.chineseView.mas_bottom).with.offset(-10);
-    //    }];
-    //
-    //    [self.englishView mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.baseInfoView.mas_top).with.offset(0);
-    //        make.left.equalTo(self.baseInfoView.mas_left).with.offset(0);
-    //        make.right.equalTo(self.baseInfoView.mas_right).with.offset(0);
-    //        make.bottom.equalTo(self.baseInfoView.mas_bottom).with.offset(0);
-    //    }];
-    //    [self.phenLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.englishView.mas_top).with.offset(0);
-    //        make.left.equalTo(self.englishView.mas_left).with.offset(10);
-    //        make.right.equalTo(self.phenPlayImage.mas_left).with.offset(-5);
-    //        make.bottom.equalTo(self.chineseResultLabel.mas_top).with.offset(-10);
-    //    }];
-    //    [self.phenPlayImage mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.centerY.equalTo(self.phenLabel);
-    //        make.left.equalTo(self.phenLabel.mas_right).with.offset(5);
-    //        make.right.equalTo(self.phamLabel.mas_left).with.offset(-10);
-    //        make.width.equalTo(@30);
-    //        make.height.equalTo(@30);
-    //    }];
-    //    [self.phamLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.englishView.mas_top).with.offset(0);
-    //        make.left.equalTo(self.phenPlayImage.mas_right).with.offset(10);
-    //        make.right.equalTo(self.phamPlayImage.mas_left).with.offset(-5);
-    //        make.bottom.equalTo(self.chineseResultLabel.mas_top).with.offset(-10);
-    //    }];
-    //    [self.phamPlayImage mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.centerY.equalTo(self.phamLabel);
-    //        make.left.equalTo(self.phamLabel.mas_right).with.offset(5);
-    //        make.width.equalTo(@30);
-    //        make.height.equalTo(@30);
-    //    }];
-    //    [self.chineseResultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.phamLabel.mas_bottom).with.offset(10);
-    //        make.left.equalTo(self.englishView.mas_left).with.offset(6);
-    //        make.width.mas_equalTo(ScreenWidth - 12);
-    //        make.bottom.equalTo(self.exchangeLabel.mas_top).with.offset(-10);
-    //    }];
-    //    [self.exchangeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(self.chineseResultLabel.mas_bottom).with.offset(10);
-    //        make.left.equalTo(self.englishView.mas_left).with.offset(10);
-    //        make.right.equalTo(self.englishView.mas_right).with.offset(-10);
-    //        make.bottom.equalTo(self.englishView.mas_bottom).with.offset(15);
-    //    }];
-}
-
 - (void)configureSentence:(BETranslationModel *)model {
     self.sentenceDicionary = nil;
     self.sentenceDicionary = [[NSMutableDictionary alloc] init];
@@ -614,28 +566,6 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     }
     
     [self.tableView reloadData];
-}
-
-- (void)resetUILabelContent:(UILabel *)label {
-    if (label.text) {
-        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:label.text];
-        NSMutableParagraphStyle *paragraphStyle = [[ NSMutableParagraphStyle alloc] init];
-        paragraphStyle.alignment = NSTextAlignmentLeft;
-        paragraphStyle.lineSpacing = 5;
-        [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [label.text length])];
-        label.attributedText = attributedString;
-        [label sizeToFit];
-    }
-}
-
-- (void)resetUITextViewContent:(UITextView *)textView {
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.lineSpacing = 5;
-    NSDictionary *attributes = @{
-                                 NSFontAttributeName:[UIFont systemFontOfSize:16],
-                                 NSParagraphStyleAttributeName:paragraphStyle
-                                 };
-    textView.attributedText = [[NSAttributedString alloc] initWithString:textView.text attributes:attributes];
 }
 
 - (void)translatorRequest:(NSString *)str
@@ -677,6 +607,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     _searchTextField.returnKeyType                 = UIReturnKeySearch;
     _searchTextField.enablesReturnKeyAutomatically = YES;
     _searchTextField.delegate                      = self;
+//    [_searchTextField addTarget:self action:@selector(searchTextFieldValueChanged:) forControlEvents:UIControlEventEditingChanged];
     
     return _searchTextField;
 }
@@ -686,9 +617,23 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         return _blankView;
     }
     _blankView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64)];
-    _blankView.hidden = YES;
+    _blankView.hidden = NO;
     
     return _blankView;
+}
+
+- (UILabel *)jokeLabel {
+    if (_jokeLabel != nil) {
+        return _jokeLabel;
+    }
+    _jokeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _jokeLabel.textAlignment = NSTextAlignmentLeft;
+    _jokeLabel.textColor = [UIColor BEDeepFontColor];
+    _jokeLabel.font = [UIFont systemFontOfSize:16];
+    _jokeLabel.numberOfLines = 0;
+    _jokeLabel.text = @"不背单词，考英语就会是下面这种下场：\n我们知道賢鏛是在生活中很重要的。比如在鼙蠻和贎鬍里，有彃燊在罅鷄那里蘩墝，之前他们鏈鴊恆闳嘑傡彚槩滼鞷蕻賤鬡艐倏雫寬褲灣。\n1.鞷 在文中的意思？\n2.这篇文章的最佳标题？\n3.作者没有告诉我们什么？\n4.作者为什么说“恆闳嘑傡彚槩”？";
+    
+    return _jokeLabel;
 }
 
 - (UIView *)chineseView {
@@ -696,7 +641,6 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         return _chineseView;
     }
     _chineseView = [[UIView alloc] init];
-    //    _chineseView.backgroundColor = [UIColor greenColor];
     
     return _chineseView;
 }
@@ -890,9 +834,27 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     _tableView.delegate = self;
     _tableView.estimatedRowHeight = 44.0f;
     _tableView.rowHeight = UITableViewAutomaticDimension;
+    _tableView.tag = 0;
+    _tableView.hidden = YES;
+    _tableView.backgroundColor = [UIColor whiteColor];
     
     return _tableView;
 }
 
+- (UITableView *)searchTableView {
+    if (_searchTableView != nil) {
+        return _searchTableView;
+    }
+    _searchTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64)];
+    _searchTableView.showsVerticalScrollIndicator = NO;
+    _searchTableView.dataSource = self;
+    _searchTableView.delegate = self;
+    _searchTableView.estimatedRowHeight = 44.0f;
+    _searchTableView.rowHeight = UITableViewAutomaticDimension;
+    _searchTableView.tag = 1;
+    _searchTableView.hidden =YES;
+
+    return _searchTableView;
+}
 
 @end
