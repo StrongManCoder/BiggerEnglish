@@ -14,7 +14,6 @@
 @property (nonatomic, strong) UIImageView *imagePic;
 @property (nonatomic, strong) UILabel *labelTitle;
 @property (nonatomic, strong) UILabel *labelContent;
-@property (nonatomic, strong) UIImageView *imageSeparator;
 
 @end
 
@@ -44,7 +43,6 @@ int width;
     [self.contentView addSubview:self.imagePic];
     [self.contentView addSubview:self.labelTitle];
     [self.contentView addSubview:self.labelContent];
-    [self.contentView addSubview:self.imageSeparator];
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         
@@ -61,19 +59,13 @@ int width;
             make.top.equalTo(self.contentView).with.offset(10);
             make.left.equalTo(self.imagePic.mas_right).with.offset(10);
             make.right.equalTo(self.contentView).with.offset(-10);
-            make.bottom.equalTo(self.labelContent.mas_top).with.offset(-5);
+            make.height.mas_equalTo(50);
         }];
         [self.labelContent mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.imagePic.mas_bottom).with.offset(5);
             make.left.equalTo(self.contentView).with.offset(10);
             make.right.equalTo(self.contentView).with.offset(-10);
-            make.bottom.equalTo(self.imageSeparator.mas_top).with.offset(-5);
-        }];
-        [self.imageSeparator mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.contentView).with.offset(10);
-            make.right.equalTo(self.contentView).with.offset(0);
-            make.bottom.equalTo(self.contentView).with.offset(0);
-            make.height.mas_equalTo(@0.6);
+            make.bottom.equalTo(self.contentView).with.offset(-5);
         }];
     }
     else {
@@ -100,14 +92,7 @@ int width;
             make.right.equalTo(self.contentView).with.offset(-10);
             make.bottom.equalTo(self.contentView).with.offset(-10);
         }];
-        [self.imageSeparator mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.contentView).with.offset(10);
-            make.right.equalTo(self.contentView).with.offset(0);
-            make.bottom.equalTo(self.contentView).with.offset(0);
-            make.height.mas_equalTo(@0.6);
-        }];
     }
-    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -136,7 +121,8 @@ int width;
     _labelTitle.textColor = [UIColor BEFontColor];
     _labelTitle.font = [UIFont systemFontOfSize:16];
     _labelTitle.numberOfLines = 0;
-    
+    _labelTitle.lineBreakMode = NSLineBreakByWordWrapping;
+
     return _labelTitle;
 }
 
@@ -151,19 +137,6 @@ int width;
     _labelContent.numberOfLines = 0;
     
     return _labelContent;
-}
-
-- (UIImageView *)imageSeparator {
-    if (_imageSeparator != nil) {
-        return _imageSeparator;
-    }
-    _imageSeparator = [[UIImageView alloc] initWithFrame:CGRectZero];
-    _imageSeparator.backgroundColor = [UIColor BEHighLightFontColor];
-    _imageSeparator.contentMode = UIViewContentModeScaleAspectFill;
-    _imageSeparator.image = [UIImage imageNamed:@"section_divide"];
-    _imageSeparator.clipsToBounds = YES;
-    
-    return _imageSeparator;
 }
 
 - (void)setPic:(NSString *)pic {
@@ -183,5 +156,14 @@ int width;
     _labelContent.text = content;
 }
 
+- (void)drawRect:(CGRect)rect
+{
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetLineWidth(context, 0.4);
+    CGContextSetStrokeColorWithColor(context, [UIColor BESeparatorLineColor].CGColor);
+    CGContextMoveToPoint(context, 10, self.frame.size.height - 1);
+    CGContextAddLineToPoint(context, ScreenWidth, self.frame.size.height - 1);
+    CGContextStrokePath(context);
+}
 
 @end

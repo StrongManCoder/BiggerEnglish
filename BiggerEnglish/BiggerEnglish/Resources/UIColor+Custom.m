@@ -26,4 +26,8 @@
     return [UIColor colorWithRed:0.975f green:0.975f blue:0.975f alpha:1.00f];
 }
 
++ (UIColor *)BESeparatorLineColor {
+    return [UIColor colorWithRed:0.495f green:0.610f blue:0.740f alpha:1.00f];
+}
+
 @end

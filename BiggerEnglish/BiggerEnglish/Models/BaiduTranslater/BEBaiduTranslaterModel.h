@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "ResponseSuper.h"
-#import "BEBaiduTranslaterResultModel.h"
 
 @interface BEBaiduTranslaterModel : ResponseSuper
 
@@ -17,5 +16,13 @@
 @property (retain, nonatomic) NSArray *trans_result;
 
 - (NSString *)partsStringWithFormat;
+
+@end
+
+
+@interface BEBaiduTranslaterResultModel : NSObject
+
+@property (copy, nonatomic) NSString *src;
+@property (copy, nonatomic) NSString *dst;
 
 @end

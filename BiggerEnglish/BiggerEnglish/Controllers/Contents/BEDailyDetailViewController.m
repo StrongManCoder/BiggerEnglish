@@ -58,6 +58,13 @@
 
 @property (nonatomic, strong) AVAudioPlayer *player;
 
+@property (nonatomic, strong) NSArray *soundImageArray;
+
+//@property (nonatomic, strong) CGImage *CIImage1;
+//@property (nonatomic, strong) CGImage *CIImage2;
+//@property (nonatomic, strong) CGImage *CIImage3;
+//@property (nonatomic, strong) CGImage *CIImage4;
+
 @end
 
 @implementation BEDailyDetailViewController
@@ -74,10 +81,12 @@
         textStyle = @"<p><font color=#93B4DA>%@</font> <font color=#333333>回复: %@</font></p>";
         textStyleWithNoReplyName = @"<p><font color=#93B4DA>%@</font> <font color=#333333>回复</font> <font color=#93B4DA>%@</font><font color=#333333>: %@</font></p>";
         
-        //        soundImageArray = [NSArray arrayWithObjects:[[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,
-        //                           [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,
-        //                           [[UIImage imageNamed:@"icon_sound3"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,
-        //                           [[UIImage imageNamed:@"icon_sound4"] imageWithTintColor:[UIColor BEHighLightFontColor]].CIImage,nil];
+        //        CGImageRef CIImage1 = [[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage;
+        //        CGImageRef CIImage2 = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage;
+        //        CGImageRef CIImage3 = [[UIImage imageNamed:@"icon_sound3"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage;
+        //        CGImageRef CIImage4 = [[UIImage imageNamed:@"icon_sound4"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage;
+        self.soundImageArray = [NSArray arrayWithObjects:(id)[[UIImage imageNamed:@"icon_sound3"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage
+                                , (id)[[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage, (id)[[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage, nil];
     }
     return self;
 }
@@ -219,6 +228,7 @@
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer*)player successfully:(BOOL)flag{
     //播放结束时执行的动作
+    [self.imagePlay.layer removeAllAnimations];
 }
 
 #pragma mark - MBProgressHUDDelegate
@@ -380,9 +390,9 @@
         }
         [self.tableView reloadData];
         [self.tableView.footer endRefreshing];
-//        [_tableView.footer setTitle:@"点击或上拉加载更多评论！" forState:MJRefreshFooterStateIdle];
+        //        [_tableView.footer setTitle:@"点击或上拉加载更多评论！" forState:MJRefreshFooterStateIdle];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//        [_tableView.footer setTitle:@"没有网络连接哦！" forState:MJRefreshFooterStateIdle];
+        //        [_tableView.footer setTitle:@"没有网络连接哦！" forState:MJRefreshFooterStateIdle];
         [self.tableView.footer endRefreshing];
     }];
 }
@@ -500,27 +510,27 @@
 
 //播放mp3
 - (void) onImagePlayClick {
-    NSString *urlStr = dailyModel.tts;
-    NSURL *url = [[NSURL alloc]initWithString:urlStr];
+    [self.imagePlay.layer removeAllAnimations];
+
+    NSURL *url = [[NSURL alloc]initWithString:dailyModel.tts];
     NSData * audioData = [NSData dataWithContentsOfURL:url];
     //将数据保存到本地指定位置
     NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"temp"];
+    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , self.date];
     [audioData writeToFile:filePath atomically:YES];
     //播放本地音乐
     NSURL *fileURL = [NSURL fileURLWithPath:filePath];
     self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
-    self.player.delegate = self;
-    [self.player play];
-    
-    //    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
-    //    animation.calculationMode = kCAAnimationDiscrete;
-    //    animation.duration = 3.0f;
-    //    animation.values = soundImageArray;
-    //    animation.repeatCount = 8;
-    //    animation.removedOnCompletion = false;
-    //    animation.fillMode = kCAFillModeForwards;
-    //    [self.imagePlay.layer addAnimation:animation forKey:@"frameAnimation"];
+    if (self.player != nil) {
+        self.player.delegate = self;
+        [self.player play];
+        CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
+        animation.calculationMode = kCAAnimationDiscrete;
+        animation.duration = 1;
+        animation.values = self.soundImageArray;
+        animation.repeatCount = HUGE_VALF;
+        [self.imagePlay.layer addAnimation:animation forKey:@"frameAnimation"];
+    }
 }
 
 #pragma mark - Getters and Setters
@@ -671,7 +681,7 @@
         return _imagePlay;
     }
     _imagePlay = [[UIImageView alloc] init];
-    _imagePlay.image = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _imagePlay.image = [[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _imagePlay.userInteractionEnabled = YES;
     UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
     [_imagePlay addGestureRecognizer:imagePlaySingleTap];

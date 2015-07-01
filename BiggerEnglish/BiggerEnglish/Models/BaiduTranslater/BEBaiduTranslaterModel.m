@@ -27,3 +27,8 @@
 }
 
 @end
+
+
+@implementation BEBaiduTranslaterResultModel
+
+@end

@@ -22,5 +22,8 @@
 //浅灰色
 + (UIColor *)BEFrenchGrayColor;
 
+//分割线色
++ (UIColor *)BESeparatorLineColor;
+
 @end
 

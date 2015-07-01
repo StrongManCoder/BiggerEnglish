@@ -733,7 +733,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         return _phenPlayImage;
     }
     _phenPlayImage = [[UIImageView alloc] init];
-    _phenPlayImage.image = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _phenPlayImage.image = [[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _phenPlayImage.hidden = YES;
     _phenPlayImage.userInteractionEnabled = YES;
     UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
@@ -760,7 +760,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         return _phamPlayImage;
     }
     _phamPlayImage = [[UIImageView alloc] init];
-    _phamPlayImage.image = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _phamPlayImage.image = [[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _phamPlayImage.hidden = YES;
     _phamPlayImage.userInteractionEnabled = YES;
     UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];

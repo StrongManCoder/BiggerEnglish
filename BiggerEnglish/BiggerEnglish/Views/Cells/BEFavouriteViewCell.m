@@ -13,7 +13,6 @@
 @property (nonatomic, strong) UILabel *labelDate;
 @property (nonatomic, strong) UILabel *labelContent;
 @property (nonatomic, strong) UILabel *labelNote;
-@property (nonatomic, strong) UIImageView *imageSeparator;
 
 @end
 
@@ -47,7 +46,6 @@
     [self.contentView addSubview:self.labelDate];
     [self.contentView addSubview:self.labelContent];
     [self.contentView addSubview:self.labelNote];
-    [self.contentView addSubview:self.imageSeparator];
 
     [self.labelDate mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).with.offset(10);
@@ -65,14 +63,7 @@
         make.top.equalTo(self.labelContent.mas_bottom).with.offset(10);
         make.left.equalTo(self.contentView).with.offset(10);
         make.right.equalTo(self.contentView).with.offset(-10);
-        make.bottom.equalTo(self.imageSeparator.mas_top).with.offset(-10);
-    }];
-    [self.imageSeparator mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.labelNote.mas_bottom).with.offset(10);
-        make.left.equalTo(self.contentView).with.offset(20);
-        make.right.equalTo(self.contentView).with.offset(0);
-        make.bottom.equalTo(self.contentView).with.offset(0);
-        make.height.mas_equalTo(@1);
+        make.bottom.equalTo(self.contentView).with.offset(-10);
     }];
 }
 
@@ -119,19 +110,6 @@
     return _labelNote;
 }
 
-- (UIImageView *)imageSeparator {
-    if (_imageSeparator != nil) {
-        return _imageSeparator;
-    }
-    _imageSeparator = [[UIImageView alloc] initWithFrame:CGRectZero];
-    _imageSeparator.backgroundColor = [UIColor BEHighLightFontColor];
-    _imageSeparator.contentMode = UIViewContentModeScaleAspectFill;
-    _imageSeparator.image = [UIImage imageNamed:@"section_divide"];
-    _imageSeparator.clipsToBounds = YES;
-    _imageSeparator.alpha = 0.3;
-    return _imageSeparator;
-}
-
 - (void)setDate:(NSString *)date {
     NSArray * array = [date componentsSeparatedByString:@"-"];
     NSString *stringDay = [array objectAtIndex:2];
@@ -149,6 +127,16 @@
 - (void)setNote:(NSString *)note {
     _note = note;
     _labelNote.text = note;
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetLineWidth(context, 0.4);
+    CGContextSetStrokeColorWithColor(context, [UIColor BESeparatorLineColor].CGColor);
+    CGContextMoveToPoint(context, 10, self.frame.size.height - 1);
+    CGContextAddLineToPoint(context, ScreenWidth, self.frame.size.height - 1);
+    CGContextStrokePath(context);
 }
 
 @end

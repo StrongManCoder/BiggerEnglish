@@ -14,7 +14,6 @@
 @property (nonatomic, strong) UITextView *translateTextView;
 @property (nonatomic, strong) UIImageView *playImage;
 @property (nonatomic, strong) UILabel *sizeLabel;
-@property (nonatomic, strong) UIImageView *imageSeparator;
 
 @end
 
@@ -40,7 +39,6 @@
     [self.contentView addSubview:self.translateTextView];
     [self.contentView addSubview:self.playImage];
     [self.contentView addSubview:self.sizeLabel];
-    [self.contentView addSubview:self.imageSeparator];
     
     [self.contentTextView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).with.offset(0);
@@ -52,7 +50,7 @@
         make.top.equalTo(self.contentTextView.mas_bottom).with.offset(-8);
         make.left.equalTo(self.contentView).with.offset(5);
         make.right.equalTo(self.contentView).with.offset(-60);
-        make.bottom.equalTo(self.imageSeparator.mas_top).with.offset(0);
+        make.bottom.equalTo(self.contentView).with.offset(-3);
     }];
     [self.playImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(self.contentView.mas_centerY);
@@ -65,12 +63,6 @@
         make.centerX.mas_equalTo(self.playImage.mas_centerX);
         make.height.mas_equalTo(@25);
         make.width.mas_equalTo(@30);
-    }];
-    [self.imageSeparator mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView).with.offset(10);
-        make.right.equalTo(self.contentView).with.offset(0);
-        make.bottom.equalTo(self.contentView).with.offset(0);
-        make.height.mas_equalTo(@0.6);
     }];
 }
 
@@ -124,7 +116,7 @@
         return _playImage;
     }
     _playImage = [[UIImageView alloc] initWithFrame:CGRectZero];
-    _playImage.image = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _playImage.image = [[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _playImage.userInteractionEnabled = YES;
     UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
     [_playImage addGestureRecognizer:imagePlaySingleTap];
@@ -145,17 +137,14 @@
     return _sizeLabel;
 }
 
-- (UIImageView *)imageSeparator {
-    if (_imageSeparator != nil) {
-        return _imageSeparator;
-    }
-    _imageSeparator = [[UIImageView alloc] initWithFrame:CGRectZero];
-    _imageSeparator.backgroundColor = [UIColor BEHighLightFontColor];
-    _imageSeparator.contentMode = UIViewContentModeScaleAspectFill;
-    _imageSeparator.image = [UIImage imageNamed:@"section_divide"];
-    _imageSeparator.clipsToBounds = YES;
-    
-    return _imageSeparator;
+- (void)drawRect:(CGRect)rect
+{
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetLineWidth(context, 0.4);
+    CGContextSetStrokeColorWithColor(context, [UIColor BESeparatorLineColor].CGColor);
+    CGContextMoveToPoint(context, 10, self.frame.size.height - 1);
+    CGContextAddLineToPoint(context, ScreenWidth, self.frame.size.height - 1);
+    CGContextStrokePath(context);
 }
 
 @end

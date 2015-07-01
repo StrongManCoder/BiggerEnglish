@@ -16,3 +16,4 @@
 @property (retain, nonatomic) BEGetContentDetailModel *message;
 
 @end
+
