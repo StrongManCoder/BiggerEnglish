@@ -16,10 +16,13 @@
 
 @interface BEFavouriteViewController() <UITableViewDelegate, UITableViewDataSource>
 
+@property (nonatomic, strong) UIView *blankView;
+
 @property (nonatomic, strong) UITableView *dailyTableView;
 @property (nonatomic, strong) UITableView *readTableView;
 @property (strong, nonatomic) NSFetchedResultsController *favourModelResults;
 @property (strong, nonatomic) NSFetchedResultsController *readContentModelResults;
+@property (strong, nonatomic) UISegmentedControl *segment;
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
@@ -40,9 +43,7 @@
     [super loadView];
     
     [self configureLeftButton];
-    [self configureSegment];
-    [self.view addSubview:self.dailyTableView];
-    [self.view addSubview:self.readTableView];
+    [self configureView];
     
 }
 
@@ -51,6 +52,40 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.edgesForExtendedLayout = UIRectEdgeNone;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+//    id <NSFetchedResultsSectionInfo> sectionInfo;
+//    switch (self.segment.selectedSegmentIndex) {
+//        case 0:
+//            self.readTableView.hidden = YES;
+//            sectionInfo = [self.favourModelResults sections][0];
+//            if ([sectionInfo numberOfObjects] == 0) {
+//                self.dailyTableView.hidden = YES;
+//                self.blankView.hidden = NO;
+//            }
+//            else {
+//                self.dailyTableView.hidden = NO;
+//                self.blankView.hidden = YES;
+//            }
+//            break;
+//        case 1:
+//            self.dailyTableView.hidden = YES;
+//            sectionInfo = [self.readContentModelResults sections][0];
+//            if ([sectionInfo numberOfObjects] == 0) {
+//                self.readTableView.hidden = YES;
+//                self.blankView.hidden = NO;
+//            }
+//            else {
+//                self.readTableView.hidden = NO;
+//                self.blankView.hidden = YES;
+//            }
+//            break;
+//        default:
+//            break;
+//    }
 }
 
 #pragma mark - UITableViewDataSource
@@ -171,31 +206,31 @@
 #pragma mark - Private Method
 
 - (void)configureLeftButton {
-    UIButton *leftButton   = [UIButton buttonWithType:UIButtonTypeCustom];
-    leftButton.frame       = CGRectMake(0, 0, 25, 25);
+    UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    leftButton.frame = CGRectMake(0, 0, 25, 25);
     [leftButton setAdjustsImageWhenHighlighted:YES];
     UIImage *image = [UIImage imageNamed:@"icon_hamberger"];
     [leftButton setImage:[image imageWithTintColor:[UIColor BEDeepFontColor]] forState:UIControlStateNormal];
     [leftButton setImage:[image imageWithTintColor:[UIColor BEHighLightFontColor]] forState:UIControlStateHighlighted];
     [leftButton addTarget:self action:@selector(navigateSetting) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *barItem              = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+    UIBarButtonItem *barItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
     self.navigationItem.leftBarButtonItem = barItem;
 }
 
-- (void)configureSegment {
-    UISegmentedControl *segment = [[UISegmentedControl alloc] initWithItems:@[@"每日一句", @"阅读"]];
-    segment.tintColor = [UIColor BEHighLightFontColor];
-    segment.selectedSegmentIndex = 0;
-    self.navigationItem.titleView = segment;
-    [segment addTarget:self action:@selector(Segmentselected:) forControlEvents:UIControlEventValueChanged];
+- (void)configureView {
+    self.navigationItem.titleView = self.segment;
+    
+    [self.view addSubview:self.blankView];
+    [self.view addSubview:self.dailyTableView];
+    [self.view addSubview:self.readTableView];
 }
 
 - (void)Segmentselected:(id)sender{
     UISegmentedControl* control = (UISegmentedControl*)sender;
     switch (control.selectedSegmentIndex) {
         case 0:
-            self.dailyTableView.hidden = NO;
             self.readTableView.hidden = YES;
+            self.dailyTableView.hidden = NO;
             break;
         case 1:
             self.dailyTableView.hidden = YES;
@@ -208,12 +243,21 @@
 
 #pragma mark - Getters / Setters
 
+- (UIView *)blankView {
+    if (_blankView != nil) {
+        return _blankView;
+    }
+    _blankView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64)];
+    _blankView.backgroundColor = [UIColor redColor];
+    return _blankView;
+}
+
 - (UITableView *)dailyTableView {
     if (_dailyTableView !=nil) {
         return _dailyTableView;
     }
     
-    _dailyTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, self.view.frame.size.height - 64)];
+    _dailyTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64)];
     _dailyTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _dailyTableView.dataSource = self;
     _dailyTableView.delegate = self;
@@ -245,6 +289,18 @@
     _readTableView.hidden = YES;
     
     return _readTableView;
+}
+
+- (UISegmentedControl *)segment {
+    if (_segment != nil) {
+        return _segment;
+    }
+    _segment = [[UISegmentedControl alloc] initWithItems:@[@"每日一句", @"阅读"]];
+    _segment.tintColor = [UIColor BEHighLightFontColor];
+    _segment.selectedSegmentIndex = 0;
+    [_segment addTarget:self action:@selector(Segmentselected:) forControlEvents:UIControlEventValueChanged];
+
+    return _segment;
 }
 
 

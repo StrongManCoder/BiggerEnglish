@@ -5,6 +5,7 @@
 //  Created by 陈大捷 on 15/5/13.
 //  Copyright (c) 2015年 etonetech. All rights reserved.
 //
+#import <AVFoundation/AVFoundation.h>
 
 #import "BETranslateViewController.h"
 #import "BETranslationModel.h"
@@ -30,7 +31,7 @@ static NSString * const SENTENCEEXAMPLE = @"例句";
 static NSString * const SENTENCECETFOUREXAMPLE = @"CET-4";
 static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 
-@interface BETranslateViewController() <UITextFieldDelegate, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate>
+@interface BETranslateViewController() <UITextFieldDelegate, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate,AVAudioPlayerDelegate, MBProgressHUDDelegate>
 
 @property (nonatomic, strong) UIView *blankView;
 @property (nonatomic, strong) UILabel *jokeLabel;
@@ -39,6 +40,8 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 
 @property (nonatomic, strong) NSMutableDictionary *sentenceDicionary;
 @property (nonatomic, strong) NSMutableArray *wordArray;
+
+@property (nonatomic, strong) NSMutableDictionary *cacheBaiduTranslateDictionary;
 
 @property (nonatomic, strong) UITextField *searchTextField;
 
@@ -55,12 +58,20 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 @property (nonatomic, strong) UIView *englishView;
 @property (nonatomic, strong) UILabel *searchEnglishLabel;
 @property (nonatomic, strong) UILabel *phenLabel;
+@property (nonatomic, copy) NSString *ph_en_mp3;
 @property (nonatomic, strong) UIImageView *phenPlayImage;
 @property (nonatomic, strong) UILabel *phamLabel;
+@property (nonatomic, copy) NSString *ph_am_mp3;
+@property (nonatomic, strong) UIImageView *addWordImage;
+
+
 @property (nonatomic, strong) UIImageView *phamPlayImage;
 @property (nonatomic, strong) UITextView *chineseResultLabel;
 @property (nonatomic, strong) UILabel *exchangeLabel;
 @property (nonatomic, strong) UIImageView *separatorEnglishImage;
+
+@property (nonatomic, strong) NSArray *soundImageArray;
+@property (nonatomic, strong) AVAudioPlayer *player;
 
 @end
 
@@ -71,6 +82,11 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _englishDictionaryManager = [[EnglishDictionaryManager alloc] init];
+        _cacheBaiduTranslateDictionary = [NSMutableDictionary dictionaryWithCapacity:6];
+        self.soundImageArray = [NSArray arrayWithObjects:
+                                (id)[[UIImage imageNamed:@"icon_sound3"]imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage,
+                                (id)[[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage,
+                                (id)[[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage, nil];
     }
     return self;
 }
@@ -107,6 +123,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         self.chineseResultLabel.text = @"";
         self.exchangeLabel.text = @"";
         self.searchChineseLabel.text = self.searchTextField.text;
+        [self.cacheBaiduTranslateDictionary removeAllObjects];
         [self chineseTranslator:self.searchChineseLabel.text];
     }
     else { //英转中
@@ -269,6 +286,22 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     [self.searchTextField resignFirstResponder];
 }
 
+#pragma mark - AVAudioPlayerDelegate
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer*)player successfully:(BOOL)flag{
+    //播放结束时执行的动作
+    [self.phamPlayImage.layer removeAllAnimations];
+    [self.phenPlayImage.layer removeAllAnimations];
+}
+
+#pragma mark - MBProgressHUDDelegate
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud.delegate = nil;
+    hud = nil;
+}
+
 #pragma mark - Event Response
 
 - (void)navigateSetting {
@@ -307,14 +340,15 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         BETranslationModel *model = [BETranslationModel jsonToObject:operation.responseString];
         NSArray *phModelArray = [BEBaseinfoSymbolsModel objectArrayWithKeyValuesArray:model.message.baesInfo.symbols];
         BEBaseinfoSymbolsModel *phModel = [phModelArray objectAtIndex:0];
-        if (phModel == nil || phModel.word_symbol == nil) {
+        if (phModel == nil || phModel.word_symbol == nil || [phModel.word_symbol isEqualToString:@""]) {
             self.symbolLabel.text = @"";
         }
         else {
             self.symbolLabel.text = [NSString stringWithFormat:@"[%@]",phModel.word_symbol];
         }
         self.otherLanguageResultLabel.text = [phModel partsStringWithFormat];
-        
+        [self.cacheBaiduTranslateDictionary setObject:self.otherLanguageResultLabel.text forKey:@"zh"];
+
         [self updateLayout:BETransLateTypeChinese];
         
         [self translatorRequest:str success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -340,6 +374,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         }
         else {
             self.phenLabel.text = [NSString stringWithFormat:@"英 [%@]", phModel.ph_en];
+            self.ph_en_mp3 = phModel.ph_en_mp3;
             self.phenPlayImage.hidden = NO;
         }
         if ([phModel.ph_am isEqualToString:@""] || phModel.ph_am == nil || phModel == nil) {
@@ -348,6 +383,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         }
         else {
             self.phamLabel.text = [NSString stringWithFormat:@"美 [%@]", phModel.ph_am];
+            self.ph_am_mp3 = phModel.ph_am_mp3;
             self.phamPlayImage.hidden = NO;
         }
         
@@ -369,7 +405,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         
         BEBaiduTranslaterModel *model = [BEBaiduTranslaterModel jsonToObject:operation.responseString];
         self.otherLanguageResultLabel.text = [model partsStringWithFormat];
-        
+        [self.cacheBaiduTranslateDictionary setObject:self.otherLanguageResultLabel.text forKey:languages];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@ error", operation.description);
     }];
@@ -379,7 +415,13 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     UISegmentedControl* control = (UISegmentedControl *)sender;
     NSString *result;
     if (control.selectedSegmentIndex == 0) {
-        [self chineseTranslator:self.searchChineseLabel.text];
+        result = @"zh";
+        if ([self.cacheBaiduTranslateDictionary valueForKey:result]) {
+            self.otherLanguageResultLabel.text = [self.cacheBaiduTranslateDictionary valueForKey:@"zh"];
+        }
+        else {
+            [self chineseTranslator:self.searchChineseLabel.text];
+        }
     } else {
         switch (control.selectedSegmentIndex) {
             case 1://粤语
@@ -398,7 +440,12 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
                 result = @"fra";
                 break;
         }
-        [self BaiduTranslater:self.searchChineseLabel.text languages:result];
+        if ([self.cacheBaiduTranslateDictionary valueForKey:result]) {
+            self.otherLanguageResultLabel.text = [self.cacheBaiduTranslateDictionary valueForKey:result];
+        }
+        else {
+            [self BaiduTranslater:self.searchChineseLabel.text languages:result];
+        }
     }
 }
 
@@ -422,6 +469,60 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     self.blankView.hidden = YES;
     self.searchTableView.hidden = NO;
 }
+
+- (void)onPlayImageClick:(id)sender {
+    UITapGestureRecognizer *singleTap = (UITapGestureRecognizer *)sender;
+    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
+    animation.calculationMode = kCAAnimationDiscrete;
+    animation.duration = 1;
+    animation.values = self.soundImageArray;
+    animation.repeatCount = HUGE_VALF;
+    
+    NSURL *url;
+    if ([singleTap view].tag == 0) {
+        [self.phenPlayImage.layer removeAllAnimations];
+        [self.phenPlayImage.layer addAnimation:animation forKey:@"frameAnimation"];
+        url = [[NSURL alloc]initWithString:self.ph_en_mp3];
+    }
+    else {
+        [self.phamPlayImage.layer removeAllAnimations];
+        [self.phamPlayImage.layer addAnimation:animation forKey:@"frameAnimation"];
+        url = [[NSURL alloc]initWithString:self.ph_am_mp3];
+    }
+    NSData * audioData = [NSData dataWithContentsOfURL:url];
+    //将数据保存到本地指定位置
+    NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"temp"];
+    [audioData writeToFile:filePath atomically:YES];
+    //播放本地音乐
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+    self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
+    if (self.player == nil) {
+        [self.phenPlayImage.layer removeAllAnimations];
+        [self.phamPlayImage.layer removeAllAnimations];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"播放出现错误～";
+        hud.margin = 10.f;
+        hud.removeFromSuperViewOnHide = YES;
+        hud.delegate = self;
+        [hud hide:YES afterDelay:1.5];
+    } else {
+        self.player.delegate = self;
+        [self.player play];
+    }
+}
+
+- (void)onAddWordImageClick {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.mode = MBProgressHUDModeText;
+    hud.labelText = @"添加到生词本啦～";
+    hud.margin = 10.f;
+    hud.removeFromSuperViewOnHide = YES;
+    hud.delegate = self;
+    [hud hide:YES afterDelay:1.5];
+}
+
 
 #pragma mark - Private Methods
 
@@ -484,6 +585,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     [self.englishView addSubview:self.chineseResultLabel];
     [self.englishView addSubview:self.exchangeLabel];
     [self.englishView addSubview:self.separatorEnglishImage];
+    [self.englishView addSubview:self.addWordImage];
 }
 
 - (void)configureGesture {
@@ -516,6 +618,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         }
         self.exchangeLabel.frame            = CGRectMake(10, 70 + chineseResultLabelSize.height, ScreenWidth - 20, exchangeLabelSize.height);
         self.englishView.frame              = CGRectMake(0, 0, ScreenWidth, 70 + chineseResultLabelSize.height + exchangeLabelSize.height);
+        self.addWordImage.frame             = CGRectMake(ScreenWidth - 40, self.englishView.frame.size.height - 45, 30, 30);
         self.separatorEnglishImage.frame    = CGRectMake(0, self.englishView.frame.size.height - 0.5, ScreenWidth, 0.5);
         
         UIView *view                        = self.tableView.tableHeaderView;
@@ -607,7 +710,6 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     _searchTextField.returnKeyType                 = UIReturnKeySearch;
     _searchTextField.enablesReturnKeyAutomatically = YES;
     _searchTextField.delegate                      = self;
-//    [_searchTextField addTarget:self action:@selector(searchTextFieldValueChanged:) forControlEvents:UIControlEventEditingChanged];
     
     return _searchTextField;
 }
@@ -736,9 +838,11 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     _phenPlayImage.image = [[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _phenPlayImage.hidden = YES;
     _phenPlayImage.userInteractionEnabled = YES;
-    UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
+    UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onPlayImageClick:)];
     [_phenPlayImage addGestureRecognizer:imagePlaySingleTap];
-    
+    UIView *singleTapView = [imagePlaySingleTap view];
+    singleTapView.tag = 0;
+
     return _phenPlayImage;
 }
 
@@ -755,6 +859,19 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     return _phamLabel;
 }
 
+- (UIImageView *)addWordImage {
+    if (_addWordImage != nil) {
+        return _addWordImage;
+    }
+    _addWordImage = [[UIImageView alloc] init];
+    _addWordImage.image = [[UIImage imageNamed:@"icon_addword"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _addWordImage.userInteractionEnabled = YES;
+    UITapGestureRecognizer *addWordImagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onAddWordImageClick)];
+    [_addWordImage addGestureRecognizer:addWordImagePlaySingleTap];
+    
+    return _addWordImage;
+}
+
 - (UIImageView *)phamPlayImage {
     if (_phamPlayImage != nil) {
         return _phamPlayImage;
@@ -763,9 +880,11 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     _phamPlayImage.image = [[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _phamPlayImage.hidden = YES;
     _phamPlayImage.userInteractionEnabled = YES;
-    UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
+    UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onPlayImageClick:)];
     [_phamPlayImage addGestureRecognizer:imagePlaySingleTap];
-    
+    UIView *singleTapView = [imagePlaySingleTap view];
+    singleTapView.tag = 1;
+
     return _phamPlayImage;
 }
 

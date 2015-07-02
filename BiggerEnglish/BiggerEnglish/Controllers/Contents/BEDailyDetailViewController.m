@@ -34,8 +34,6 @@
     
     NSString *textStyle;
     NSString *textStyleWithNoReplyName;
-    
-    //    NSArray *soundImageArray;
 }
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
@@ -60,11 +58,6 @@
 
 @property (nonatomic, strong) NSArray *soundImageArray;
 
-//@property (nonatomic, strong) CGImage *CIImage1;
-//@property (nonatomic, strong) CGImage *CIImage2;
-//@property (nonatomic, strong) CGImage *CIImage3;
-//@property (nonatomic, strong) CGImage *CIImage4;
-
 @end
 
 @implementation BEDailyDetailViewController
@@ -81,12 +74,10 @@
         textStyle = @"<p><font color=#93B4DA>%@</font> <font color=#333333>回复: %@</font></p>";
         textStyleWithNoReplyName = @"<p><font color=#93B4DA>%@</font> <font color=#333333>回复</font> <font color=#93B4DA>%@</font><font color=#333333>: %@</font></p>";
         
-        //        CGImageRef CIImage1 = [[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage;
-        //        CGImageRef CIImage2 = [[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage;
-        //        CGImageRef CIImage3 = [[UIImage imageNamed:@"icon_sound3"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage;
-        //        CGImageRef CIImage4 = [[UIImage imageNamed:@"icon_sound4"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage;
-        self.soundImageArray = [NSArray arrayWithObjects:(id)[[UIImage imageNamed:@"icon_sound3"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage
-                                , (id)[[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage, (id)[[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage, nil];
+        self.soundImageArray = [NSArray arrayWithObjects:
+                                (id)[[UIImage imageNamed:@"icon_sound3"]imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage,
+                                (id)[[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage,
+                                (id)[[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage, nil];
     }
     return self;
 }
@@ -505,12 +496,25 @@
 
 //分享
 - (void) onImageShareClick {
-    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.mode = MBProgressHUDModeText;
+    hud.labelText = @"分享还没实现T_T";
+    hud.margin = 10.f;
+    hud.removeFromSuperViewOnHide = YES;
+    hud.delegate = self;
+    [hud hide:YES afterDelay:1.5];
 }
 
 //播放mp3
 - (void) onImagePlayClick {
     [self.imagePlay.layer removeAllAnimations];
+
+    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
+    animation.calculationMode = kCAAnimationDiscrete;
+    animation.duration = 1;
+    animation.values = self.soundImageArray;
+    animation.repeatCount = HUGE_VALF;
+    [self.imagePlay.layer addAnimation:animation forKey:@"frameAnimation"];
 
     NSURL *url = [[NSURL alloc]initWithString:dailyModel.tts];
     NSData * audioData = [NSData dataWithContentsOfURL:url];
@@ -521,15 +525,18 @@
     //播放本地音乐
     NSURL *fileURL = [NSURL fileURLWithPath:filePath];
     self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
-    if (self.player != nil) {
+    if (self.player == nil) {
+        [self.imagePlay.layer removeAllAnimations];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"播放错误～";
+        hud.margin = 10.f;
+        hud.removeFromSuperViewOnHide = YES;
+        hud.delegate = self;
+        [hud hide:YES afterDelay:1.5];
+    } else {
         self.player.delegate = self;
         [self.player play];
-        CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
-        animation.calculationMode = kCAAnimationDiscrete;
-        animation.duration = 1;
-        animation.values = self.soundImageArray;
-        animation.repeatCount = HUGE_VALF;
-        [self.imagePlay.layer addAnimation:animation forKey:@"frameAnimation"];
     }
 }
 
@@ -734,7 +741,7 @@
     }
     _imageLoading = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
     _imageLoading.hidden = NO;
-    _imageLoading.image = [UIImage imageNamed:@"image_loading"];
+//    _imageLoading.image = [UIImage imageNamed:@"image_loading"];
     _imageLoading.backgroundColor = [UIColor whiteColor];
     _imageLoading.contentMode = UIViewContentModeScaleAspectFit;
     

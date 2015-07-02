@@ -7,13 +7,18 @@
 //
 
 #import "BETranslateExampleSentenceCell.h"
+#import <AVFoundation/AVFoundation.h>
 
-@interface BETranslateExampleSentenceCell()
+@interface BETranslateExampleSentenceCell() <AVAudioPlayerDelegate>
 
 @property (nonatomic, strong) UITextView *contentTextView;
 @property (nonatomic, strong) UITextView *translateTextView;
 @property (nonatomic, strong) UIImageView *playImage;
 @property (nonatomic, strong) UILabel *sizeLabel;
+
+@property (nonatomic, strong) AVAudioPlayer *player;
+
+@property (nonatomic, strong) NSArray *soundImageArray;
 
 @end
 
@@ -137,6 +142,18 @@
     return _sizeLabel;
 }
 
+- (NSArray *)soundImageArray {
+    if (_soundImageArray != nil) {
+        return _soundImageArray;
+    }
+    _soundImageArray = [NSArray arrayWithObjects:
+                            (id)[[UIImage imageNamed:@"icon_sound3"]imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage,
+                            (id)[[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage,
+                            (id)[[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage, nil];
+
+    return _soundImageArray;
+}
+
 - (void)drawRect:(CGRect)rect
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -145,6 +162,41 @@
     CGContextMoveToPoint(context, 10, self.frame.size.height - 1);
     CGContextAddLineToPoint(context, ScreenWidth, self.frame.size.height - 1);
     CGContextStrokePath(context);
+}
+
+//播放mp3
+- (void) onImagePlayClick {
+    [self.playImage.layer removeAllAnimations];
+    
+    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
+    animation.calculationMode = kCAAnimationDiscrete;
+    animation.duration = 1;
+    animation.values = self.soundImageArray;
+    animation.repeatCount = HUGE_VALF;
+    [self.playImage.layer addAnimation:animation forKey:@"frameAnimation"];
+
+    NSURL *url = [[NSURL alloc]initWithString:self.mp3];
+    NSData * audioData = [NSData dataWithContentsOfURL:url];
+    //将数据保存到本地指定位置
+    NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"temp"];
+    [audioData writeToFile:filePath atomically:YES];
+    //播放本地音乐
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+    self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
+    if (self.player == nil) {
+        [self.playImage.layer removeAllAnimations];
+    } else {
+        self.player.delegate = self;
+        [self.player play];
+    }
+}
+
+#pragma mark - AVAudioPlayerDelegate
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer*)player successfully:(BOOL)flag{
+    //播放结束时执行的动作
+    [self.playImage.layer removeAllAnimations];
 }
 
 @end
