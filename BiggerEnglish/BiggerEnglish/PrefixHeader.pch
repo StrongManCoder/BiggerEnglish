@@ -33,6 +33,8 @@
 #define ScreenHeight ([UIScreen mainScreen].bounds.size.height)
 #define ScreenWidth ([UIScreen mainScreen].bounds.size.width)
 
+#define DeviceIsPhone (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+
 
 static NSString * const kShowMenuNotification = @"ShowMenuNotificaion";
 static NSString * const kStatusBarTappedNotification = @"StatusBarTappedNotification";

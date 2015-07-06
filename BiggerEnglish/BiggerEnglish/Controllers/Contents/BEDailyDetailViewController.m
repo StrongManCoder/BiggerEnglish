@@ -393,8 +393,6 @@
     //    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     //    hud.mode = MBProgressHUDModeText;
     //    hud.labelText = text;
-    //    hud.margin = 10.f;
-    //    hud.removeFromSuperViewOnHide = YES;
     //    hud.delegate = self;
     //    [hud hide:YES afterDelay:1.5];
 }
@@ -414,34 +412,37 @@
     if ([[CacheManager manager].arrayLove containsObject:self.date]) {
         
     } else {
-        dailyModel.love =  [NSString stringWithFormat:@"%d", [dailyModel.love intValue] + 1];
-        self.labelLoveCount.text = dailyModel.love;
-        
-        CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
-        animation.values =  [[NSArray alloc] initWithObjects:[NSNumber numberWithDouble:1.0],
-                             [NSNumber numberWithDouble:1.4],
-                             [NSNumber numberWithDouble:0.9],
-                             [NSNumber numberWithDouble:1.0],nil];
-        animation.duration = 0.5f;
-        animation.calculationMode = kCAAnimationCubic;
-        [self.imageLove.layer addAnimation:animation forKey:@"bounceAnimation"];
-        
-        self.imageLove.image = [[UIImage imageNamed:@"icon_love_highlight"] imageWithTintColor:[UIColor BEHighLightFontColor]];
-        //加入缓存
-        [[CacheManager manager].arrayLove addObject:self.date];
-        //添加到数据库
-        LoveModel *model=(LoveModel *)[NSEntityDescription insertNewObjectForEntityForName:@"LoveModel" inManagedObjectContext:self.managedObjectContext];
-        model.date = self.date;
-        if (![self.managedObjectContext save:nil]) {
-            NSLog(@"error!");
-        } else {
-            NSLog(@"save ok.");
-        }
         //Get
         [[AFHTTPRequestOperationManager manager] GET:SetPraise(dailyModel.sid) parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"love ok.");
+            dailyModel.love =  [NSString stringWithFormat:@"%d", [dailyModel.love intValue] + 1];
+            self.labelLoveCount.text = dailyModel.love;
+            
+            CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
+            animation.values =  [[NSArray alloc] initWithObjects:[NSNumber numberWithDouble:1.0],
+                                 [NSNumber numberWithDouble:1.4],
+                                 [NSNumber numberWithDouble:0.9],
+                                 [NSNumber numberWithDouble:1.0],nil];
+            animation.duration = 0.5f;
+            animation.calculationMode = kCAAnimationCubic;
+            [self.imageLove.layer addAnimation:animation forKey:@"bounceAnimation"];
+            
+            self.imageLove.image = [[UIImage imageNamed:@"icon_love_highlight"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+            //加入缓存
+            [[CacheManager manager].arrayLove addObject:self.date];
+            //添加到数据库
+            LoveModel *model=(LoveModel *)[NSEntityDescription insertNewObjectForEntityForName:@"LoveModel" inManagedObjectContext:self.managedObjectContext];
+            model.date = self.date;
+            if (![self.managedObjectContext save:nil]) {
+                NSLog(@"error!");
+            } else {
+                NSLog(@"save ok.");
+            }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"error!");
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            hud.mode = MBProgressHUDModeText;
+            hud.labelText = @"没有网络连接哦～";
+            hud.delegate = self;
+            [hud hide:YES afterDelay:1.0];
         }];
     }
 }
@@ -481,6 +482,11 @@
         
         //加入缓存
         [[CacheManager manager].arrayFavour addObject:self.date];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"收藏好啦～";
+        hud.delegate = self;
+        [hud hide:YES afterDelay:1.0];
         //添加到数据库
         if ([results count] > 0) {
             DailyDetailModel *dailyDetailModel = [results objectAtIndex:0];
@@ -499,16 +505,19 @@
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.mode = MBProgressHUDModeText;
     hud.labelText = @"分享还没实现T_T";
-    hud.margin = 10.f;
-    hud.removeFromSuperViewOnHide = YES;
     hud.delegate = self;
-    [hud hide:YES afterDelay:1.5];
+    [hud hide:YES afterDelay:1.0];
 }
 
 //播放mp3
 - (void) onImagePlayClick {
     [self.imagePlay.layer removeAllAnimations];
-
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.mode = MBProgressHUDModeText;
+    hud.labelText = @"正在获取网络发音～";
+    hud.delegate = self;
+    [hud hide:YES afterDelay:1.0];
+    
     CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
     animation.calculationMode = kCAAnimationDiscrete;
     animation.duration = 1;
@@ -516,28 +525,31 @@
     animation.repeatCount = HUGE_VALF;
     [self.imagePlay.layer addAnimation:animation forKey:@"frameAnimation"];
 
-    NSURL *url = [[NSURL alloc]initWithString:dailyModel.tts];
-    NSData * audioData = [NSData dataWithContentsOfURL:url];
-    //将数据保存到本地指定位置
-    NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , self.date];
-    [audioData writeToFile:filePath atomically:YES];
-    //播放本地音乐
-    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
-    self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
-    if (self.player == nil) {
-        [self.imagePlay.layer removeAllAnimations];
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.mode = MBProgressHUDModeText;
-        hud.labelText = @"播放错误～";
-        hud.margin = 10.f;
-        hud.removeFromSuperViewOnHide = YES;
-        hud.delegate = self;
-        [hud hide:YES afterDelay:1.5];
-    } else {
-        self.player.delegate = self;
-        [self.player play];
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSURL *url = [[NSURL alloc]initWithString:dailyModel.tts];
+        NSData * audioData = [NSData dataWithContentsOfURL:url];
+        //将数据保存到本地指定位置
+        NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , self.date];
+        [audioData writeToFile:filePath atomically:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //播放本地音乐
+            NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+            self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
+            if (self.player == nil) {
+                [self.imagePlay.layer removeAllAnimations];
+                MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                hud.mode = MBProgressHUDModeText;
+                hud.labelText = @"没有网络连接哦～";
+                hud.delegate = self;
+                [hud hide:YES afterDelay:1.0];
+            } else {
+                self.player.delegate = self;
+                [self.player play];
+            }
+        });
+    });
+
 }
 
 #pragma mark - Getters and Setters

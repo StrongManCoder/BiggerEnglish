@@ -47,6 +47,7 @@
             result = [NSString stringWithFormat:@"%@%@：%@\n", result, [dic objectForKey:key] , [value componentsJoinedByString:@"；"]];
         }
     }
+    free(ivars);
     NSLog(@"%@", result);
     return result;
 }

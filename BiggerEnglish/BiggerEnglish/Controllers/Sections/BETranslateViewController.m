@@ -492,7 +492,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     NSData * audioData = [NSData dataWithContentsOfURL:url];
     //将数据保存到本地指定位置
     NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"temp"];
+    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"phtemp"];
     [audioData writeToFile:filePath atomically:YES];
     //播放本地音乐
     NSURL *fileURL = [NSURL fileURLWithPath:filePath];
@@ -503,8 +503,6 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;
         hud.labelText = @"播放出现错误～";
-        hud.margin = 10.f;
-        hud.removeFromSuperViewOnHide = YES;
         hud.delegate = self;
         [hud hide:YES afterDelay:1.5];
     } else {
@@ -517,8 +515,6 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.mode = MBProgressHUDModeText;
     hud.labelText = @"添加到生词本啦～";
-    hud.margin = 10.f;
-    hud.removeFromSuperViewOnHide = YES;
     hud.delegate = self;
     [hud hide:YES afterDelay:1.5];
 }

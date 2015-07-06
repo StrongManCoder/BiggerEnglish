@@ -179,7 +179,7 @@
     NSData * audioData = [NSData dataWithContentsOfURL:url];
     //将数据保存到本地指定位置
     NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"temp"];
+    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"sentencetemp"];
     [audioData writeToFile:filePath atomically:YES];
     //播放本地音乐
     NSURL *fileURL = [NSURL fileURLWithPath:filePath];
