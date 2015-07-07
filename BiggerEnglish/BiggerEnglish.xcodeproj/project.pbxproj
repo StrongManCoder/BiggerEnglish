@@ -21,6 +21,9 @@
 		422F21CF1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 422F21CE1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m */; };
 		423854A71B18083400567BC3 /* BEFavouriteViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 423854A61B18083400567BC3 /* BEFavouriteViewCell.m */; };
 		423854AA1B1811CD00567BC3 /* BEDailyCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 423854A91B1811CD00567BC3 /* BEDailyCommentCell.m */; };
+		424ABE241B4BBE3200D7C2A2 /* BEWordBookHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 424ABE231B4BBE3200D7C2A2 /* BEWordBookHeaderView.m */; };
+		427F6CAC1B4B67B7001D98C8 /* BEWordBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 427F6CAB1B4B67B7001D98C8 /* BEWordBookCell.m */; };
+		427F6CB01B4B7AEA001D98C8 /* BEWordBookDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 427F6CAF1B4B7AEA001D98C8 /* BEWordBookDetailViewController.m */; };
 		4286CBEC1B2582E200E7C568 /* BEGetContentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4286CBEB1B2582E200E7C568 /* BEGetContentModel.m */; };
 		42908FBA1B0C8CA1000F29FB /* BELazyScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 42908FB91B0C8CA1000F29FB /* BELazyScrollView.m */; };
 		429575621B02DE830064FC69 /* BERootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575611B02DE830064FC69 /* BERootViewController.m */; };
@@ -128,6 +131,12 @@
 		423854A61B18083400567BC3 /* BEFavouriteViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEFavouriteViewCell.m; sourceTree = "<group>"; };
 		423854A81B1811CD00567BC3 /* BEDailyCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEDailyCommentCell.h; sourceTree = "<group>"; };
 		423854A91B1811CD00567BC3 /* BEDailyCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEDailyCommentCell.m; sourceTree = "<group>"; };
+		424ABE221B4BBE3200D7C2A2 /* BEWordBookHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEWordBookHeaderView.h; sourceTree = "<group>"; };
+		424ABE231B4BBE3200D7C2A2 /* BEWordBookHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEWordBookHeaderView.m; sourceTree = "<group>"; };
+		427F6CAA1B4B67B7001D98C8 /* BEWordBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEWordBookCell.h; sourceTree = "<group>"; };
+		427F6CAB1B4B67B7001D98C8 /* BEWordBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEWordBookCell.m; sourceTree = "<group>"; };
+		427F6CAE1B4B7AEA001D98C8 /* BEWordBookDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEWordBookDetailViewController.h; sourceTree = "<group>"; };
+		427F6CAF1B4B7AEA001D98C8 /* BEWordBookDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEWordBookDetailViewController.m; sourceTree = "<group>"; };
 		4286CBEA1B2582E200E7C568 /* BEGetContentModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEGetContentModel.h; sourceTree = "<group>"; };
 		4286CBEB1B2582E200E7C568 /* BEGetContentModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEGetContentModel.m; sourceTree = "<group>"; };
 		42908FB81B0C8CA1000F29FB /* BELazyScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BELazyScrollView.h; sourceTree = "<group>"; };
@@ -379,6 +388,8 @@
 			isa = PBXGroup;
 			children = (
 				423854A41B18080300567BC3 /* Cells */,
+				424ABE221B4BBE3200D7C2A2 /* BEWordBookHeaderView.h */,
+				424ABE231B4BBE3200D7C2A2 /* BEWordBookHeaderView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -398,6 +409,8 @@
 				422F21CB1B3D383E0030561F /* BETranslateCheckMoreCell.m */,
 				422F21CD1B3D3ABB0030561F /* BETranslateExampleSentenceCell.h */,
 				422F21CE1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m */,
+				427F6CAA1B4B67B7001D98C8 /* BEWordBookCell.h */,
+				427F6CAB1B4B67B7001D98C8 /* BEWordBookCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -665,6 +678,8 @@
 				4295804A1B20341500C759D7 /* BEReadDetailViewController.m */,
 				422F21C41B3CF98B0030561F /* BETranslateSentenceViewController.h */,
 				422F21C51B3CF98B0030561F /* BETranslateSentenceViewController.m */,
+				427F6CAE1B4B7AEA001D98C8 /* BEWordBookDetailViewController.h */,
+				427F6CAF1B4B7AEA001D98C8 /* BEWordBookDetailViewController.m */,
 			);
 			path = Contents;
 			sourceTree = "<group>";
@@ -858,6 +873,7 @@
 			files = (
 				4295804B1B20341500C759D7 /* BEReadDetailViewController.m in Sources */,
 				42A7A1061B2EC6B8005D7AD1 /* BETranslationBaesInfoModel.m in Sources */,
+				427F6CB01B4B7AEA001D98C8 /* BEWordBookDetailViewController.m in Sources */,
 				42BA9D8D1B13180B00FB55BF /* UIScrollView+MJExtension.m in Sources */,
 				4204C9151B02088400169446 /* AppDelegate.m in Sources */,
 				429575751B02E2EB0064FC69 /* BEMenuSectionView.m in Sources */,
@@ -871,6 +887,7 @@
 				42A7A1091B2EC737005D7AD1 /* BETranslationSentenceModel.m in Sources */,
 				42A7A11E1B2ECFC0005D7AD1 /* BESymbolsPartsModel.m in Sources */,
 				4297EC081B04427000CBD8CD /* BEWordBookViewController.m in Sources */,
+				427F6CAC1B4B67B7001D98C8 /* BEWordBookCell.m in Sources */,
 				423854A71B18083400567BC3 /* BEFavouriteViewCell.m in Sources */,
 				42BA9D861B13180B00FB55BF /* MJRefreshConst.m in Sources */,
 				429580551B203B4000C759D7 /* BEReadDetailDataModel.m in Sources */,
@@ -902,6 +919,7 @@
 				42A1F5841B2A72A9000EEB3B /* BEWebViewController.m in Sources */,
 				42DCBAAB1B1EFC2E00572474 /* BELoginViewController.m in Sources */,
 				4297EC051B04425100CBD8CD /* BEFavouriteViewController.m in Sources */,
+				424ABE241B4BBE3200D7C2A2 /* BEWordBookHeaderView.m in Sources */,
 				42BAFDD31B298B1800427CE4 /* DailyDetailModel.m in Sources */,
 				429580421B1FE79100C759D7 /* DismissingAnimator.m in Sources */,
 				42DED9431B15C340005A5A0A /* BEDiscussModel.m in Sources */,
