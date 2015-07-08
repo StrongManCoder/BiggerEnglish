@@ -16,8 +16,15 @@ typedef void (^AddWordBookBlock)(void);
 typedef void (^WordViewBlock)(void);
 @property (nonatomic, copy) WordViewBlock wordViewBlock;
 
+typedef void (^WordViewLongPressBlock)(void);
+@property (nonatomic, copy) WordViewLongPressBlock wordViewLongPressBlock;
+
+
 typedef void (^HistoryViewBlock)(void);
 @property (nonatomic, copy) HistoryViewBlock historyViewBlock;
+
+typedef void (^HistoryViewLongPressBlock)(void);
+@property (nonatomic, copy) HistoryViewLongPressBlock historyViewLongPressBlock;
 
 
 @end

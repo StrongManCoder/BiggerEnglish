@@ -9,9 +9,14 @@
 #import "BEWordBookDetailViewController.h"
 #import "BEWordBookCell.h"
 
+#define IPADSQUARESIZE 120
+#define IPHONESQUARESIZE 110
+
 @interface BEWordBookDetailViewController() <UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UITableView *topTableView;
+
+@property (nonatomic, strong) UITableView *bottomTableView;
 
 @end
 
@@ -44,31 +49,54 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 20;
+    if (tableView.tag == 0) {
+        return 0;
+    }
+    else {
+        return 20;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *ID = @"cell";
-    BEWordBookCell *cell = (BEWordBookCell *)[tableView dequeueReusableCellWithIdentifier:ID];
-    if (cell == nil) {
-        cell = [[BEWordBookCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+    if (tableView.tag == 0) {
+        return nil;
     }
-    
-    cell.wordLabel.text = [NSString stringWithFormat:@"%d", (int)indexPath.row];
-    cell.translateLabel.text = @"1111111111111111111111111111111111111111111111111111111111111111";
-    cell.rowNumberLabel.text = @"2222";
-    cell.contentView.transform = CGAffineTransformMakeRotation(M_PI / 2);
-    return cell;
+    else {
+        static NSString *ID = @"cell";
+        BEWordBookCell *cell = (BEWordBookCell *)[tableView dequeueReusableCellWithIdentifier:ID];
+        if (cell == nil) {
+            cell = [[BEWordBookCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+        }
+        cell.wordLabel.text = [NSString stringWithFormat:@"%d", (int)indexPath.row];
+        cell.translateLabel.text = @"1111111111111111111111111111111111111111111111111111111111111111";
+        cell.rowNumberLabel.text = @"2222";
+        cell.contentView.transform = CGAffineTransformMakeRotation(M_PI / 2);
+        return cell;
+    }
 }
 
 #pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (DeviceIsPhone) {
-        return 110;
-    } else {
-        return 120;
+    if (tableView.tag == 0) {
+        return 44;
+    }
+    else {
+        if (DeviceIsPhone) {
+            return IPHONESQUARESIZE;
+        } else {
+            return IPADSQUARESIZE;
+        }
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView.tag == 0) {
+        
+    }
+    else {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
 
@@ -79,31 +107,50 @@
     self.navigationController.navigationBar.translucent = NO;
     self.automaticallyAdjustsScrollViewInsets = NO;
     
-    [self.view addSubview:self.tableView];
-
+    [self.view addSubview:self.topTableView];
+    [self.view addSubview:self.bottomTableView];
 }
 
 #pragma mark - Getters / Setters
 
-- (UITableView *)tableView {
-    if (_tableView != nil) {
-        return _tableView;
+- (UITableView *)topTableView {
+    if (_topTableView != nil) {
+        return _topTableView;
     }
-    _tableView = [[UITableView alloc] initWithFrame:CGRectZero];
-    _tableView.layer.anchorPoint = CGPointMake(0, 0);//先设置锚点再设置frame！！
+    _topTableView = [[UITableView alloc] initWithFrame:CGRectZero];
     if (DeviceIsPhone) {
-        _tableView.frame = CGRectMake(0, ScreenHeight - 64, 110, ScreenWidth);
+        _topTableView.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64 - IPHONESQUARESIZE);
     } else {
-        _tableView.frame = CGRectMake(0, ScreenHeight - 64, 120, ScreenWidth);
+        _topTableView.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64 - IPADSQUARESIZE);
     }
-    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _tableView.transform = CGAffineTransformMakeRotation(-M_PI / 2);
-    _tableView.backgroundColor = [UIColor BEFrenchGrayColor];
-    _tableView.showsVerticalScrollIndicator = NO;
-    _tableView.dataSource = self;
-    _tableView.delegate = self;
+    _topTableView.showsVerticalScrollIndicator = NO;
+    _topTableView.dataSource = self;
+    _topTableView.delegate = self;
+    _topTableView.tag = 0;
     
-    return _tableView;
+    return _topTableView;
+}
+
+- (UITableView *)bottomTableView {
+    if (_bottomTableView != nil) {
+        return _bottomTableView;
+    }
+    _bottomTableView = [[UITableView alloc] initWithFrame:CGRectZero];
+    _bottomTableView.layer.anchorPoint = CGPointMake(0, 0);//先设置锚点再设置frame！！
+    if (DeviceIsPhone) {
+        _bottomTableView.frame = CGRectMake(0, ScreenHeight - 64, IPHONESQUARESIZE, ScreenWidth);
+    } else {
+        _bottomTableView.frame = CGRectMake(0, ScreenHeight - 64, IPADSQUARESIZE, ScreenWidth);
+    }
+    _bottomTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _bottomTableView.transform = CGAffineTransformMakeRotation(-M_PI / 2);
+    _bottomTableView.backgroundColor = [UIColor BEFrenchGrayColor];
+    _bottomTableView.showsVerticalScrollIndicator = NO;
+    _bottomTableView.dataSource = self;
+    _bottomTableView.delegate = self;
+    _bottomTableView.tag = 1;
+    
+    return _bottomTableView;
 }
 
 @end

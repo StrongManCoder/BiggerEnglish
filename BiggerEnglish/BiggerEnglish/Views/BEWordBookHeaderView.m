@@ -38,6 +38,9 @@
     _wordView.backgroundColor = [UIColor whiteColor];
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(wordViewAction)];
     [_wordView addGestureRecognizer:singleTap];
+    UILongPressGestureRecognizer * wordViewLongPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(wordViewLongPressAction:)];
+    wordViewLongPress.minimumPressDuration = 1.0;
+    [_wordView addGestureRecognizer:wordViewLongPress];
 
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, -5, _wordView.width, _wordView.height / 2)];
     titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -76,7 +79,10 @@
     _historyView.backgroundColor = [UIColor whiteColor];
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(historyViewAction)];
     [_historyView addGestureRecognizer:singleTap];
-    
+    UILongPressGestureRecognizer * historyViewLongPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(historyViewLongPressAction:)];
+    historyViewLongPress.minimumPressDuration = 1.0;
+    [_historyView addGestureRecognizer:historyViewLongPress];
+
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, -5, _wordView.width, _wordView.height / 2)];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.textColor = [UIColor whiteColor];
@@ -112,11 +118,11 @@
     }
     _addWordBookButton = [UIButton buttonWithType:UIButtonTypeSystem];
     _addWordBookButton.frame = CGRectMake(ScreenWidth / 2 - 100, 20 + ((ScreenWidth - 30) / 2), 200, 30);
-    _addWordBookButton.tintColor = [UIColor BEHighLightFontColor];
     _addWordBookButton.titleLabel.font = [UIFont systemFontOfSize: 16.0];
+    [_addWordBookButton setTitleColor:[UIColor BEHighLightFontColor] forState:UIControlStateNormal];
     [_addWordBookButton setTitle:@"点击添加单词本" forState:UIControlStateNormal];
     [_addWordBookButton addTarget:self action:@selector(addWordBookAction) forControlEvents:UIControlEventTouchUpInside];
-
+    
     return _addWordBookButton;
 }
 
@@ -130,6 +136,18 @@
 
 - (void)historyViewAction {
     self.historyViewBlock();
+}
+
+- (void)wordViewLongPressAction:(UILongPressGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        self.wordViewLongPressBlock();
+    }
+}
+
+- (void)historyViewLongPressAction:(UILongPressGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        self.historyViewLongPressBlock();
+    }
 }
 
 @end

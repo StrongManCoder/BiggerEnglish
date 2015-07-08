@@ -79,6 +79,9 @@
 		42BE9DB81B33F4F80042680D /* BEBaiduTranslaterModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BE9DB71B33F4F80042680D /* BEBaiduTranslaterModel.m */; };
 		42BF684B1B1EA73A00255496 /* BEDailyDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BF684A1B1EA73A00255496 /* BEDailyDetailViewController.m */; };
 		42BF684E1B1EED7500255496 /* BESettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BF684D1B1EED7500255496 /* BESettingViewController.m */; };
+		42CDD9261B4CD63800C8F4DC /* WordBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CDD9251B4CD63800C8F4DC /* WordBook.m */; };
+		42CDD9291B4CD63900C8F4DC /* Word.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CDD9281B4CD63900C8F4DC /* Word.m */; };
+		42CDD92C1B4D1EC200C8F4DC /* BEPopupTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CDD92B1B4D1EC200C8F4DC /* BEPopupTableView.m */; };
 		42DCBAA81B1EFBB700572474 /* BEUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DCBAA71B1EFBB700572474 /* BEUserViewController.m */; };
 		42DCBAAB1B1EFC2E00572474 /* BELoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DCBAAA1B1EFC2E00572474 /* BELoginViewController.m */; };
 		42DE004B1B4247860039325F /* UIColor+Custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DE004A1B4247860039325F /* UIColor+Custom.m */; };
@@ -249,6 +252,12 @@
 		42BF684A1B1EA73A00255496 /* BEDailyDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEDailyDetailViewController.m; sourceTree = "<group>"; };
 		42BF684C1B1EED7500255496 /* BESettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BESettingViewController.h; sourceTree = "<group>"; };
 		42BF684D1B1EED7500255496 /* BESettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BESettingViewController.m; sourceTree = "<group>"; };
+		42CDD9241B4CD63800C8F4DC /* WordBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordBook.h; sourceTree = "<group>"; };
+		42CDD9251B4CD63800C8F4DC /* WordBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordBook.m; sourceTree = "<group>"; };
+		42CDD9271B4CD63900C8F4DC /* Word.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Word.h; sourceTree = "<group>"; };
+		42CDD9281B4CD63900C8F4DC /* Word.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Word.m; sourceTree = "<group>"; };
+		42CDD92A1B4D1EC200C8F4DC /* BEPopupTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEPopupTableView.h; sourceTree = "<group>"; };
+		42CDD92B1B4D1EC200C8F4DC /* BEPopupTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEPopupTableView.m; sourceTree = "<group>"; };
 		42DCBAA61B1EFBB700572474 /* BEUserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEUserViewController.h; sourceTree = "<group>"; };
 		42DCBAA71B1EFBB700572474 /* BEUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEUserViewController.m; sourceTree = "<group>"; };
 		42DCBAA91B1EFC2E00572474 /* BELoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BELoginViewController.h; sourceTree = "<group>"; };
@@ -479,6 +488,8 @@
 				4295758C1B02EC620064FC69 /* Helpers */,
 				429575871B02EB1E0064FC69 /* EXTScope */,
 				4295756F1B02E2390064FC69 /* MenuView */,
+				42CDD92A1B4D1EC200C8F4DC /* BEPopupTableView.h */,
+				42CDD92B1B4D1EC200C8F4DC /* BEPopupTableView.m */,
 			);
 			path = Additions;
 			sourceTree = "<group>";
@@ -693,6 +704,10 @@
 				422CC52A1B26FA3C0070F4FA /* ReadContentModel.m */,
 				42BAFDD11B298B1800427CE4 /* DailyDetailModel.h */,
 				42BAFDD21B298B1800427CE4 /* DailyDetailModel.m */,
+				42CDD9271B4CD63900C8F4DC /* Word.h */,
+				42CDD9281B4CD63900C8F4DC /* Word.m */,
+				42CDD9241B4CD63800C8F4DC /* WordBook.h */,
+				42CDD9251B4CD63800C8F4DC /* WordBook.m */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -876,6 +891,7 @@
 				427F6CB01B4B7AEA001D98C8 /* BEWordBookDetailViewController.m in Sources */,
 				42BA9D8D1B13180B00FB55BF /* UIScrollView+MJExtension.m in Sources */,
 				4204C9151B02088400169446 /* AppDelegate.m in Sources */,
+				42CDD9291B4CD63900C8F4DC /* Word.m in Sources */,
 				429575751B02E2EB0064FC69 /* BEMenuSectionView.m in Sources */,
 				42BA9D881B13180B00FB55BF /* MJRefreshGifFooter.m in Sources */,
 				42BA9D8E1B13180B00FB55BF /* UIScrollView+MJRefresh.m in Sources */,
@@ -907,6 +923,7 @@
 				42DE004B1B4247860039325F /* UIColor+Custom.m in Sources */,
 				42DCBAA81B1EFBB700572474 /* BEUserViewController.m in Sources */,
 				42908FBA1B0C8CA1000F29FB /* BELazyScrollView.m in Sources */,
+				42CDD9261B4CD63800C8F4DC /* WordBook.m in Sources */,
 				4295758B1B02EB1E0064FC69 /* EXTScope.m in Sources */,
 				422F21CC1B3D383E0030561F /* BETranslateCheckMoreCell.m in Sources */,
 				422F21CF1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m in Sources */,
@@ -928,6 +945,7 @@
 				42BA9D8C1B13180B00FB55BF /* MJRefreshLegendHeader.m in Sources */,
 				422994871B439B5100B5C79A /* BEGetContentDetailModel.m in Sources */,
 				42E52F091B1449CB00DAADF8 /* CacheManager.m in Sources */,
+				42CDD92C1B4D1EC200C8F4DC /* BEPopupTableView.m in Sources */,
 				429580451B2028E100C759D7 /* BEReadViewController.m in Sources */,
 				4204C9121B02088400169446 /* main.m in Sources */,
 				429575991B0335840064FC69 /* SettingManager.m in Sources */,
