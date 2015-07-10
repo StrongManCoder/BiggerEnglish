@@ -7,8 +7,9 @@
 //
 
 #import "AppDelegate.h"
-#import "WordBook.h"
-#import "Word.h"
+#import "WordBookModel.h"
+#import "WordModel.h"
+#import "HistoryWordBookModel.h"
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
 
@@ -29,7 +30,7 @@
  
     [self initAppearance];
     
-    [self test];
+//    [self test];
     
     if ([self isFirstStart]) {
         NSLog(@"first start");
@@ -56,52 +57,61 @@
 }
 
 - (void)initDefaultWordBook {
-    WordBook *wordBookModel = [NSEntityDescription insertNewObjectForEntityForName:@"WordBook" inManagedObjectContext:self.managedObjectContext];
-    wordBookModel.title = @"生词本";
+    WordBookModel *wordBookModel = [NSEntityDescription insertNewObjectForEntityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext];
+    wordBookModel.title = @"我的生词本";
+    wordBookModel.defaulted = @"1";
     if (![self.managedObjectContext save:nil]) {
         NSLog(@"init wordbook error!");
     } else {
         NSLog(@"init wordbook ok.");
     }
-    //默认生词本
-    NSUserDefaults * settings = [NSUserDefaults standardUserDefaults];
-    [settings setObject:@"生词本" forKey:@"DefaultWordBook"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
+    
+    HistoryWordBookModel *historyWordBookModel = [NSEntityDescription insertNewObjectForEntityForName:@"HistoryWordBookModel" inManagedObjectContext:self.managedObjectContext];
+    historyWordBookModel.title = @"历史纪录";
+    WordModel *wordModel1 = [NSEntityDescription insertNewObjectForEntityForName:@"WordModel" inManagedObjectContext:self.managedObjectContext];
+    wordModel1.word = @"生词本1的单词";
+    [historyWordBookModel addWordsObject:wordModel1];
 
-- (void)test {
-//    WordBook *wordBookModel = [NSEntityDescription insertNewObjectForEntityForName:@"WordBook" inManagedObjectContext:self.managedObjectContext];
-//    wordBookModel.title = @"123";
-    Word *wordModel = [NSEntityDescription insertNewObjectForEntityForName:@"Word" inManagedObjectContext:self.managedObjectContext];
-    wordModel.name = @"456";
-
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:[NSEntityDescription entityForName:@"WordBook" inManagedObjectContext:self.managedObjectContext]];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", @"123"]];
-    NSArray* results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
-    WordBook *wordBookModel = (WordBook *)[results firstObject];
-    [wordBookModel addWordsObject:wordModel];
     
     if (![self.managedObjectContext save:nil]) {
-        NSLog(@"error!");
+        NSLog(@"init wordbook error!");
     } else {
-        NSLog(@"ok.");
+        NSLog(@"init wordbook ok.");
     }
-
-    
-//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:[NSEntityDescription entityForName:@"WordBook" inManagedObjectContext:self.managedObjectContext]];
-    NSArray* results1 = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
-    for (WordBook *wordBook in results1) {
-        NSLog(@"wordBook.title   %@",wordBook.title);
-        for (NSObject *object in [wordBook.words objectEnumerator]) {
-            NSLog(@"((Word *)object).name   %@",((Word *)object).name);
-        }
-
-    }
-    
 
 }
+
+//- (void)test {
+////    WordBook *wordBookModel = [NSEntityDescription insertNewObjectForEntityForName:@"WordBook" inManagedObjectContext:self.managedObjectContext];
+////    wordBookModel.title = @"123";
+//    Word *wordModel = [NSEntityDescription insertNewObjectForEntityForName:@"Word" inManagedObjectContext:self.managedObjectContext];
+//    wordModel.name = @"456";
+//
+//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+//    [fetchRequest setEntity:[NSEntityDescription entityForName:@"WordBook" inManagedObjectContext:self.managedObjectContext]];
+//    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", @"123"]];
+//    NSArray* results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+//    WordBook *wordBookModel = (WordBook *)[results firstObject];
+//    [wordBookModel addWordsObject:wordModel];
+//    
+//    if (![self.managedObjectContext save:nil]) {
+//        NSLog(@"error!");
+//    } else {
+//        NSLog(@"ok.");
+//    }
+//
+//    
+////    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+//    [fetchRequest setEntity:[NSEntityDescription entityForName:@"WordBook" inManagedObjectContext:self.managedObjectContext]];
+//    NSArray* results1 = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+//    for (WordBook *wordBook in results1) {
+//        NSLog(@"wordBook.title   %@",wordBook.title);
+//        for (NSObject *object in [wordBook.words objectEnumerator]) {
+//            NSLog(@"((Word *)object).name   %@",((Word *)object).name);
+//        }
+//
+//    }
+//}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

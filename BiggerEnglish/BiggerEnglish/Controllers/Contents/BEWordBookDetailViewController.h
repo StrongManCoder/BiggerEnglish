@@ -10,4 +10,8 @@
 
 @interface BEWordBookDetailViewController : UIViewController
 
+@property (nonatomic, copy) NSString *workBook;
+
+@property (nonatomic, assign) BOOL history;
+
 @end

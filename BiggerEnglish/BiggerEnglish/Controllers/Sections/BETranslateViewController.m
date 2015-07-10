@@ -15,6 +15,10 @@
 #import "BETranslateCheckMoreCell.h"
 #import "BETranslateSentenceViewController.h"
 #import "EnglishDictionaryManager.h"
+#import "WordBookModel.h"
+#import "WordModel.h"
+#import "HistoryWordBookModel.h"
+#import "SentenceModel.h"
 
 typedef NS_ENUM(NSInteger, BETransLateType) {
     BETransLateTypeEnglish,
@@ -62,16 +66,16 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 @property (nonatomic, strong) UIImageView *phenPlayImage;
 @property (nonatomic, strong) UILabel *phamLabel;
 @property (nonatomic, copy) NSString *ph_am_mp3;
-@property (nonatomic, strong) UIImageView *addWordImage;
-
-
 @property (nonatomic, strong) UIImageView *phamPlayImage;
 @property (nonatomic, strong) UITextView *chineseResultLabel;
 @property (nonatomic, strong) UILabel *exchangeLabel;
+@property (nonatomic, strong) UIImageView *addWordImage;
 @property (nonatomic, strong) UIImageView *separatorEnglishImage;
 
 @property (nonatomic, strong) NSArray *soundImageArray;
 @property (nonatomic, strong) AVAudioPlayer *player;
+
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
 @end
 
@@ -394,7 +398,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         
         [self updateLayout:BETransLateTypeEnglish];
         [self configureSentence:model];
-        
+        [self saveHistory];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@ error", operation.description);
     }];
@@ -512,13 +516,74 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 }
 
 - (void)onAddWordImageClick {
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.mode = MBProgressHUDModeText;
-    hud.labelText = @"添加到生词本啦～";
-    hud.delegate = self;
-    [hud hide:YES afterDelay:1.5];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"defaulted==%@", @"1"]];
+    NSArray* results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    WordBookModel *wordBookModel = (WordBookModel *)[results firstObject];
+    //判断是否已经存在单词
+    for (WordModel *item in [wordBookModel.words allObjects]) {
+        if ([item.word isEqualToString:self.searchEnglishLabel.text]) {
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            hud.mode = MBProgressHUDModeText;
+            hud.labelText = [NSString stringWithFormat:@"单词已经存在！"];
+            hud.delegate = self;
+            [hud hide:YES afterDelay:1.5];
+            return;
+        }
+    }
+    
+    WordModel *wordModel = [NSEntityDescription insertNewObjectForEntityForName:@"WordModel" inManagedObjectContext:self.managedObjectContext];
+    wordModel.word = self.searchEnglishLabel.text;
+    wordModel.translate = self.chineseResultLabel.text;
+    wordModel.phen = self.phenLabel.text;
+    wordModel.phenmp3 = self.ph_en_mp3;
+    wordModel.pham = self.phamLabel.text;
+    wordModel.phammp3 = self.ph_am_mp3;
+    wordModel.exchange = self.exchangeLabel.text;
+    [wordBookModel addWordsObject:wordModel];
+    
+    NSString *key;
+    NSArray *value;
+    NSArray *keys = [self.sentenceDicionary allKeys];
+    int count = (int)[keys count];
+    for (int i = 0; i < count; i++)
+    {
+        key = [keys objectAtIndex:i];
+        value = [self.sentenceDicionary objectForKey:key];
+        NSMutableSet * set = [[NSMutableSet alloc] init];
+        if ([key isEqualToString:SENTENCEEXAMPLE]) {
+            for (BETranslationSentenceModel *item in value) {
+                SentenceModel *sentenceModel = [NSEntityDescription insertNewObjectForEntityForName:@"SentenceModel" inManagedObjectContext:self.managedObjectContext];
+                sentenceModel.type = key;
+                sentenceModel.sentence = item.Network_en;
+                sentenceModel.translate = item.Network_cn;
+                sentenceModel.mp3 = item.tts_mp3;
+                sentenceModel.size = item.tts_size;
+                [set addObject:sentenceModel];
+            }
+        } else {
+            for (BECETSentenceModel *item in value) {
+                SentenceModel *sentenceModel = [NSEntityDescription insertNewObjectForEntityForName:@"SentenceModel" inManagedObjectContext:self.managedObjectContext];
+                sentenceModel.type = key;
+                sentenceModel.sentence = item.sentence;
+                sentenceModel.translate = item.come;
+                [set addObject:sentenceModel];
+            }
+        }
+        [wordModel addSentences:set];
+    }
+    
+    if (![self.managedObjectContext save:nil]) {
+        NSLog(@"error!");
+    } else {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = [NSString stringWithFormat:@"添加到%@中", wordBookModel.title];
+        hud.delegate = self;
+        [hud hide:YES afterDelay:1.5];
+    }
 }
-
 
 #pragma mark - Private Methods
 
@@ -639,7 +704,6 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 }
 
 - (void)configureSentence:(BETranslationModel *)model {
-    self.sentenceDicionary = nil;
     self.sentenceDicionary = [[NSMutableDictionary alloc] init];
     
     NSArray *sentenceArray = [BETranslationSentenceModel objectArrayWithKeyValuesArray:model.message.sentence];
@@ -673,6 +737,71 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 {
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:str,@"word", nil];
     [[AFHTTPRequestOperationManager manager] POST:Translater parameters:dic success:success failure:failure];
+}
+
+- (void)saveHistory {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"HistoryWordBookModel" inManagedObjectContext:self.managedObjectContext]];
+    NSArray* results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    HistoryWordBookModel *historyWordBookModel = (HistoryWordBookModel *)[results firstObject];
+    //判断是否已经存在单词
+    for (WordModel *item in [historyWordBookModel.words allObjects]) {
+        if ([item.word isEqualToString:self.searchEnglishLabel.text]) {
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            hud.mode = MBProgressHUDModeText;
+            hud.labelText = [NSString stringWithFormat:@"单词已经存在！"];
+            hud.delegate = self;
+            [hud hide:YES afterDelay:1.5];
+            return;
+        }
+    }
+    
+    WordModel *wordModel = [NSEntityDescription insertNewObjectForEntityForName:@"WordModel" inManagedObjectContext:self.managedObjectContext];
+    wordModel.word = self.searchEnglishLabel.text;
+    wordModel.translate = self.chineseResultLabel.text;
+    wordModel.phen = self.phenLabel.text;
+    wordModel.phenmp3 = self.ph_en_mp3;
+    wordModel.pham = self.phamLabel.text;
+    wordModel.phammp3 = self.ph_am_mp3;
+    wordModel.exchange = self.exchangeLabel.text;
+    [historyWordBookModel addWordsObject:wordModel];
+    
+    NSString *key;
+    NSArray *value;
+    NSArray *keys = [self.sentenceDicionary allKeys];
+    int count = (int)[keys count];
+    for (int i = 0; i < count; i++)
+    {
+        key = [keys objectAtIndex:i];
+        value = [self.sentenceDicionary objectForKey:key];
+        NSMutableSet * set = [[NSMutableSet alloc] init];
+        if ([key isEqualToString:SENTENCEEXAMPLE]) {
+            for (BETranslationSentenceModel *item in value) {
+                SentenceModel *sentenceModel = [NSEntityDescription insertNewObjectForEntityForName:@"SentenceModel" inManagedObjectContext:self.managedObjectContext];
+                sentenceModel.type = key;
+                sentenceModel.sentence = item.Network_en;
+                sentenceModel.translate = item.Network_cn;
+                sentenceModel.mp3 = item.tts_mp3;
+                sentenceModel.size = item.tts_size;
+                [set addObject:sentenceModel];
+            }
+        } else {
+            for (BECETSentenceModel *item in value) {
+                SentenceModel *sentenceModel = [NSEntityDescription insertNewObjectForEntityForName:@"SentenceModel" inManagedObjectContext:self.managedObjectContext];
+                sentenceModel.type = key;
+                sentenceModel.sentence = item.sentence;
+                sentenceModel.translate = item.come;
+                [set addObject:sentenceModel];
+            }
+        }
+        [wordModel addSentences:set];
+    }
+    
+    if (![self.managedObjectContext save:nil]) {
+        NSLog(@"error!");
+    } else {
+        NSLog(@"ok!");
+    }
 }
 
 - (CGSize)calculateLabelSize:(NSString *)value FontSize:(CGFloat) font {
@@ -860,7 +989,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         return _addWordImage;
     }
     _addWordImage = [[UIImageView alloc] init];
-    _addWordImage.image = [[UIImage imageNamed:@"icon_addword"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    _addWordImage.image = [[UIImage imageNamed:@"icon_favour"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _addWordImage.userInteractionEnabled = YES;
     UITapGestureRecognizer *addWordImagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onAddWordImageClick)];
     [_addWordImage addGestureRecognizer:addWordImagePlaySingleTap];
@@ -970,6 +1099,16 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     _searchTableView.hidden =YES;
 
     return _searchTableView;
+}
+
+- (NSManagedObjectContext *)managedObjectContext {
+    if (_managedObjectContext != nil) {
+        return _managedObjectContext;
+    }
+    id delegate = [[UIApplication sharedApplication] delegate];
+    _managedObjectContext = [delegate managedObjectContext];
+    
+    return _managedObjectContext;
 }
 
 @end

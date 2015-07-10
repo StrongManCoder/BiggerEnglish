@@ -14,7 +14,7 @@
 @property (nonatomic, strong) UIView *historyView;
 
 @property (nonatomic, strong) UIButton *addWordBookButton;
-
+@property (nonatomic, strong) UILabel *wordViewDescriptLabel;
 @end
 
 @implementation BEWordBookHeaderView
@@ -28,6 +28,10 @@
         [self addSubview:self.addWordBookButton];
     }
     return self;
+}
+
+- (void)setWordViewText:(NSString *)wordViewText {
+    self.wordViewDescriptLabel.text = wordViewText;
 }
 
 - (UIView *)wordView {
@@ -61,12 +65,12 @@
     nameLabel.text = @"我的生词本";
     [_wordView addSubview:nameLabel];
 
-    UILabel *descriptLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, (_wordView.height / 2) + 10, _wordView.width, _wordView.height / 2)];
-    descriptLabel.textAlignment = NSTextAlignmentCenter;
-    descriptLabel.textColor = [UIColor BEDeepFontColor];
-    descriptLabel.font = [UIFont systemFontOfSize:14];
-    descriptLabel.text = @"收录了n个单词";
-    [_wordView addSubview:descriptLabel];
+    _wordViewDescriptLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, (_wordView.height / 2) + 10, _wordView.width, _wordView.height / 2)];
+    _wordViewDescriptLabel.textAlignment = NSTextAlignmentCenter;
+    _wordViewDescriptLabel.textColor = [UIColor BEDeepFontColor];
+    _wordViewDescriptLabel.font = [UIFont systemFontOfSize:14];
+    _wordViewDescriptLabel.text = @"收录了n个单词";
+    [_wordView addSubview:_wordViewDescriptLabel];
 
     return _wordView;
 }
@@ -149,5 +153,16 @@
         self.historyViewLongPressBlock();
     }
 }
+
+- (void)drawRect:(CGRect)rect
+{
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetLineWidth(context, 0.4);
+    CGContextSetStrokeColorWithColor(context, [UIColor BESeparatorLineColor].CGColor);
+    CGContextMoveToPoint(context, 10, self.frame.size.height - 1);
+    CGContextAddLineToPoint(context, ScreenWidth, self.frame.size.height - 1);
+    CGContextStrokePath(context);
+}
+
 
 @end

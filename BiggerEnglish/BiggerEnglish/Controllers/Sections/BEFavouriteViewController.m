@@ -14,17 +14,17 @@
 #import "ReadContentModel.h"
 #import "DailyDetailModel.h"
 
-@interface BEFavouriteViewController() <UITableViewDelegate, UITableViewDataSource>
+@interface BEFavouriteViewController() <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) UIView *blankView;
 
 @property (nonatomic, strong) UITableView *dailyTableView;
 @property (nonatomic, strong) UITableView *readTableView;
-@property (strong, nonatomic) NSFetchedResultsController *favourModelResults;
-@property (strong, nonatomic) NSFetchedResultsController *readContentModelResults;
-@property (strong, nonatomic) UISegmentedControl *segment;
+@property (nonatomic, strong) NSFetchedResultsController *favourModelResults;
+@property (nonatomic, strong) NSFetchedResultsController *readContentModelResults;
+@property (nonatomic, strong) UISegmentedControl *segment;
 
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
 @end
 

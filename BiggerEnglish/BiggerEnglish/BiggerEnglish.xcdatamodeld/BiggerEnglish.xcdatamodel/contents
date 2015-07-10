@@ -27,6 +27,10 @@
         <attribute name="tts" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="HistoryWordBookModel" representedClassName="HistoryWordBookModel" syncable="YES">
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="words" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WordModel" syncable="YES"/>
+    </entity>
     <entity name="LoveModel" representedClassName="LoveModel">
         <attribute name="date" optional="YES" attributeType="String">
             <userInfo/>
@@ -42,19 +46,37 @@
         <attribute name="inputtime" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="Word" representedClassName="Word" syncable="YES">
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    <entity name="SentenceModel" representedClassName="SentenceModel" syncable="YES">
+        <attribute name="mp3" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sentence" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="size" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="translate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="WordBook" representedClassName="WordBook" syncable="YES">
+    <entity name="WordBookModel" representedClassName="WordBookModel" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="defaulted" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="words" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Word" syncable="YES"/>
+        <relationship name="words" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WordModel" syncable="YES"/>
+    </entity>
+    <entity name="WordModel" representedClassName="WordModel" syncable="YES">
+        <attribute name="exchange" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pham" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phammp3" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phen" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phenmp3" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="translate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="word" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="sentences" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SentenceModel" syncable="YES"/>
     </entity>
     <elements>
         <element name="DailyDetailModel" positionX="261" positionY="180" width="128" height="253"/>
         <element name="FavourModel" positionX="54" positionY="90" width="128" height="180"/>
         <element name="LoveModel" positionX="511" positionY="45" width="128" height="58"/>
         <element name="ReadContentModel" positionX="727" positionY="267" width="128" height="148"/>
-        <element name="WordBook" positionX="529" positionY="342" width="128" height="73"/>
-        <element name="Word" positionX="396" positionY="225" width="128" height="58"/>
+        <element name="SentenceModel" positionX="252" positionY="189" width="128" height="120"/>
+        <element name="WordBookModel" positionX="529" positionY="342" width="128" height="105"/>
+        <element name="WordModel" positionX="396" positionY="225" width="128" height="165"/>
+        <element name="HistoryWordBookModel" positionX="252" positionY="189" width="128" height="75"/>
     </elements>
 </model>

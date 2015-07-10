@@ -45,6 +45,7 @@
 @property (nonatomic, assign) NSInteger rowHeight;
 @property (nonatomic, assign) NSInteger rowCount;
 @property (nonatomic, strong) NSArray *dataArray;
+@property (nonatomic, copy) NSString *titleValue;
 
 - (instancetype)initWithView;
 

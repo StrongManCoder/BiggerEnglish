@@ -11,12 +11,20 @@
 #import "BEWordBookHeaderView.h"
 #import "BEWordBookDetailViewController.h"
 #import "BEPopupTableView.h"
+#import "WordBookModel.h"
+#import "WordModel.h"
+#import "HistoryWordBookModel.h"
+#import "BEWordBookTitleCell.h"
 
-@interface BEWordBookViewController() <UITableViewDelegate, UITableViewDataSource, BEPopupTableViewDelegate>
+@interface BEWordBookViewController() <UITableViewDelegate, UITableViewDataSource, BEPopupTableViewDelegate, NSFetchedResultsControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 
 @property (nonatomic, strong) BEWordBookHeaderView *headerView;
+
+@property (nonatomic, strong) NSFetchedResultsController *wordBookModelResults;
+@property (nonatomic, strong) NSFetchedResultsController *defaultWordBookModelResults;
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
 @end
 
@@ -63,7 +71,6 @@
     
     [self.view addSubview:self.tableView];
     self.tableView.tableHeaderView = self.headerView;
-    
 }
 
 - (void)navigateSetting {
@@ -74,43 +81,262 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 20;
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.wordBookModelResults sections][section];
+    return [sectionInfo numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //    static NSString *ID = @"cell";
-    //    BEWordBookCell *cell = (BEWordBookCell *)[tableView dequeueReusableCellWithIdentifier:ID];
-    //    if (cell == nil) {
-    //        cell = [[BEWordBookCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
-    //    }
-    //
-    //    cell.wordLabel.text = [NSString stringWithFormat:@"%d", (int)indexPath.row];
-    //    cell.translateLabel.text = @"1111111111111111111111111111111111111111111111111111111111111111";
-    //    cell.rowNumberLabel.text = @"2222";
-    //    return cell;
-    
-    static NSString *ID = @"cell";
-    UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:ID];
+    static NSString *ID = @"BEWordBookTitleCell";
+    BEWordBookTitleCell *cell = (BEWordBookTitleCell *)[tableView dequeueReusableCellWithIdentifier:ID];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+        cell = [[BEWordBookTitleCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
     }
-    
-    cell.textLabel.text = [NSString stringWithFormat:@"%d", (int)indexPath.row];
+    NSManagedObject *object = [self.wordBookModelResults objectAtIndexPath:indexPath];
+    cell.titleLabel.text = [object valueForKey:@"title"];
+    if ([[object valueForKey:@"defaulted"] isEqualToString:@"1"]) {
+        cell.defaultView.hidden = NO;
+    }
+    else {
+        cell.defaultView.hidden = YES;
+    }
     return cell;
-    
+}
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    NSManagedObject *object = [self.wordBookModelResults objectAtIndexPath:indexPath];
+    [self navigateToDetailViewController:[object valueForKey:@"title"]];
+}
+
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    return 40;
+//}
+
+#pragma mark - Fetched results controller
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView beginUpdates];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath
+{
+    if ([controller.fetchRequest.predicate.predicateFormat isEqualToString:@"title==我的生词本"]) {
+        NSLog(@"111");
+        id <NSFetchedResultsSectionInfo> sectionInfo = [self.defaultWordBookModelResults sections][0];
+        self.headerView.wordViewText = [NSString stringWithFormat:@"%d" ,(int)[sectionInfo numberOfObjects]];
+    } else {
+        switch(type) {
+            case NSFetchedResultsChangeInsert:
+                [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+                break;
+                
+            case NSFetchedResultsChangeDelete:
+                [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                break;
+                
+            case NSFetchedResultsChangeUpdate:
+                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                break;
+                
+            case NSFetchedResultsChangeMove:
+                break;
+        }
+    }
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView endUpdates];
 }
 
 #pragma mark - BEPopupTableViewDelegate
 
 - (void)popupTableView:(BEPopupTableView *)popupTableViewView didSelectIndexPath:(NSIndexPath *)indexPath {
     if (popupTableViewView.tag == 0) {
-        
+        switch (indexPath.row) {
+            case 0: //设为默认笔记本
+            {
+                [self SettingDefaultWordBook:popupTableViewView.titleValue];
+                break;
+            }
+            case 1: //清空笔记本
+            {
+                [self clearWordBook:popupTableViewView.titleValue];
+                break;
+            }
+        }
     }
-    else //清空历史纪录
+    else if (popupTableViewView.tag == 1)//清空历史纪录
     {
-        
+        [self clearHistoryWordBook];
     }
+    else if (popupTableViewView.tag == 2)
+    {
+        switch (indexPath.row) {
+            case 0: //设为默认笔记本
+            {
+                [self SettingDefaultWordBook:popupTableViewView.titleValue];
+                break;
+            }
+            case 1: //清空笔记本
+            {
+                [self clearWordBook:popupTableViewView.titleValue];
+                break;
+            }
+            case 2: //删除笔记本
+            {
+                [self deleteWordBook:popupTableViewView.titleValue];
+                break;
+            }
+        }
+    }
+}
+
+- (void)testlog {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext]];
+    NSArray* results1 = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    for (WordBookModel *wordBook in results1) {
+        NSLog(@"wordBook.title   %@",wordBook.title);
+        for (NSObject *object in [wordBook.words objectEnumerator]) {
+            NSLog(@"((Word *)object).name   %@",((WordModel *)object).word);
+        }
+    }
+}
+
+#pragma mark - UIAlertViewDelegate
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    UITextField *textField = [alertView textFieldAtIndex:0];
+    if (buttonIndex == 1) {
+        if ([textField.text isEqualToString:@""]) {
+            
+            return;
+        }
+        WordBookModel *wordBookModel = [NSEntityDescription insertNewObjectForEntityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext];
+        wordBookModel.title = textField.text;
+        wordBookModel.defaulted = @"0";
+        wordBookModel.date = [self getDate];
+        if (![self.managedObjectContext save:nil]) {
+            NSLog(@"error!");
+        } else {
+            NSLog(@"ok.");
+        }
+    }
+}
+
+#pragma mark - Event Response
+
+- (void)longPressToDo:(UILongPressGestureRecognizer *)gesture {
+    if(gesture.state == UIGestureRecognizerStateBegan) {
+        CGPoint point = [gesture locationInView:self.tableView];
+        //判断是否在列表中长按
+        if (point.y > self.tableView.tableHeaderView.height) {
+            NSIndexPath * indexPath = [self.tableView indexPathForRowAtPoint:point];
+            if(indexPath == nil) {
+                return ;
+            }
+            BEPopupTableView *popupTableView = [[BEPopupTableView alloc] initWithView];
+            popupTableView.dataArray = [[NSArray alloc] initWithObjects:@"默认添加到此生词本", @"清空生词本", @"删除生词本", nil];
+            NSManagedObject *object = [self.wordBookModelResults objectAtIndexPath:indexPath];
+            popupTableView.titleValue = [object valueForKey:@"title"];
+            popupTableView.tag = 2;
+            popupTableView.delegate = self;
+            [popupTableView show];
+        }
+    }
+}
+
+#pragma mark - Private Methods
+
+- (void)SettingDefaultWordBook:(NSString *)wordBook {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"defaulted==%@", @"1"]];
+    NSArray* defaultedResults = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    for (WordBookModel *wordBookModel in defaultedResults) {
+        wordBookModel.defaulted = @"0";
+    }
+    
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", wordBook]];
+    NSArray* results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    WordBookModel *wordBookModel = (WordBookModel *)[results firstObject];
+    wordBookModel.defaulted = @"1";
+    
+    if (![self.managedObjectContext save:nil]) {
+        NSLog(@"error!");
+    } else {
+        NSLog(@"ok.");
+    }
+}
+
+- (void)clearWordBook:(NSString *)wordBook {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", wordBook]];
+    NSArray* results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    WordBookModel *wordBookModel = (WordBookModel *)[results firstObject];
+    wordBookModel.words = nil;
+    if (![self.managedObjectContext save:nil]) {
+        NSLog(@"error!");
+    } else {
+        NSLog(@"ok.");
+    }
+}
+
+- (void)clearHistoryWordBook {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"HistoryWordBookModel" inManagedObjectContext:self.managedObjectContext]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", @"历史纪录"]];
+    NSArray* results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    HistoryWordBookModel *wordBookModel = (HistoryWordBookModel *)[results firstObject];
+    wordBookModel.words = nil;
+    if (![self.managedObjectContext save:nil]) {
+        NSLog(@"error!");
+    } else {
+        NSLog(@"ok.");
+    }
+}
+
+- (void)deleteWordBook:(NSString *)wordBook {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", wordBook]];
+    NSArray* results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    WordBookModel *wordBookModel = (WordBookModel *)[results firstObject];
+    wordBookModel.words = nil;
+    if ([wordBookModel.defaulted isEqualToString:@"1"]) {
+        [self SettingDefaultWordBook:@"我的生词本"];
+    }
+    [self.managedObjectContext deleteObject:wordBookModel];
+    
+    
+    if (![self.managedObjectContext save:nil]) {
+        NSLog(@"error!");
+    } else {
+        NSLog(@"ok.");
+    }
+}
+
+-(NSString *)getDate {
+    NSDateFormatter*formatter = [[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"YYYY-MM-dd hh:mm:ss"];
+    NSString *locationString = [formatter stringFromDate: [NSDate date]];
+    return locationString;
+}
+
+- (void)navigateToDetailViewController:(NSString *)workBook {
+    BEWordBookDetailViewController *controller = [[BEWordBookDetailViewController alloc] init];
+    controller.workBook = workBook;
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 #pragma mark - Getters / Setters
@@ -121,9 +347,11 @@
     }
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero];
     _tableView.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight - 64);
-    //    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    //    _tableView.backgroundColor = [UIColor BEFrenchGrayColor];
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _tableView.backgroundColor = [UIColor BEFrenchGrayColor];
     _tableView.showsVerticalScrollIndicator = NO;
+    _tableView.estimatedRowHeight = 44.0f;
+    _tableView.rowHeight = UITableViewAutomaticDimension;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     UILongPressGestureRecognizer * longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressToDo:)];
@@ -133,52 +361,40 @@
     return _tableView;
 }
 
--(void)longPressToDo:(UILongPressGestureRecognizer *)gesture
-{
-    
-    if(gesture.state == UIGestureRecognizerStateBegan)
-    {
-        CGPoint point = [gesture locationInView:self.tableView];
-        //判断是否在列表中长按
-        if (point.y > self.tableView.tableHeaderView.height) {
-            NSIndexPath * indexPath = [self.tableView indexPathForRowAtPoint:point];
-            NSLog(@"%d", indexPath.row);
-            if(indexPath == nil) return ;
-            
-            BEPopupTableView *popupTableView = [[BEPopupTableView alloc] initWithView];
-            popupTableView.dataArray = [[NSArray alloc] initWithObjects:@"默认添加到此生词本", @"清空生词本", @"删除生词本", nil];
-            popupTableView.tag = 2;
-            popupTableView.delegate = self;
-            [popupTableView show];
-        }
-    }
-}
-
-- (UIView *)headerView {
+- (BEWordBookHeaderView *)headerView {
     if (_headerView != nil) {
         return _headerView;
     }
     _headerView = [[BEWordBookHeaderView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 60 + (ScreenWidth - 30) / 2)];
-    _headerView.addWordBookBlock = ^(){
-        NSLog(@"addWordBookBlock");
-    };
     @weakify(self);
+    _headerView.addWordBookBlock = ^(){
+        @strongify(self);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"新建生词本"
+                                                        message:@""
+                                                       delegate:self
+                                              cancelButtonTitle:@"取消"
+                                              otherButtonTitles:@"确定",nil];
+        [alert setAlertViewStyle:UIAlertViewStylePlainTextInput];
+        [alert show];
+    };
     _headerView.wordViewBlock = ^(){
         @strongify(self);
-        BEWordBookDetailViewController *controller = [[BEWordBookDetailViewController alloc] init];
-        [self.navigationController pushViewController:controller animated:YES];
+        [self navigateToDetailViewController:@"我的生词本"];
     };
     _headerView.wordViewLongPressBlock = ^(){
         @strongify(self);
         BEPopupTableView *popupTableView = [[BEPopupTableView alloc] initWithView];
         popupTableView.dataArray = [[NSArray alloc] initWithObjects:@"默认添加到此生词本", @"清空生词本", nil];
         popupTableView.tag = 0;
+        popupTableView.titleValue = @"我的生词本";
         popupTableView.delegate = self;
         [popupTableView show];
     };
     _headerView.historyViewBlock = ^(){
         @strongify(self);
         BEWordBookDetailViewController *controller = [[BEWordBookDetailViewController alloc] init];
+        controller.workBook = @"历史纪录";
+        controller.history = YES;
         [self.navigationController pushViewController:controller animated:YES];
     };
     _headerView.historyViewLongPressBlock = ^(){
@@ -191,6 +407,72 @@
     };
     
     return _headerView;
+}
+
+- (NSFetchedResultsController *)wordBookModelResults
+{
+    if (_wordBookModelResults != nil) {
+        return _wordBookModelResults;
+    }
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title!=%@", @"我的生词本"]];
+    
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    aFetchedResultsController.delegate = self;
+    _wordBookModelResults = aFetchedResultsController;
+    
+    NSError *error = nil;
+    if (![_wordBookModelResults performFetch:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    return _wordBookModelResults;
+}
+
+- (NSFetchedResultsController *)defaultWordBookModelResults
+{
+    if (_defaultWordBookModelResults != nil) {
+        return _defaultWordBookModelResults;
+    }
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==我的生词本"]];
+    
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    aFetchedResultsController.delegate = self;
+    _defaultWordBookModelResults = aFetchedResultsController;
+
+    NSError *error = nil;
+    if (![_defaultWordBookModelResults performFetch:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    return _defaultWordBookModelResults;
+}
+
+- (NSManagedObjectContext *)managedObjectContext {
+    if (_managedObjectContext != nil) {
+        return _managedObjectContext;
+    }
+    id delegate = [[UIApplication sharedApplication] delegate];
+    _managedObjectContext = [delegate managedObjectContext];
+    
+    return _managedObjectContext;
 }
 
 @end

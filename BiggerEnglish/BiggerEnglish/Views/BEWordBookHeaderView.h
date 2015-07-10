@@ -10,6 +10,8 @@
 
 @interface BEWordBookHeaderView : UIView
 
+@property (nonatomic, copy) NSString *wordViewText;
+
 typedef void (^AddWordBookBlock)(void);
 @property (nonatomic, copy) AddWordBookBlock addWordBookBlock;
 

@@ -62,7 +62,12 @@
 		42A7A1211B2ED1CF005D7AD1 /* BEOxfordStatisticsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7A1201B2ED1CF005D7AD1 /* BEOxfordStatisticsModel.m */; };
 		42A7A1241B2ED347005D7AD1 /* BETranslationCETModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7A1231B2ED347005D7AD1 /* BETranslationCETModel.m */; };
 		42A7A1271B2ED38F005D7AD1 /* BECETSentenceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7A1261B2ED38F005D7AD1 /* BECETSentenceModel.m */; };
+		42AC3B551B4E61D200C0F734 /* BEWordBookTitleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AC3B541B4E61D200C0F734 /* BEWordBookTitleCell.m */; };
+		42AC3B5B1B4EA78400C0F734 /* WordBookModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AC3B5A1B4EA78400C0F734 /* WordBookModel.m */; };
+		42AC3B611B4EA78500C0F734 /* WordModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AC3B601B4EA78500C0F734 /* WordModel.m */; };
 		42B57F6B1B0D874600E85DD6 /* ResponseSuper.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B57F6A1B0D874600E85DD6 /* ResponseSuper.m */; };
+		42B6BD491B4F611E00548D3E /* SentenceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B6BD481B4F611E00548D3E /* SentenceModel.m */; };
+		42B6BD4C1B4FBA9B00548D3E /* HistoryWordBookModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B6BD4B1B4FBA9B00548D3E /* HistoryWordBookModel.m */; };
 		42BA9D841B13180B00FB55BF /* MJRefresh.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 42BA9D6C1B13180B00FB55BF /* MJRefresh.bundle */; };
 		42BA9D851B13180B00FB55BF /* MJRefreshComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BA9D6F1B13180B00FB55BF /* MJRefreshComponent.m */; };
 		42BA9D861B13180B00FB55BF /* MJRefreshConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BA9D711B13180B00FB55BF /* MJRefreshConst.m */; };
@@ -79,8 +84,6 @@
 		42BE9DB81B33F4F80042680D /* BEBaiduTranslaterModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BE9DB71B33F4F80042680D /* BEBaiduTranslaterModel.m */; };
 		42BF684B1B1EA73A00255496 /* BEDailyDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BF684A1B1EA73A00255496 /* BEDailyDetailViewController.m */; };
 		42BF684E1B1EED7500255496 /* BESettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BF684D1B1EED7500255496 /* BESettingViewController.m */; };
-		42CDD9261B4CD63800C8F4DC /* WordBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CDD9251B4CD63800C8F4DC /* WordBook.m */; };
-		42CDD9291B4CD63900C8F4DC /* Word.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CDD9281B4CD63900C8F4DC /* Word.m */; };
 		42CDD92C1B4D1EC200C8F4DC /* BEPopupTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CDD92B1B4D1EC200C8F4DC /* BEPopupTableView.m */; };
 		42DCBAA81B1EFBB700572474 /* BEUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DCBAA71B1EFBB700572474 /* BEUserViewController.m */; };
 		42DCBAAB1B1EFC2E00572474 /* BELoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42DCBAAA1B1EFC2E00572474 /* BELoginViewController.m */; };
@@ -217,8 +220,18 @@
 		42A7A1231B2ED347005D7AD1 /* BETranslationCETModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BETranslationCETModel.m; sourceTree = "<group>"; };
 		42A7A1251B2ED38F005D7AD1 /* BECETSentenceModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BECETSentenceModel.h; sourceTree = "<group>"; };
 		42A7A1261B2ED38F005D7AD1 /* BECETSentenceModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BECETSentenceModel.m; sourceTree = "<group>"; };
+		42AC3B531B4E61D200C0F734 /* BEWordBookTitleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEWordBookTitleCell.h; sourceTree = "<group>"; };
+		42AC3B541B4E61D200C0F734 /* BEWordBookTitleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEWordBookTitleCell.m; sourceTree = "<group>"; };
+		42AC3B591B4EA78400C0F734 /* WordBookModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordBookModel.h; sourceTree = "<group>"; };
+		42AC3B5A1B4EA78400C0F734 /* WordBookModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordBookModel.m; sourceTree = "<group>"; };
+		42AC3B5F1B4EA78500C0F734 /* WordModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordModel.h; sourceTree = "<group>"; };
+		42AC3B601B4EA78500C0F734 /* WordModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordModel.m; sourceTree = "<group>"; };
 		42B57F691B0D874600E85DD6 /* ResponseSuper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResponseSuper.h; sourceTree = "<group>"; };
 		42B57F6A1B0D874600E85DD6 /* ResponseSuper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseSuper.m; sourceTree = "<group>"; };
+		42B6BD471B4F611E00548D3E /* SentenceModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SentenceModel.h; sourceTree = "<group>"; };
+		42B6BD481B4F611E00548D3E /* SentenceModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SentenceModel.m; sourceTree = "<group>"; };
+		42B6BD4A1B4FBA9B00548D3E /* HistoryWordBookModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryWordBookModel.h; sourceTree = "<group>"; };
+		42B6BD4B1B4FBA9B00548D3E /* HistoryWordBookModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryWordBookModel.m; sourceTree = "<group>"; };
 		42BA9D691B1300AA00FB55BF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		42BA9D6C1B13180B00FB55BF /* MJRefresh.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MJRefresh.bundle; sourceTree = "<group>"; };
 		42BA9D6D1B13180B00FB55BF /* MJRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJRefresh.h; sourceTree = "<group>"; };
@@ -252,10 +265,6 @@
 		42BF684A1B1EA73A00255496 /* BEDailyDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEDailyDetailViewController.m; sourceTree = "<group>"; };
 		42BF684C1B1EED7500255496 /* BESettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BESettingViewController.h; sourceTree = "<group>"; };
 		42BF684D1B1EED7500255496 /* BESettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BESettingViewController.m; sourceTree = "<group>"; };
-		42CDD9241B4CD63800C8F4DC /* WordBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordBook.h; sourceTree = "<group>"; };
-		42CDD9251B4CD63800C8F4DC /* WordBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordBook.m; sourceTree = "<group>"; };
-		42CDD9271B4CD63900C8F4DC /* Word.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Word.h; sourceTree = "<group>"; };
-		42CDD9281B4CD63900C8F4DC /* Word.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Word.m; sourceTree = "<group>"; };
 		42CDD92A1B4D1EC200C8F4DC /* BEPopupTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEPopupTableView.h; sourceTree = "<group>"; };
 		42CDD92B1B4D1EC200C8F4DC /* BEPopupTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEPopupTableView.m; sourceTree = "<group>"; };
 		42DCBAA61B1EFBB700572474 /* BEUserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEUserViewController.h; sourceTree = "<group>"; };
@@ -420,6 +429,8 @@
 				422F21CE1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m */,
 				427F6CAA1B4B67B7001D98C8 /* BEWordBookCell.h */,
 				427F6CAB1B4B67B7001D98C8 /* BEWordBookCell.m */,
+				42AC3B531B4E61D200C0F734 /* BEWordBookTitleCell.h */,
+				42AC3B541B4E61D200C0F734 /* BEWordBookTitleCell.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -704,10 +715,14 @@
 				422CC52A1B26FA3C0070F4FA /* ReadContentModel.m */,
 				42BAFDD11B298B1800427CE4 /* DailyDetailModel.h */,
 				42BAFDD21B298B1800427CE4 /* DailyDetailModel.m */,
-				42CDD9271B4CD63900C8F4DC /* Word.h */,
-				42CDD9281B4CD63900C8F4DC /* Word.m */,
-				42CDD9241B4CD63800C8F4DC /* WordBook.h */,
-				42CDD9251B4CD63800C8F4DC /* WordBook.m */,
+				42AC3B5F1B4EA78500C0F734 /* WordModel.h */,
+				42AC3B601B4EA78500C0F734 /* WordModel.m */,
+				42AC3B591B4EA78400C0F734 /* WordBookModel.h */,
+				42AC3B5A1B4EA78400C0F734 /* WordBookModel.m */,
+				42B6BD471B4F611E00548D3E /* SentenceModel.h */,
+				42B6BD481B4F611E00548D3E /* SentenceModel.m */,
+				42B6BD4A1B4FBA9B00548D3E /* HistoryWordBookModel.h */,
+				42B6BD4B1B4FBA9B00548D3E /* HistoryWordBookModel.m */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -887,11 +902,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				4295804B1B20341500C759D7 /* BEReadDetailViewController.m in Sources */,
+				42B6BD4C1B4FBA9B00548D3E /* HistoryWordBookModel.m in Sources */,
 				42A7A1061B2EC6B8005D7AD1 /* BETranslationBaesInfoModel.m in Sources */,
 				427F6CB01B4B7AEA001D98C8 /* BEWordBookDetailViewController.m in Sources */,
 				42BA9D8D1B13180B00FB55BF /* UIScrollView+MJExtension.m in Sources */,
 				4204C9151B02088400169446 /* AppDelegate.m in Sources */,
-				42CDD9291B4CD63900C8F4DC /* Word.m in Sources */,
 				429575751B02E2EB0064FC69 /* BEMenuSectionView.m in Sources */,
 				42BA9D881B13180B00FB55BF /* MJRefreshGifFooter.m in Sources */,
 				42BA9D8E1B13180B00FB55BF /* UIScrollView+MJRefresh.m in Sources */,
@@ -923,7 +938,6 @@
 				42DE004B1B4247860039325F /* UIColor+Custom.m in Sources */,
 				42DCBAA81B1EFBB700572474 /* BEUserViewController.m in Sources */,
 				42908FBA1B0C8CA1000F29FB /* BELazyScrollView.m in Sources */,
-				42CDD9261B4CD63800C8F4DC /* WordBook.m in Sources */,
 				4295758B1B02EB1E0064FC69 /* EXTScope.m in Sources */,
 				422F21CC1B3D383E0030561F /* BETranslateCheckMoreCell.m in Sources */,
 				422F21CF1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m in Sources */,
@@ -932,6 +946,7 @@
 				429575911B02EC620064FC69 /* UIImage+Tint.m in Sources */,
 				42BE9DB81B33F4F80042680D /* BEBaiduTranslaterModel.m in Sources */,
 				422F21C61B3CF98B0030561F /* BETranslateSentenceViewController.m in Sources */,
+				42AC3B551B4E61D200C0F734 /* BEWordBookTitleCell.m in Sources */,
 				429575951B02F7EE0064FC69 /* BEDailyViewController.m in Sources */,
 				42A1F5841B2A72A9000EEB3B /* BEWebViewController.m in Sources */,
 				42DCBAAB1B1EFC2E00572474 /* BELoginViewController.m in Sources */,
@@ -953,6 +968,7 @@
 				42BA9D8A1B13180B00FB55BF /* MJRefreshHeader.m in Sources */,
 				429FE1BD1B40E22D009AC149 /* EnglishDictionaryManager.m in Sources */,
 				42BF684E1B1EED7500255496 /* BESettingViewController.m in Sources */,
+				42AC3B5B1B4EA78400C0F734 /* WordBookModel.m in Sources */,
 				42A7A1001B2EC5C2005D7AD1 /* BETranslationModel.m in Sources */,
 				42A7A1241B2ED347005D7AD1 /* BETranslationCETModel.m in Sources */,
 				4204C9181B02088400169446 /* BiggerEnglish.xcdatamodeld in Sources */,
@@ -962,10 +978,12 @@
 				4295804F1B2039D600C759D7 /* BEReadModel.m in Sources */,
 				42A7A1121B2EC7C6005D7AD1 /* BETranslationOxfordModel.m in Sources */,
 				42A7A11B1B2ECE48005D7AD1 /* BEBaseinfoSymbolsModel.m in Sources */,
+				42B6BD491B4F611E00548D3E /* SentenceModel.m in Sources */,
 				429575781B02E3D90064FC69 /* BEMenuSectionCell.m in Sources */,
 				42BA9D871B13180B00FB55BF /* MJRefreshFooter.m in Sources */,
 				422CC52B1B26FA3C0070F4FA /* ReadContentModel.m in Sources */,
 				429580481B202E6C00C759D7 /* BEReadViewCell.m in Sources */,
+				42AC3B611B4EA78500C0F734 /* WordModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

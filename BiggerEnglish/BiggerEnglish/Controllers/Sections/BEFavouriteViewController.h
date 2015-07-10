@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BEFavouriteViewController : UIViewController <NSFetchedResultsControllerDelegate>
+@interface BEFavouriteViewController : UIViewController 
 
 @end
