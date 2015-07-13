@@ -72,11 +72,11 @@
     <elements>
         <element name="DailyDetailModel" positionX="261" positionY="180" width="128" height="253"/>
         <element name="FavourModel" positionX="54" positionY="90" width="128" height="180"/>
+        <element name="HistoryWordBookModel" positionX="252" positionY="189" width="128" height="75"/>
         <element name="LoveModel" positionX="511" positionY="45" width="128" height="58"/>
         <element name="ReadContentModel" positionX="727" positionY="267" width="128" height="148"/>
         <element name="SentenceModel" positionX="252" positionY="189" width="128" height="120"/>
         <element name="WordBookModel" positionX="529" positionY="342" width="128" height="105"/>
         <element name="WordModel" positionX="396" positionY="225" width="128" height="165"/>
-        <element name="HistoryWordBookModel" positionX="252" positionY="189" width="128" height="75"/>
     </elements>
 </model>

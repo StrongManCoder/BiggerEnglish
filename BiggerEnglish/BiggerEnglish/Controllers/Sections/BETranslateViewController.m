@@ -38,7 +38,10 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 @interface BETranslateViewController() <UITextFieldDelegate, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate,AVAudioPlayerDelegate, MBProgressHUDDelegate>
 
 @property (nonatomic, strong) UIView *blankView;
-@property (nonatomic, strong) UILabel *jokeLabel;
+@property (nonatomic, strong) UIButton *changeButton;
+@property (nonatomic, strong) UIImageView *roundArrowImage;
+@property (nonatomic, strong) UIButton *wordButton;
+@property (nonatomic, strong) UILabel *wordTranslateLabel;
 
 @property (nonatomic, strong) EnglishDictionaryManager *englishDictionaryManager;
 
@@ -106,6 +109,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     
     [self configureView];
     [self configureGesture];
+    [self randomWord];
 }
 
 #pragma mark - UITextFieldDelegate
@@ -337,6 +341,12 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
             break;
     }
     [self.navigationController pushViewController:controller animated:YES];
+}
+
+- (void)randomWord {
+    NSDictionary *dictionary = [self.englishDictionaryManager randomWord];
+    [self.wordButton setTitle:[dictionary allKeys][0] forState:UIControlStateNormal];
+    self.wordTranslateLabel.text = [dictionary valueForKey:[dictionary allKeys][0]];
 }
 
 - (void)chineseTranslator:(NSString *)str {
@@ -585,6 +595,30 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     }
 }
 
+- (void)changeButtonClick:(id)sender {
+    [self randomWord];
+    [self.searchTextField resignFirstResponder];
+    CABasicAnimation* rotationAnimation;
+    rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    rotationAnimation.toValue = [NSNumber numberWithFloat: M_PI * 2.0 ];
+    rotationAnimation.duration = 0.5;
+    rotationAnimation.cumulative = YES;
+    rotationAnimation.repeatCount = 1;
+    
+    [self.roundArrowImage.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
+}
+
+- (void)wordButtonClick:(id)sender {
+    [self.searchTextField resignFirstResponder];
+    self.searchTableView.hidden = YES;
+    self.tableView.hidden = NO;
+    self.blankView.hidden = YES;
+    self.englishView.hidden = NO;
+    self.chineseView.hidden = YES;
+    self.searchEnglishLabel.text = self.wordButton.titleLabel.text;
+    [self englishTranslator:self.searchEnglishLabel.text];
+}
+
 #pragma mark - Private Methods
 
 - (void)configureNavigationItems {
@@ -618,7 +652,10 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.searchTableView];
     [self.view addSubview:self.blankView];
-    [self.blankView addSubview:self.jokeLabel];
+    [self.blankView addSubview:self.changeButton];
+    [self.blankView addSubview:self.roundArrowImage];
+    [self.blankView addSubview:self.wordButton];
+    [self.blankView addSubview:self.wordTranslateLabel];
 
     [self.blankView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).with.offset(0);
@@ -626,7 +663,21 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         make.right.equalTo(self.view.mas_right).with.offset(0);
         make.bottom.equalTo(self.view.mas_bottom).with.offset(0);
     }];
-    [self.jokeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.roundArrowImage mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(self.changeButton.mas_centerY);
+        make.right.equalTo(self.changeButton.mas_left).with.offset(0);
+        make.height.mas_equalTo(@23);
+        make.width.mas_equalTo(@23);
+    }];
+    [self.changeButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.blankView.mas_top).with.offset(10);
+        make.right.equalTo(self.blankView.mas_right).with.offset(-10);
+    }];
+    [self.wordButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.wordTranslateLabel.mas_top).with.offset(-10);
+        make.centerX.mas_equalTo(self.blankView.mas_centerX);
+    }];
+    [self.wordTranslateLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self.blankView.mas_centerX);
         make.centerY.mas_equalTo(self.blankView.mas_centerY);
         make.width.mas_equalTo(ScreenWidth - 20);
@@ -747,11 +798,6 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     //判断是否已经存在单词
     for (WordModel *item in [historyWordBookModel.words allObjects]) {
         if ([item.word isEqualToString:self.searchEnglishLabel.text]) {
-            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            hud.mode = MBProgressHUDModeText;
-            hud.labelText = [NSString stringWithFormat:@"单词已经存在！"];
-            hud.delegate = self;
-            [hud hide:YES afterDelay:1.5];
             return;
         }
     }
@@ -849,18 +895,55 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     return _blankView;
 }
 
-- (UILabel *)jokeLabel {
-    if (_jokeLabel != nil) {
-        return _jokeLabel;
+- (UIImageView *)roundArrowImage {
+    if (_roundArrowImage != nil) {
+        return _roundArrowImage;
     }
-    _jokeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    _jokeLabel.textAlignment = NSTextAlignmentLeft;
-    _jokeLabel.textColor = [UIColor BEDeepFontColor];
-    _jokeLabel.font = [UIFont systemFontOfSize:16];
-    _jokeLabel.numberOfLines = 0;
-    _jokeLabel.text = @"不背单词，考英语就会是下面这种下场：\n我们知道賢鏛是在生活中很重要的。比如在鼙蠻和贎鬍里，有彃燊在罅鷄那里蘩墝，之前他们鏈鴊恆闳嘑傡彚槩滼鞷蕻賤鬡艐倏雫寬褲灣。\n1.鞷 在文中的意思？\n2.这篇文章的最佳标题？\n3.作者没有告诉我们什么？\n4.作者为什么说“恆闳嘑傡彚槩”？";
+    _roundArrowImage = [[UIImageView alloc] initWithFrame:CGRectZero];
+    _roundArrowImage.image = [[UIImage imageNamed:@"icon_roundarrow"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     
-    return _jokeLabel;
+    return _roundArrowImage;
+}
+
+- (UIButton *)changeButton {
+    if (_changeButton != nil) {
+        return _changeButton;
+    }
+    _changeButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    _changeButton.frame = CGRectZero;
+    _changeButton.tintColor = [UIColor BEHighLightFontColor];
+    _changeButton.backgroundColor = [UIColor whiteColor];
+    _changeButton.titleLabel.font = [UIFont systemFontOfSize:18];
+    [_changeButton addTarget:self action:@selector(changeButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [_changeButton setTitle:@"换一下" forState:UIControlStateNormal];
+
+    return _changeButton;
+}
+
+- (UIButton *)wordButton {
+    if (_wordButton != nil) {
+        return _wordButton;
+    }
+    _wordButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    _wordButton.frame = CGRectZero;
+    _wordButton.tintColor = [UIColor BEHighLightFontColor];
+    _wordButton.backgroundColor = [UIColor whiteColor];
+    _wordButton.titleLabel.font = [UIFont boldSystemFontOfSize:40];
+    [_wordButton addTarget:self action:@selector(wordButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+
+    return _wordButton;
+}
+
+- (UILabel *)wordTranslateLabel {
+    if (_wordTranslateLabel != nil) {
+        return _wordTranslateLabel;
+    }
+    _wordTranslateLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _wordTranslateLabel.textAlignment = NSTextAlignmentCenter;
+    _wordTranslateLabel.textColor = [UIColor BEDeepFontColor];
+    _wordTranslateLabel.font = [UIFont systemFontOfSize:18];
+    
+    return _wordTranslateLabel;
 }
 
 - (UIView *)chineseView {

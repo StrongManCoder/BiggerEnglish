@@ -39,7 +39,6 @@
     FMResultSet *resultSet = [self.database executeQuery:sql];
     while ([resultSet next])
     {
-        
         [array addObject:([NSString stringWithFormat:@"%@； %@", [resultSet stringForColumn: @"english"], [resultSet stringForColumn: @"chinese"]])];
     }
     return array;
@@ -55,12 +54,25 @@
     FMResultSet *resultSet = [self.database executeQuery:sql];
     while ([resultSet next])
     {
-        
         [array addObject:([NSString stringWithFormat:@"%@；", [resultSet stringForColumn: @"chinese"]])];
     }
     return array;
 }
 
+- (NSDictionary *)randomWord {
+    NSDictionary *dictionary;
+    if (![self.database open])
+    {
+        return nil;
+    }
+    NSString *sql = [NSString stringWithFormat:@"select * from t_words where LENGTH(english)>8 ORDER BY random() LIMIT 1 "];
+    FMResultSet *resultSet = [self.database executeQuery:sql];
+    while ([resultSet next])
+    {
+        dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[resultSet stringForColumn: @"chinese"], [resultSet stringForColumn: @"english"], nil];
+    }
+    return dictionary;
+}
 
 - (void)dealloc {
     [self.database close];

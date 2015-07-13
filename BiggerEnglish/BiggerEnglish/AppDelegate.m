@@ -68,10 +68,9 @@
     
     HistoryWordBookModel *historyWordBookModel = [NSEntityDescription insertNewObjectForEntityForName:@"HistoryWordBookModel" inManagedObjectContext:self.managedObjectContext];
     historyWordBookModel.title = @"历史纪录";
-    WordModel *wordModel1 = [NSEntityDescription insertNewObjectForEntityForName:@"WordModel" inManagedObjectContext:self.managedObjectContext];
-    wordModel1.word = @"生词本1的单词";
-    [historyWordBookModel addWordsObject:wordModel1];
-
+//    WordModel *wordModel1 = [NSEntityDescription insertNewObjectForEntityForName:@"WordModel" inManagedObjectContext:self.managedObjectContext];
+//    wordModel1.word = @"生词本1的单词";
+//    [historyWordBookModel addWordsObject:wordModel1];
     
     if (![self.managedObjectContext save:nil]) {
         NSLog(@"init wordbook error!");

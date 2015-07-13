@@ -19,6 +19,7 @@
 		422F21C91B3D37B60030561F /* BETranslateCETSentenceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 422F21C81B3D37B60030561F /* BETranslateCETSentenceCell.m */; };
 		422F21CC1B3D383E0030561F /* BETranslateCheckMoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 422F21CB1B3D383E0030561F /* BETranslateCheckMoreCell.m */; };
 		422F21CF1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 422F21CE1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m */; };
+		4231875B1B53A7290059CF5F /* WordModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4231875A1B53A7290059CF5F /* WordModel.m */; };
 		423854A71B18083400567BC3 /* BEFavouriteViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 423854A61B18083400567BC3 /* BEFavouriteViewCell.m */; };
 		423854AA1B1811CD00567BC3 /* BEDailyCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 423854A91B1811CD00567BC3 /* BEDailyCommentCell.m */; };
 		424ABE241B4BBE3200D7C2A2 /* BEWordBookHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 424ABE231B4BBE3200D7C2A2 /* BEWordBookHeaderView.m */; };
@@ -64,7 +65,6 @@
 		42A7A1271B2ED38F005D7AD1 /* BECETSentenceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7A1261B2ED38F005D7AD1 /* BECETSentenceModel.m */; };
 		42AC3B551B4E61D200C0F734 /* BEWordBookTitleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AC3B541B4E61D200C0F734 /* BEWordBookTitleCell.m */; };
 		42AC3B5B1B4EA78400C0F734 /* WordBookModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AC3B5A1B4EA78400C0F734 /* WordBookModel.m */; };
-		42AC3B611B4EA78500C0F734 /* WordModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AC3B601B4EA78500C0F734 /* WordModel.m */; };
 		42B57F6B1B0D874600E85DD6 /* ResponseSuper.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B57F6A1B0D874600E85DD6 /* ResponseSuper.m */; };
 		42B6BD491B4F611E00548D3E /* SentenceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B6BD481B4F611E00548D3E /* SentenceModel.m */; };
 		42B6BD4C1B4FBA9B00548D3E /* HistoryWordBookModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B6BD4B1B4FBA9B00548D3E /* HistoryWordBookModel.m */; };
@@ -133,6 +133,8 @@
 		422F21CB1B3D383E0030561F /* BETranslateCheckMoreCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BETranslateCheckMoreCell.m; sourceTree = "<group>"; };
 		422F21CD1B3D3ABB0030561F /* BETranslateExampleSentenceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BETranslateExampleSentenceCell.h; sourceTree = "<group>"; };
 		422F21CE1B3D3ABB0030561F /* BETranslateExampleSentenceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BETranslateExampleSentenceCell.m; sourceTree = "<group>"; };
+		423187591B53A7290059CF5F /* WordModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordModel.h; sourceTree = "<group>"; };
+		4231875A1B53A7290059CF5F /* WordModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordModel.m; sourceTree = "<group>"; };
 		423854A51B18083400567BC3 /* BEFavouriteViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEFavouriteViewCell.h; sourceTree = "<group>"; };
 		423854A61B18083400567BC3 /* BEFavouriteViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEFavouriteViewCell.m; sourceTree = "<group>"; };
 		423854A81B1811CD00567BC3 /* BEDailyCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEDailyCommentCell.h; sourceTree = "<group>"; };
@@ -224,8 +226,6 @@
 		42AC3B541B4E61D200C0F734 /* BEWordBookTitleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEWordBookTitleCell.m; sourceTree = "<group>"; };
 		42AC3B591B4EA78400C0F734 /* WordBookModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordBookModel.h; sourceTree = "<group>"; };
 		42AC3B5A1B4EA78400C0F734 /* WordBookModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordBookModel.m; sourceTree = "<group>"; };
-		42AC3B5F1B4EA78500C0F734 /* WordModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordModel.h; sourceTree = "<group>"; };
-		42AC3B601B4EA78500C0F734 /* WordModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WordModel.m; sourceTree = "<group>"; };
 		42B57F691B0D874600E85DD6 /* ResponseSuper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResponseSuper.h; sourceTree = "<group>"; };
 		42B57F6A1B0D874600E85DD6 /* ResponseSuper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseSuper.m; sourceTree = "<group>"; };
 		42B6BD471B4F611E00548D3E /* SentenceModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SentenceModel.h; sourceTree = "<group>"; };
@@ -715,14 +715,14 @@
 				422CC52A1B26FA3C0070F4FA /* ReadContentModel.m */,
 				42BAFDD11B298B1800427CE4 /* DailyDetailModel.h */,
 				42BAFDD21B298B1800427CE4 /* DailyDetailModel.m */,
-				42AC3B5F1B4EA78500C0F734 /* WordModel.h */,
-				42AC3B601B4EA78500C0F734 /* WordModel.m */,
 				42AC3B591B4EA78400C0F734 /* WordBookModel.h */,
 				42AC3B5A1B4EA78400C0F734 /* WordBookModel.m */,
 				42B6BD471B4F611E00548D3E /* SentenceModel.h */,
 				42B6BD481B4F611E00548D3E /* SentenceModel.m */,
 				42B6BD4A1B4FBA9B00548D3E /* HistoryWordBookModel.h */,
 				42B6BD4B1B4FBA9B00548D3E /* HistoryWordBookModel.m */,
+				423187591B53A7290059CF5F /* WordModel.h */,
+				4231875A1B53A7290059CF5F /* WordModel.m */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -935,6 +935,7 @@
 				42A7A1271B2ED38F005D7AD1 /* BECETSentenceModel.m in Sources */,
 				429575721B02E2660064FC69 /* BEMenuView.m in Sources */,
 				42BA9D8F1B13180B00FB55BF /* UIView+MJExtension.m in Sources */,
+				4231875B1B53A7290059CF5F /* WordModel.m in Sources */,
 				42DE004B1B4247860039325F /* UIColor+Custom.m in Sources */,
 				42DCBAA81B1EFBB700572474 /* BEUserViewController.m in Sources */,
 				42908FBA1B0C8CA1000F29FB /* BELazyScrollView.m in Sources */,
@@ -983,7 +984,6 @@
 				42BA9D871B13180B00FB55BF /* MJRefreshFooter.m in Sources */,
 				422CC52B1B26FA3C0070F4FA /* ReadContentModel.m in Sources */,
 				429580481B202E6C00C759D7 /* BEReadViewCell.m in Sources */,
-				42AC3B611B4EA78500C0F734 /* WordModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -41,6 +41,8 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 
 @property (nonatomic, strong) UITableView *bottomTableView;
 
+@property (nonatomic, strong) NSMutableArray *wordBookModelResultArray;
+
 @property (nonatomic, strong) NSFetchedResultsController *wordBookModelResults;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
@@ -85,6 +87,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     }
     [self configureRightButton];
     [self configureView];
+    [self initData];
     [self configureData:0];
 }
 
@@ -121,9 +124,10 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         }
     }
     else {
-        id <NSFetchedResultsSectionInfo> sectionInfo = [self.wordBookModelResults sections][section];
-        WordBookModel *model = [[sectionInfo objects] objectAtIndex:0];
-        return [model.words count];
+//        id <NSFetchedResultsSectionInfo> sectionInfo = [self.wordBookModelResults sections][section];
+//        WordBookModel *model = [[sectionInfo objects] objectAtIndex:0];
+//        return [model.words count];
+        return [self.wordBookModelResultArray count];
     }
 }
 
@@ -149,16 +153,25 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         if (cell == nil) {
             cell = [[BEWordBookCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
         }
-        id <NSFetchedResultsSectionInfo> sectionInfo = [self.wordBookModelResults sections][0];
-        WordBookModel *wordBookModel = [[sectionInfo objects] objectAtIndex:0];
-        NSArray *array = [wordBookModel.words allObjects];
-        WordModel *wordModel = [array objectAtIndex:indexPath.row];
+//        id <NSFetchedResultsSectionInfo> sectionInfo = [self.wordBookModelResults sections][0];
+//        WordBookModel *wordBookModel = [[sectionInfo objects] objectAtIndex:0];
+//        NSArray *array = [wordBookModel.words allObjects];
+//        WordModel *wordModel = [array objectAtIndex:indexPath.row];
+//        
+//        cell.wordLabel.text = wordModel.word;
+//        cell.translateLabel.text = wordModel.translate;
+//        cell.rowNumberLabel.text = [NSString stringWithFormat:@"%d/%d", (int)indexPath.row + 1, (int)[array count]];
+//        cell.contentView.transform = CGAffineTransformMakeRotation(M_PI / 2);
+//        return cell;
+        
+        WordModel *wordModel = [self.wordBookModelResultArray objectAtIndex:indexPath.row];
         
         cell.wordLabel.text = wordModel.word;
         cell.translateLabel.text = wordModel.translate;
-        cell.rowNumberLabel.text = [NSString stringWithFormat:@"%d/%d", (int)indexPath.row + 1, (int)[array count]];
+        cell.rowNumberLabel.text = [NSString stringWithFormat:@"%d/%d", (int)indexPath.row + 1, (int)[self.wordBookModelResultArray count]];
         cell.contentView.transform = CGAffineTransformMakeRotation(M_PI / 2);
         return cell;
+
     }
 }
 
@@ -293,12 +306,61 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 }
 
 - (void)deleteWord {
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", self.workBook]];
+    NSArray* results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    WordBookModel *wordBookModel = (WordBookModel *)[results firstObject];
+    for (WordModel *item in [wordBookModel.words allObjects]) {
+        if ([item.word isEqualToString:self.searchEnglishLabel.text]) {
+            [self.managedObjectContext deleteObject:item];
+            break;
+        }
+    }
+    
+    int count = (int)[self.wordBookModelResultArray count];
+    WordModel *wordModel;
+    for (int i = 0; i < count; i++) {
+        wordModel = [self.wordBookModelResultArray objectAtIndex:i];
+        if ([wordModel.word isEqualToString:self.searchEnglishLabel.text]) {
+            [self.wordBookModelResultArray removeObjectAtIndex:i];
+            [self.bottomTableView reloadData];
+            break;
+        }
+    }
+
+    if (![self.managedObjectContext save:nil]) {
+        NSLog(@"error!");
+    } else {
+        NSLog(@"ok.");
+    }
+    [self configureData:0];
 
 }
 
 #pragma mark - Private Method
 
--(void)configureRightButton {
+- (void)initData {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    if (self.history) {
+        [fetchRequest setEntity:[NSEntityDescription entityForName:@"HistoryWordBookModel" inManagedObjectContext:self.managedObjectContext]];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", self.workBook]];
+        NSArray* results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+        WordBookModel *wordBookModel = (WordBookModel *)[results firstObject];
+        self.wordBookModelResultArray = [NSMutableArray arrayWithArray:[wordBookModel.words allObjects]];
+    }
+    else {
+        [fetchRequest setEntity:[NSEntityDescription entityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext]];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", self.workBook]];
+        NSArray* results = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+        WordBookModel *wordBookModel = (WordBookModel *)[results firstObject];
+        self.wordBookModelResultArray = [NSMutableArray arrayWithArray:[wordBookModel.words allObjects]];
+    }
+}
+
+- (void)configureRightButton {
     if (!self.history) {
     UIButton *rightButton   = [UIButton buttonWithType:UIButtonTypeCustom];
     rightButton.frame       = CGRectMake(0, 0, 25, 25);
@@ -333,18 +395,8 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 }
 
 - (void)configureData:(NSUInteger)index {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.wordBookModelResults sections][0];
-    NSArray *array;
-    if (self.history) {
-        HistoryWordBookModel *historyWordBookModel = [[sectionInfo objects] objectAtIndex:0];
-        array = [historyWordBookModel.words allObjects];
-    }
-    else {
-        WordBookModel *wordBookModel = [[sectionInfo objects] objectAtIndex:0];
-        array = [wordBookModel.words allObjects];
-    }
-    if ([array count] > 0) {
-        WordModel *wordModel = [array objectAtIndex:index];
+    if ([self.wordBookModelResultArray count] > 0) {
+        WordModel *wordModel = [self.wordBookModelResultArray objectAtIndex:index];
         self.searchEnglishLabel.text = wordModel.word;
         self.phenLabel.text = wordModel.phen;
         self.ph_en_mp3 = wordModel.phenmp3;
@@ -355,6 +407,9 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         
         [self updateLayout];
         [self configureSentence:wordModel.sentences];
+    } else {
+        self.topTableView.hidden = YES;
+        self.bottomTableView.hidden = YES;
     }
 }
 
@@ -486,9 +541,9 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     _bottomTableView = [[UITableView alloc] initWithFrame:CGRectZero];
     _bottomTableView.layer.anchorPoint = CGPointMake(0, 0);//先设置锚点再设置frame！！
     if (DeviceIsPhone) {
-        _bottomTableView.frame = CGRectMake(0, ScreenHeight - 64, IPHONESQUARESIZE, ScreenWidth);
+        _bottomTableView.frame = CGRectMake(-1, ScreenHeight - 63, IPHONESQUARESIZE + 1, ScreenWidth + 2);
     } else {
-        _bottomTableView.frame = CGRectMake(0, ScreenHeight - 64, IPADSQUARESIZE, ScreenWidth);
+        _bottomTableView.frame = CGRectMake(-1, ScreenHeight - 63, IPADSQUARESIZE + 1, ScreenWidth + 2);
     }
     _bottomTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _bottomTableView.transform = CGAffineTransformMakeRotation(-M_PI / 2);
@@ -497,6 +552,8 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     _bottomTableView.dataSource = self;
     _bottomTableView.delegate = self;
     _bottomTableView.tag = 1;
+    _bottomTableView.layer.borderWidth = 0.5;
+    _bottomTableView.layer.borderColor = [UIColor BEHighLightFontColor].CGColor;
     
     return _bottomTableView;
 }
@@ -571,7 +628,6 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     
     return _englishView;
 }
-
 
 - (UILabel *)searchEnglishLabel {
     if (_searchEnglishLabel != nil) {

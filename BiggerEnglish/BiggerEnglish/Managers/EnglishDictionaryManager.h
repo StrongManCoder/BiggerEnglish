@@ -14,4 +14,6 @@
 
 - (NSMutableArray *)translateChinese:(NSString *)word;
 
+- (NSDictionary *)randomWord;
+
 @end

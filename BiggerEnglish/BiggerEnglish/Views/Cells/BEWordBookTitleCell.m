@@ -10,6 +10,7 @@
 
 @interface BEWordBookTitleCell()
 
+@property (nonatomic, strong) UIImageView *bookImage;
 
 @end
 
@@ -26,12 +27,19 @@
 }
 
 - (void)configureViews {
+    [self.contentView addSubview:self.bookImage];
     [self.contentView addSubview:self.titleLabel];
     [self.contentView addSubview:self.defaultView];
     
+    [self.bookImage mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(self.contentView.mas_centerY);
+        make.left.equalTo(self.contentView).with.offset(15);
+        make.width.mas_equalTo(@20);
+        make.height.mas_equalTo(@20);
+    }];
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).with.offset(10);
-        make.left.equalTo(self.contentView).with.offset(15);
+        make.left.equalTo(self.bookImage.mas_right).with.offset(10);
         make.right.equalTo(self.contentView).with.offset(-15);
         make.bottom.equalTo(self.contentView).with.offset(-10);
     }];
@@ -41,6 +49,16 @@
         make.height.equalTo(@20);
         make.width.equalTo(@20);
     }];
+}
+
+- (UIImageView *)bookImage {
+    if (_bookImage != nil) {
+        return _bookImage;
+    }
+    _bookImage = [[UIImageView alloc] initWithFrame:CGRectZero];
+    _bookImage.image = [[UIImage imageNamed:@"section_categories"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    
+    return _bookImage;
 }
 
 - (UILabel *)titleLabel {
