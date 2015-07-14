@@ -676,6 +676,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     [self.wordButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.wordTranslateLabel.mas_top).with.offset(-10);
         make.centerX.mas_equalTo(self.blankView.mas_centerX);
+        make.width.mas_equalTo(ScreenWidth - 20);
     }];
     [self.wordTranslateLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self.blankView.mas_centerX);
@@ -928,7 +929,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     _wordButton.frame = CGRectZero;
     _wordButton.tintColor = [UIColor BEHighLightFontColor];
     _wordButton.backgroundColor = [UIColor whiteColor];
-    _wordButton.titleLabel.font = [UIFont boldSystemFontOfSize:40];
+    _wordButton.titleLabel.font = [UIFont boldSystemFontOfSize:44];
     [_wordButton addTarget:self action:@selector(wordButtonClick:) forControlEvents:UIControlEventTouchUpInside];
 
     return _wordButton;

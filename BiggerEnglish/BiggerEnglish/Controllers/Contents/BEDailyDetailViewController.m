@@ -270,11 +270,11 @@
     self.labelNote.frame           = CGRectMake(10, height, ScreenWidth - 20, labelNoteSize.height);
     
     height                         = height + self.labelNote.height + 15;
-    self.imageLove.frame           = CGRectMake(10, height, 30, 30);
-    self.labelLoveCount.frame      = CGRectMake(45, height, 70, 30);
-    self.imageFavour.frame         = CGRectMake(((ScreenWidth - 140) / 3) + 40, height, 30, 30);
-    self.imageShare.frame          = CGRectMake(((ScreenWidth - 140) / 3) * 2 + 70, height, 30, 30);
-    self.imagePlay.frame           = CGRectMake(ScreenWidth - 40, height, 30, 30);
+    self.imageLove.frame           = CGRectMake(10, height, 44, 44);
+    self.labelLoveCount.frame      = CGRectMake(50, height, 70, 44);
+    self.imageFavour.frame         = CGRectMake(((ScreenWidth - 140) / 3) + 40, height,44, 44);
+    self.imageShare.frame          = CGRectMake(((ScreenWidth - 140) / 3) * 2 + 70, height, 44, 44);
+    self.imagePlay.frame           = CGRectMake(ScreenWidth - 54, height, 44, 44);
     
     self.imageDivideLine.frame     = CGRectMake(10, height + 50, ScreenWidth - 20, 0.5);
     
@@ -648,6 +648,7 @@
         return _imageLove;
     }
     _imageLove  = [[UIImageView alloc] init];
+    _imageLove.contentMode = UIViewContentModeCenter;
     _imageLove.image = [[UIImage imageNamed:@"icon_love"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _imageLove.userInteractionEnabled = YES;
     UITapGestureRecognizer *imageLoveSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageLoveClick)];
@@ -674,6 +675,7 @@
         return _imageFavour;
     }
     _imageFavour = [[UIImageView alloc] init];
+    _imageFavour.contentMode = UIViewContentModeCenter;
     _imageFavour.image = [[UIImage imageNamed:@"icon_favour"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _imageFavour.userInteractionEnabled = YES;
     UITapGestureRecognizer *imageLoveSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageFavourClick)];
@@ -687,6 +689,7 @@
         return _imageShare;
     }
     _imageShare = [[UIImageView alloc] init];
+    _imageShare.contentMode = UIViewContentModeCenter;
     _imageShare.image = [[UIImage imageNamed:@"icon_share"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _imageShare.userInteractionEnabled = YES;
     UITapGestureRecognizer *imageShareSingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageShareClick)];
@@ -700,6 +703,7 @@
         return _imagePlay;
     }
     _imagePlay = [[UIImageView alloc] init];
+    _imagePlay.contentMode = UIViewContentModeCenter;
     _imagePlay.image = [[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]];
     _imagePlay.userInteractionEnabled = YES;
     UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];

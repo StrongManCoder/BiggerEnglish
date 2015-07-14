@@ -6,6 +6,7 @@
 //  Copyright (c) 2015年 etonetech. All rights reserved.
 //
 
+#import <AVFoundation/AVFoundation.h>
 
 #import "BEWordBookDetailViewController.h"
 #import "BEWordBookCell.h"
@@ -35,7 +36,7 @@ static NSString * const SENTENCEEXAMPLE = @"例句";
 static NSString * const SENTENCECETFOUREXAMPLE = @"CET-4";
 static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 
-@interface BEWordBookDetailViewController() <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate>
+@interface BEWordBookDetailViewController() <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate,AVAudioPlayerDelegate, MBProgressHUDDelegate>
 
 @property (nonatomic, strong) UITableView *topTableView;
 
@@ -60,6 +61,9 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 
 @property (nonatomic, strong) NSMutableDictionary *sentenceDicionary;
 
+@property (nonatomic, strong) NSArray *soundImageArray;
+@property (nonatomic, strong) AVAudioPlayer *player;
+
 @end
 
 @implementation BEWordBookDetailViewController
@@ -69,6 +73,10 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _history = NO;
+        self.soundImageArray = [NSArray arrayWithObjects:
+                                (id)[[UIImage imageNamed:@"icon_sound3"]imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage,
+                                (id)[[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage,
+                                (id)[[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage, nil];
     }
     return self;
 }
@@ -282,6 +290,22 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     [self.bottomTableView endUpdates];
 }
 
+#pragma mark - AVAudioPlayerDelegate
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer*)player successfully:(BOOL)flag{
+    //播放结束时执行的动作
+    [self.phamPlayImage.layer removeAllAnimations];
+    [self.phenPlayImage.layer removeAllAnimations];
+}
+
+#pragma mark - MBProgressHUDDelegate
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud.delegate = nil;
+    hud = nil;
+}
+
 #pragma mark - Event Response
 
 - (void)navigateSentenceDetailView:(UIButton *)sender {
@@ -303,6 +327,47 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
             break;
     }
     [self.navigationController pushViewController:controller animated:YES];
+}
+
+- (void)onPlayImageClick:(id)sender {
+    UITapGestureRecognizer *singleTap = (UITapGestureRecognizer *)sender;
+    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"contents"];
+    animation.calculationMode = kCAAnimationDiscrete;
+    animation.duration = 1;
+    animation.values = self.soundImageArray;
+    animation.repeatCount = HUGE_VALF;
+    
+    NSURL *url;
+    if ([singleTap view].tag == 0) {
+        [self.phenPlayImage.layer removeAllAnimations];
+        [self.phenPlayImage.layer addAnimation:animation forKey:@"frameAnimation"];
+        url = [[NSURL alloc]initWithString:self.ph_en_mp3];
+    }
+    else {
+        [self.phamPlayImage.layer removeAllAnimations];
+        [self.phamPlayImage.layer addAnimation:animation forKey:@"frameAnimation"];
+        url = [[NSURL alloc]initWithString:self.ph_am_mp3];
+    }
+    NSData * audioData = [NSData dataWithContentsOfURL:url];
+    //将数据保存到本地指定位置
+    NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"phtemp"];
+    [audioData writeToFile:filePath atomically:YES];
+    //播放本地音乐
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+    self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
+    if (self.player == nil) {
+        [self.phenPlayImage.layer removeAllAnimations];
+        [self.phamPlayImage.layer removeAllAnimations];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"播放出现错误～";
+        hud.delegate = self;
+        [hud hide:YES afterDelay:1.5];
+    } else {
+        self.player.delegate = self;
+        [self.player play];
+    }
 }
 
 - (void)deleteWord {

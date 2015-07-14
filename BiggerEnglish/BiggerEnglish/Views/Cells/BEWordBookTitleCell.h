@@ -11,6 +11,7 @@
 @interface BEWordBookTitleCell : UITableViewCell
 
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *wordCountLabel;
 @property (nonatomic, strong) UIImageView *defaultView;
 
 @end

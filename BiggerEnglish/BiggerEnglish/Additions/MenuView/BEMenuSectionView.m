@@ -36,8 +36,8 @@ static CGFloat const kAvatarHeight = 70.0f;
     self = [super initWithFrame:frame];
     if (self) {
         
-        self.sectionImageNameArray = @[@"section_nodes",@"section_categories", @"section_latest", @"section_fav", @"section_categories"];
-        self.sectionTitleArray = @[@"每日一句",@"阅读", @"翻译", @"收藏", @"单词本"];
+        self.sectionImageNameArray = @[@"section_nodes",@"section_categories", @"section_latest", @"section_categories", @"section_fav"];
+        self.sectionTitleArray = @[@"每日一句",@"阅读", @"翻译", @"单词本", @"收藏"];
         
         [self configureTableView];
         [self configureProfileView];

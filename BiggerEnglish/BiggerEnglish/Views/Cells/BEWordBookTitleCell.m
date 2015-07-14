@@ -29,6 +29,7 @@
 - (void)configureViews {
     [self.contentView addSubview:self.bookImage];
     [self.contentView addSubview:self.titleLabel];
+    [self.contentView addSubview:self.wordCountLabel];
     [self.contentView addSubview:self.defaultView];
     
     [self.bookImage mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -43,6 +44,12 @@
         make.right.equalTo(self.contentView).with.offset(-15);
         make.bottom.equalTo(self.contentView).with.offset(-10);
     }];
+    [self.wordCountLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(self.contentView.mas_centerY);
+        make.right.equalTo(self.defaultView.mas_left).with.offset(-10);
+
+    }];
+
     [self.defaultView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(self.contentView.mas_centerY);
         make.right.equalTo(self.contentView).with.offset(-10);
@@ -71,6 +78,18 @@
     _titleLabel.font = [UIFont systemFontOfSize:16];
     
     return _titleLabel;
+}
+
+- (UILabel *)wordCountLabel {
+    if (_wordCountLabel != nil) {
+        return _wordCountLabel;
+    }
+    _wordCountLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _wordCountLabel.textAlignment = NSTextAlignmentLeft;
+    _wordCountLabel.textColor = [UIColor BEDeepFontColor];
+    _wordCountLabel.font = [UIFont systemFontOfSize:15];
+    
+    return _wordCountLabel;
 }
 
 - (UIImageView *)defaultView {

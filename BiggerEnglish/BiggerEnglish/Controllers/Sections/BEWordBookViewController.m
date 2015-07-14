@@ -16,7 +16,7 @@
 #import "HistoryWordBookModel.h"
 #import "BEWordBookTitleCell.h"
 
-@interface BEWordBookViewController() <UITableViewDelegate, UITableViewDataSource, BEPopupTableViewDelegate, NSFetchedResultsControllerDelegate, UIAlertViewDelegate>
+@interface BEWordBookViewController() <UITableViewDelegate, UITableViewDataSource, BEPopupTableViewDelegate, NSFetchedResultsControllerDelegate, UIAlertViewDelegate, MBProgressHUDDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 
@@ -50,6 +50,14 @@
     [super viewDidLoad];
     
     [self configureView];
+    [self configureNotification];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self updateWordBook];
+    [self.tableView reloadData];
 }
 
 -(void)configureLeftButton {
@@ -73,6 +81,10 @@
     self.tableView.tableHeaderView = self.headerView;
 }
 
+- (void)configureNotification {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateWordBook) name:kUpdateWordBook object:nil];
+}
+
 - (void)navigateSetting {
     [[NSNotificationCenter defaultCenter] postNotificationName:kShowMenuNotification object:nil];
 }
@@ -93,7 +105,9 @@
         cell = [[BEWordBookTitleCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
     }
     NSManagedObject *object = [self.wordBookModelResults objectAtIndexPath:indexPath];
-    cell.titleLabel.text = [object valueForKey:@"title"];
+    WordBookModel *wordBookModel = (WordBookModel *)object;
+    cell.titleLabel.text = wordBookModel.title;
+    cell.wordCountLabel.text = [NSString stringWithFormat:@"%d", (int)[wordBookModel.words count]];
     if ([[object valueForKey:@"defaulted"] isEqualToString:@"1"]) {
         cell.defaultView.hidden = NO;
     }
@@ -109,12 +123,12 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSManagedObject *object = [self.wordBookModelResults objectAtIndexPath:indexPath];
+    WordBookModel *model = (WordBookModel *)object;
+    if ([[model.words allObjects] count] == 0) {
+        return;
+    }
     [self navigateToDetailViewController:[object valueForKey:@"title"]];
 }
-
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    return 40;
-//}
 
 #pragma mark - Fetched results controller
 
@@ -169,6 +183,7 @@
             case 1: //清空笔记本
             {
                 [self clearWordBook:popupTableViewView.titleValue];
+                [self updateWordBook];
                 break;
             }
         }
@@ -176,6 +191,7 @@
     else if (popupTableViewView.tag == 1)//清空历史纪录
     {
         [self clearHistoryWordBook];
+        [self updateWordBook];
     }
     else if (popupTableViewView.tag == 2)
     {
@@ -233,6 +249,14 @@
     }
 }
 
+#pragma mark - MBProgressHUDDelegate
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud.delegate = nil;
+    hud = nil;
+}
+
 #pragma mark - Event Response
 
 - (void)longPressToDo:(UILongPressGestureRecognizer *)gesture {
@@ -253,6 +277,21 @@
             [popupTableView show];
         }
     }
+}
+
+- (void)updateWordBook {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", @"我的生词本"]];
+    NSArray *result = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    WordBookModel *wordBookModel = [result objectAtIndex:0];
+    self.headerView.wordViewText = [NSString stringWithFormat:@"%d", (int)[wordBookModel.words count]];
+    
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"HistoryWordBookModel" inManagedObjectContext:self.managedObjectContext]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title==%@", @"历史纪录"]];
+    NSArray *historyResult = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    HistoryWordBookModel *historyWordBookModel = [historyResult objectAtIndex:0];
+    self.headerView.historyViewText = [NSString stringWithFormat:@"%d", (int)[historyWordBookModel.words count]];
 }
 
 #pragma mark - Private Methods
@@ -379,7 +418,9 @@
     };
     _headerView.wordViewBlock = ^(){
         @strongify(self);
-        [self navigateToDetailViewController:@"我的生词本"];
+        if ([self.headerView.wordViewText intValue] > 0) {
+            [self navigateToDetailViewController:@"我的生词本"];
+        }
     };
     _headerView.wordViewLongPressBlock = ^(){
         @strongify(self);
@@ -392,10 +433,12 @@
     };
     _headerView.historyViewBlock = ^(){
         @strongify(self);
-        BEWordBookDetailViewController *controller = [[BEWordBookDetailViewController alloc] init];
-        controller.workBook = @"历史纪录";
-        controller.history = YES;
-        [self.navigationController pushViewController:controller animated:YES];
+        if ([self.headerView.historyViewText intValue] > 0) {
+            BEWordBookDetailViewController *controller = [[BEWordBookDetailViewController alloc] init];
+            controller.workBook = @"历史纪录";
+            controller.history = YES;
+            [self.navigationController pushViewController:controller animated:YES];
+        }
     };
     _headerView.historyViewLongPressBlock = ^(){
         @strongify(self);

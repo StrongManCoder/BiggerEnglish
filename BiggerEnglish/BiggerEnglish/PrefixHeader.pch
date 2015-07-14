@@ -51,6 +51,8 @@ static NSString * const kUpdateNotificationBadgeNotification = @"UpdateNotificat
 
 static NSString * const kIgnoreTopicSuccessNotification = @"IgnoreTopicSuccessNotification";
 
+static NSString * const kUpdateWordBook = @"UpdateWordBook";
+
 //每日一句
 #define GetSentence(date)     [NSString stringWithFormat:@"http://dict-mobile.iciba.com/interface/index.php?client=4&type=1&timestamp=1432707139&c=sentence&m=getSentence&sign=55cfb0ee62705ca3&field=1,2,3,4,5,7,8,9,10,11,12,13&date=%@", (date)]
 //每日一句点赞

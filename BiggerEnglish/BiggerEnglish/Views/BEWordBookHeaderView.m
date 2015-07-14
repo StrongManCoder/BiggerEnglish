@@ -13,8 +13,11 @@
 @property (nonatomic, strong) UIView *wordView;
 @property (nonatomic, strong) UIView *historyView;
 
+@property (nonatomic, strong) UIImageView *plusImage;
 @property (nonatomic, strong) UIButton *addWordBookButton;
 @property (nonatomic, strong) UILabel *wordViewDescriptLabel;
+@property (nonatomic, strong) UILabel *historyViewDescriptLabel;
+
 @end
 
 @implementation BEWordBookHeaderView
@@ -25,13 +28,20 @@
         self.backgroundColor = [UIColor BEFrenchGrayColor];
         [self addSubview:self.wordView];
         [self addSubview:self.historyView];
+        [self addSubview:self.plusImage];
         [self addSubview:self.addWordBookButton];
     }
     return self;
 }
 
 - (void)setWordViewText:(NSString *)wordViewText {
-    self.wordViewDescriptLabel.text = wordViewText;
+    _wordViewText = wordViewText;
+    self.wordViewDescriptLabel.text = [NSString stringWithFormat:@"收录 %@ 个单词", wordViewText];
+}
+
+- (void)setHistoryViewText:(NSString *)historyViewText {
+    _historyViewText = historyViewText;
+    self.historyViewDescriptLabel.text = [NSString stringWithFormat:@"已查 %@ 个词", historyViewText];
 }
 
 - (UIView *)wordView {
@@ -106,12 +116,12 @@
     nameLabel.text = @"历史纪录";
     [_historyView addSubview:nameLabel];
 
-    UILabel *descriptLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, (_wordView.height / 2) + 10, _wordView.width, _wordView.height / 2)];
-    descriptLabel.textAlignment = NSTextAlignmentCenter;
-    descriptLabel.textColor = [UIColor BEDeepFontColor];
-    descriptLabel.font = [UIFont systemFontOfSize:14];
-    descriptLabel.text = @"已查了n个词";
-    [_historyView addSubview:descriptLabel];
+    _historyViewDescriptLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, (_wordView.height / 2) + 10, _wordView.width, _wordView.height / 2)];
+    _historyViewDescriptLabel.textAlignment = NSTextAlignmentCenter;
+    _historyViewDescriptLabel.textColor = [UIColor BEDeepFontColor];
+    _historyViewDescriptLabel.font = [UIFont systemFontOfSize:14];
+    _historyViewDescriptLabel.text = @"已查了n个词";
+    [_historyView addSubview:_historyViewDescriptLabel];
 
     return _historyView;
 }
@@ -124,10 +134,20 @@
     _addWordBookButton.frame = CGRectMake(ScreenWidth / 2 - 100, 20 + ((ScreenWidth - 30) / 2), 200, 30);
     _addWordBookButton.titleLabel.font = [UIFont systemFontOfSize: 16.0];
     [_addWordBookButton setTitleColor:[UIColor BEHighLightFontColor] forState:UIControlStateNormal];
-    [_addWordBookButton setTitle:@"点击添加单词本" forState:UIControlStateNormal];
+    [_addWordBookButton setTitle:@"点击新建单词本" forState:UIControlStateNormal];
     [_addWordBookButton addTarget:self action:@selector(addWordBookAction) forControlEvents:UIControlEventTouchUpInside];
     
     return _addWordBookButton;
+}
+
+- (UIImageView *)plusImage {
+    if (_plusImage != nil) {
+        return _plusImage;
+    }
+    _plusImage = [[UIImageView alloc] initWithFrame:CGRectMake(ScreenWidth / 2 - 80, 25 + ((ScreenWidth - 30) / 2), 20, 20)];
+    _plusImage.image = [[UIImage imageNamed:@"icon_plus"] imageWithTintColor:[UIColor BEHighLightFontColor]];
+    
+    return _plusImage;
 }
 
 - (void)addWordBookAction {

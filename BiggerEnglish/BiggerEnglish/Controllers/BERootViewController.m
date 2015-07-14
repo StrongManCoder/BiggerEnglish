@@ -134,7 +134,10 @@ CGFloat sildeMenuWidth;
         @strongify(self);
         
         [self showViewControllerAtIndex:index animated:YES];
-//        [SettingManager manager].selectedSectionIndex = index;
+
+        if (index == 3) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateWordBook object:nil];
+        }
     }];
 }
 
@@ -283,10 +286,10 @@ CGFloat sildeMenuWidth;
             viewController = self.translateNavigationController;
             break;
         case 3:
-            viewController = self.favouriteNavigationController;
+            viewController = self.wordBookNavigationController;
             break;
         case 4:
-            viewController = self.wordBookNavigationController;
+            viewController = self.favouriteNavigationController;
             break;
         default:
             break;
