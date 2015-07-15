@@ -39,7 +39,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.title == @"例句") {
+    if ([self.title isEqualToString:@"例句"]) {
         static NSString *ID = @"ExampleSentenceCell";
         BETranslateExampleSentenceCell *cell = (BETranslateExampleSentenceCell *)[tableView dequeueReusableCellWithIdentifier:ID];
         if (cell == nil) {

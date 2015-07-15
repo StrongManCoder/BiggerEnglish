@@ -58,7 +58,6 @@ CGFloat sildeMenuWidth;
         
         sildeMenuWidth = 220;
         self.currentSelectedIndex = 0;
-        [SettingManager manager];
         [CacheManager manager];
     }
     return self;
@@ -161,8 +160,7 @@ CGFloat sildeMenuWidth;
     self.wordBookViewController = [[BEWordBookViewController alloc] init];
     self.wordBookNavigationController = [[UINavigationController alloc] initWithRootViewController:self.wordBookViewController];
     
-    [self.viewControllerContainView addSubview:[self viewControllerForIndex:[SettingManager manager].selectedSectionIndex].view];
-//    self.currentSelectedIndex = [SettingManager manager].selectedSectionIndex;
+    [self.viewControllerContainView addSubview:[self viewControllerForIndex:0].view];
 }
 
 - (void)configureNotifications {

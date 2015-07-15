@@ -132,9 +132,9 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         }
     }
     else {
-//        id <NSFetchedResultsSectionInfo> sectionInfo = [self.wordBookModelResults sections][section];
-//        WordBookModel *model = [[sectionInfo objects] objectAtIndex:0];
-//        return [model.words count];
+        //        id <NSFetchedResultsSectionInfo> sectionInfo = [self.wordBookModelResults sections][section];
+        //        WordBookModel *model = [[sectionInfo objects] objectAtIndex:0];
+        //        return [model.words count];
         return [self.wordBookModelResultArray count];
     }
 }
@@ -161,16 +161,16 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         if (cell == nil) {
             cell = [[BEWordBookCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
         }
-//        id <NSFetchedResultsSectionInfo> sectionInfo = [self.wordBookModelResults sections][0];
-//        WordBookModel *wordBookModel = [[sectionInfo objects] objectAtIndex:0];
-//        NSArray *array = [wordBookModel.words allObjects];
-//        WordModel *wordModel = [array objectAtIndex:indexPath.row];
-//        
-//        cell.wordLabel.text = wordModel.word;
-//        cell.translateLabel.text = wordModel.translate;
-//        cell.rowNumberLabel.text = [NSString stringWithFormat:@"%d/%d", (int)indexPath.row + 1, (int)[array count]];
-//        cell.contentView.transform = CGAffineTransformMakeRotation(M_PI / 2);
-//        return cell;
+        //        id <NSFetchedResultsSectionInfo> sectionInfo = [self.wordBookModelResults sections][0];
+        //        WordBookModel *wordBookModel = [[sectionInfo objects] objectAtIndex:0];
+        //        NSArray *array = [wordBookModel.words allObjects];
+        //        WordModel *wordModel = [array objectAtIndex:indexPath.row];
+        //
+        //        cell.wordLabel.text = wordModel.word;
+        //        cell.translateLabel.text = wordModel.translate;
+        //        cell.rowNumberLabel.text = [NSString stringWithFormat:@"%d/%d", (int)indexPath.row + 1, (int)[array count]];
+        //        cell.contentView.transform = CGAffineTransformMakeRotation(M_PI / 2);
+        //        return cell;
         
         WordModel *wordModel = [self.wordBookModelResultArray objectAtIndex:indexPath.row];
         
@@ -179,7 +179,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         cell.rowNumberLabel.text = [NSString stringWithFormat:@"%d/%d", (int)indexPath.row + 1, (int)[self.wordBookModelResultArray count]];
         cell.contentView.transform = CGAffineTransformMakeRotation(M_PI / 2);
         return cell;
-
+        
     }
 }
 
@@ -348,26 +348,31 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         [self.phamPlayImage.layer addAnimation:animation forKey:@"frameAnimation"];
         url = [[NSURL alloc]initWithString:self.ph_am_mp3];
     }
-    NSData * audioData = [NSData dataWithContentsOfURL:url];
-    //将数据保存到本地指定位置
-    NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"phtemp"];
-    [audioData writeToFile:filePath atomically:YES];
-    //播放本地音乐
-    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
-    self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
-    if (self.player == nil) {
-        [self.phenPlayImage.layer removeAllAnimations];
-        [self.phamPlayImage.layer removeAllAnimations];
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.mode = MBProgressHUDModeText;
-        hud.labelText = @"播放出现错误～";
-        hud.delegate = self;
-        [hud hide:YES afterDelay:1.5];
-    } else {
-        self.player.delegate = self;
-        [self.player play];
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSData * audioData = [NSData dataWithContentsOfURL:url];
+        //将数据保存到本地指定位置
+        NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"phtemp"];
+        [audioData writeToFile:filePath atomically:YES];
+        //播放本地音乐
+        NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
+            if (self.player == nil) {
+                [self.phenPlayImage.layer removeAllAnimations];
+                [self.phamPlayImage.layer removeAllAnimations];
+                MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                hud.mode = MBProgressHUDModeText;
+                hud.labelText = @"播放出现错误～";
+                hud.delegate = self;
+                [hud hide:YES afterDelay:1.5];
+            } else {
+                self.player.delegate = self;
+                [self.player play];
+            }
+        });
+    });
+    
 }
 
 - (void)deleteWord {
@@ -394,14 +399,14 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
             break;
         }
     }
-
+    
     if (![self.managedObjectContext save:nil]) {
         NSLog(@"error!");
     } else {
         NSLog(@"ok.");
     }
     [self configureData:0];
-
+    
 }
 
 #pragma mark - Private Method
@@ -427,15 +432,15 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
 
 - (void)configureRightButton {
     if (!self.history) {
-    UIButton *rightButton   = [UIButton buttonWithType:UIButtonTypeCustom];
-    rightButton.frame       = CGRectMake(0, 0, 25, 25);
-    [rightButton setAdjustsImageWhenHighlighted:YES];
-    UIImage *image = [UIImage imageNamed:@"icon_trash"];
-    [rightButton setImage:[image imageWithTintColor:[UIColor BEDeepFontColor]] forState:UIControlStateNormal];
-    [rightButton setImage:[image imageWithTintColor:[UIColor BEHighLightFontColor]] forState:UIControlStateHighlighted];
-    [rightButton addTarget:self action:@selector(deleteWord) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *barItem              = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
-    self.navigationItem.rightBarButtonItem = barItem;
+        UIButton *rightButton   = [UIButton buttonWithType:UIButtonTypeCustom];
+        rightButton.frame       = CGRectMake(0, 0, 25, 25);
+        [rightButton setAdjustsImageWhenHighlighted:YES];
+        UIImage *image = [UIImage imageNamed:@"icon_trash"];
+        [rightButton setImage:[image imageWithTintColor:[UIColor BEDeepFontColor]] forState:UIControlStateNormal];
+        [rightButton setImage:[image imageWithTintColor:[UIColor BEHighLightFontColor]] forState:UIControlStateHighlighted];
+        [rightButton addTarget:self action:@selector(deleteWord) forControlEvents:UIControlEventTouchUpInside];
+        UIBarButtonItem *barItem              = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+        self.navigationItem.rightBarButtonItem = barItem;
     }
 }
 

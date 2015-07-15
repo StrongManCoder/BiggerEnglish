@@ -283,6 +283,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         NSArray *array = [cell.textLabel.text split:@"；"];
         self.searchTextField.text = [array objectAtIndex:0];
         self.searchEnglishLabel.text = [array objectAtIndex:0];
+        self.chineseResultLabel.text = [array objectAtIndex:1];
         [self englishTranslator:self.searchTextField.text];
     }
 }
@@ -362,7 +363,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         }
         self.otherLanguageResultLabel.text = [phModel partsStringWithFormat];
         [self.cacheBaiduTranslateDictionary setObject:self.otherLanguageResultLabel.text forKey:@"zh"];
-
+        
         [self updateLayout:BETransLateTypeChinese];
         
         [self translatorRequest:str success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -373,7 +374,16 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         }];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@ error", operation.description);
+        self.symbolLabel.text = @"";
+        self.otherLanguageResultLabel.text = @"";
+        [self configureSentence:nil];
+        [self updateLayout:BETransLateTypeChinese];
+        self.chineseResultLabel.text = self.searchTextField.text;
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = [NSString stringWithFormat:@"没有网络连接,请联网以获得更好的查词体验"];
+        hud.delegate = self;
+        [hud hide:YES afterDelay:1.5];
     }];
 }
 
@@ -409,8 +419,21 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         [self updateLayout:BETransLateTypeEnglish];
         [self configureSentence:model];
         [self saveHistory];
+        self.addWordImage.hidden = NO;
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@ error", operation.description);
+        [self updateLayout:BETransLateTypeEnglish];
+        [self configureSentence:nil];
+        self.phenLabel.text = nil;
+        self.phenPlayImage.hidden = YES;
+        self.phamLabel.text = nil;
+        self.phamPlayImage.hidden = YES;
+        self.exchangeLabel.text = @"";
+        self.addWordImage.hidden = YES;
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = [NSString stringWithFormat:@"没有网络连接,请联网以获得更好的查词体验"];
+        hud.delegate = self;
+        [hud hide:YES afterDelay:1.5];
     }];
 }
 
@@ -421,7 +444,11 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         self.otherLanguageResultLabel.text = [model partsStringWithFormat];
         [self.cacheBaiduTranslateDictionary setObject:self.otherLanguageResultLabel.text forKey:languages];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@ error", operation.description);
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = [NSString stringWithFormat:@"没有网络连接,请联网以获得更好的查词体验"];
+        hud.delegate = self;
+        [hud hide:YES afterDelay:1.5];
     }];
 }
 
@@ -503,26 +530,31 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
         [self.phamPlayImage.layer addAnimation:animation forKey:@"frameAnimation"];
         url = [[NSURL alloc]initWithString:self.ph_am_mp3];
     }
-    NSData * audioData = [NSData dataWithContentsOfURL:url];
-    //将数据保存到本地指定位置
-    NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"phtemp"];
-    [audioData writeToFile:filePath atomically:YES];
-    //播放本地音乐
-    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
-    self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
-    if (self.player == nil) {
-        [self.phenPlayImage.layer removeAllAnimations];
-        [self.phamPlayImage.layer removeAllAnimations];
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.mode = MBProgressHUDModeText;
-        hud.labelText = @"播放出现错误～";
-        hud.delegate = self;
-        [hud hide:YES afterDelay:1.5];
-    } else {
-        self.player.delegate = self;
-        [self.player play];
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSData * audioData = [NSData dataWithContentsOfURL:url];
+        //将数据保存到本地指定位置
+        NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"phtemp"];
+        [audioData writeToFile:filePath atomically:YES];
+        //播放本地音乐
+        NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
+            if (self.player == nil) {
+                [self.phenPlayImage.layer removeAllAnimations];
+                [self.phamPlayImage.layer removeAllAnimations];
+                MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                hud.mode = MBProgressHUDModeText;
+                hud.labelText = @"播放出现错误～";
+                hud.delegate = self;
+                [hud hide:YES afterDelay:1.5];
+            } else {
+                self.player.delegate = self;
+                [self.player play];
+            }
+        });
+    });
+    
 }
 
 - (void)onAddWordImageClick {
@@ -538,7 +570,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
             hud.mode = MBProgressHUDModeText;
             hud.labelText = [NSString stringWithFormat:@"单词已经存在！"];
             hud.delegate = self;
-            [hud hide:YES afterDelay:1.5];
+            [hud hide:YES afterDelay:1.0];
             return;
         }
     }
@@ -615,7 +647,9 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     self.blankView.hidden = YES;
     self.englishView.hidden = NO;
     self.chineseView.hidden = YES;
+    self.searchTextField.text = self.wordButton.titleLabel.text;
     self.searchEnglishLabel.text = self.wordButton.titleLabel.text;
+    self.chineseResultLabel.text = self.wordTranslateLabel.text;
     [self englishTranslator:self.searchEnglishLabel.text];
 }
 
@@ -656,7 +690,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     [self.blankView addSubview:self.roundArrowImage];
     [self.blankView addSubview:self.wordButton];
     [self.blankView addSubview:self.wordTranslateLabel];
-
+    
     [self.blankView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).with.offset(0);
         make.left.equalTo(self.view.mas_left).with.offset(0);
@@ -917,7 +951,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     _changeButton.titleLabel.font = [UIFont systemFontOfSize:18];
     [_changeButton addTarget:self action:@selector(changeButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [_changeButton setTitle:@"换一下" forState:UIControlStateNormal];
-
+    
     return _changeButton;
 }
 
@@ -931,7 +965,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     _wordButton.backgroundColor = [UIColor whiteColor];
     _wordButton.titleLabel.font = [UIFont boldSystemFontOfSize:44];
     [_wordButton addTarget:self action:@selector(wordButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-
+    
     return _wordButton;
 }
 
@@ -1051,7 +1085,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     [_phenPlayImage addGestureRecognizer:imagePlaySingleTap];
     UIView *singleTapView = [imagePlaySingleTap view];
     singleTapView.tag = 0;
-
+    
     return _phenPlayImage;
 }
 
@@ -1093,7 +1127,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     [_phamPlayImage addGestureRecognizer:imagePlaySingleTap];
     UIView *singleTapView = [imagePlaySingleTap view];
     singleTapView.tag = 1;
-
+    
     return _phamPlayImage;
 }
 
@@ -1181,7 +1215,7 @@ static NSString * const SENTENCECETSIXEXAMPLE = @"CET-6";
     _searchTableView.rowHeight = UITableViewAutomaticDimension;
     _searchTableView.tag = 1;
     _searchTableView.hidden =YES;
-
+    
     return _searchTableView;
 }
 

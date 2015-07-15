@@ -136,6 +136,11 @@
     if (result != nil) {
         BEReadModel *model = [BEReadModel jsonToObject:result];
         BEReadDetailModel *detailModel = (BEReadDetailModel *)model.message;
+        NSDictionary *dicFirstData = (NSDictionary *)[detailModel.data objectAtIndex:0];
+        //配置headerView
+        [self.imageView sd_setImageWithURL:[NSURL URLWithString:[dicFirstData objectForKey:@"thumb"]]
+                          placeholderImage:nil
+                                   options:SDWebImageRetryFailed];
         [detailModel.data removeObjectAtIndex:0];
         NSArray *array = [BEReadDetailDataModel objectArrayWithKeyValuesArray:detailModel.data];
         [self.readArray removeAllObjects];

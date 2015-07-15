@@ -57,6 +57,7 @@
     [super viewWillAppear:animated];
     
     [self updateWordBook];
+    [self refreshWordBookModelResults];
     [self.tableView reloadData];
 }
 
@@ -107,7 +108,15 @@
     NSManagedObject *object = [self.wordBookModelResults objectAtIndexPath:indexPath];
     WordBookModel *wordBookModel = (WordBookModel *)object;
     cell.titleLabel.text = wordBookModel.title;
-    cell.wordCountLabel.text = [NSString stringWithFormat:@"%d", (int)[wordBookModel.words count]];
+    NSArray *wordArray = [wordBookModel.words allObjects];
+    //fucking shit
+    int count = 0;
+    for (WordModel *model in wordArray) {
+        if (model.word != nil) {
+            count++;
+        }
+    }
+    cell.wordCountLabel.text = [NSString stringWithFormat:@"%d", count];
     if ([[object valueForKey:@"defaulted"] isEqualToString:@"1"]) {
         cell.defaultView.hidden = NO;
     }
@@ -123,8 +132,16 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSManagedObject *object = [self.wordBookModelResults objectAtIndexPath:indexPath];
-    WordBookModel *model = (WordBookModel *)object;
-    if ([[model.words allObjects] count] == 0) {
+    WordBookModel *wordBookModel = (WordBookModel *)object;
+    NSArray *wordArray = [wordBookModel.words allObjects];
+    //fucking shit
+    int count = 0;
+    for (WordModel *model in wordArray) {
+        if (model.word != nil) {
+            count++;
+        }
+    }
+    if (count == 0) {
         return;
     }
     [self navigateToDetailViewController:[object valueForKey:@"title"]];
@@ -478,6 +495,29 @@
     }
     
     return _wordBookModelResults;
+}
+
+- (void)refreshWordBookModelResults {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"WordBookModel" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title!=%@", @"我的生词本"]];
+    
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    aFetchedResultsController.delegate = self;
+    self.wordBookModelResults = aFetchedResultsController;
+    
+    NSError *error = nil;
+    if (![self.wordBookModelResults performFetch:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+
 }
 
 - (NSFetchedResultsController *)defaultWordBookModelResults

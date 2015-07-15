@@ -96,19 +96,15 @@
         make.left.equalTo(self.scrollView.mas_left).with.offset(10);
         make.right.equalTo(self.scrollView.mas_right).with.offset(-10);
         make.bottom.equalTo(self.scrollView.mas_bottom).with.offset(-60);
-//        make.bottom.equalTo(self.imageShare.mas_top).with.offset(-10);
-        
         make.height.mas_equalTo(@0.6);
     }];
     [self.imageFavour mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.imageSeparator.mas_bottom).with.offset(20);
         make.right.equalTo(self.scrollView.mas_right).with.offset(-100);
         make.bottom.equalTo(self.scrollView.mas_bottom).with.offset(-20);
         make.width.mas_equalTo(30);
         make.height.mas_equalTo(30);
     }];
     [self.imageShare mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.imageSeparator.mas_bottom).with.offset(20);
         make.right.equalTo(self.scrollView.mas_right).with.offset(-40);
         make.bottom.equalTo(self.scrollView.mas_bottom).with.offset(-20);
         make.width.mas_equalTo(30);

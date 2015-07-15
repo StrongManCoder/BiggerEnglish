@@ -56,36 +56,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-//    id <NSFetchedResultsSectionInfo> sectionInfo;
-//    switch (self.segment.selectedSegmentIndex) {
-//        case 0:
-//            self.readTableView.hidden = YES;
-//            sectionInfo = [self.favourModelResults sections][0];
-//            if ([sectionInfo numberOfObjects] == 0) {
-//                self.dailyTableView.hidden = YES;
-//                self.blankView.hidden = NO;
-//            }
-//            else {
-//                self.dailyTableView.hidden = NO;
-//                self.blankView.hidden = YES;
-//            }
-//            break;
-//        case 1:
-//            self.dailyTableView.hidden = YES;
-//            sectionInfo = [self.readContentModelResults sections][0];
-//            if ([sectionInfo numberOfObjects] == 0) {
-//                self.readTableView.hidden = YES;
-//                self.blankView.hidden = NO;
-//            }
-//            else {
-//                self.readTableView.hidden = NO;
-//                self.blankView.hidden = YES;
-//            }
-//            break;
-//        default:
-//            break;
-//    }
 }
 
 #pragma mark - UITableViewDataSource

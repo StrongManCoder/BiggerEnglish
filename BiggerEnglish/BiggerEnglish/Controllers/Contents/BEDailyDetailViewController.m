@@ -532,9 +532,9 @@
         NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , self.date];
         [audioData writeToFile:filePath atomically:YES];
+        //播放本地音乐
+        NSURL *fileURL = [NSURL fileURLWithPath:filePath];
         dispatch_async(dispatch_get_main_queue(), ^{
-            //播放本地音乐
-            NSURL *fileURL = [NSURL fileURLWithPath:filePath];
             self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
             if (self.player == nil) {
                 [self.imagePlay.layer removeAllAnimations];

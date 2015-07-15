@@ -125,7 +125,7 @@
     _playImage.userInteractionEnabled = YES;
     UITapGestureRecognizer *imagePlaySingleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImagePlayClick)];
     [_playImage addGestureRecognizer:imagePlaySingleTap];
-
+    
     return _playImage;
 }
 
@@ -147,10 +147,10 @@
         return _soundImageArray;
     }
     _soundImageArray = [NSArray arrayWithObjects:
-                            (id)[[UIImage imageNamed:@"icon_sound3"]imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage,
-                            (id)[[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage,
-                            (id)[[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage, nil];
-
+                        (id)[[UIImage imageNamed:@"icon_sound3"]imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage,
+                        (id)[[UIImage imageNamed:@"icon_sound2"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage,
+                        (id)[[UIImage imageNamed:@"icon_sound1"] imageWithTintColor:[UIColor BEHighLightFontColor]].CGImage, nil];
+    
     return _soundImageArray;
 }
 
@@ -174,22 +174,27 @@
     animation.values = self.soundImageArray;
     animation.repeatCount = HUGE_VALF;
     [self.playImage.layer addAnimation:animation forKey:@"frameAnimation"];
-
-    NSURL *url = [[NSURL alloc]initWithString:self.mp3];
-    NSData * audioData = [NSData dataWithContentsOfURL:url];
-    //将数据保存到本地指定位置
-    NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"sentencetemp"];
-    [audioData writeToFile:filePath atomically:YES];
-    //播放本地音乐
-    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
-    self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
-    if (self.player == nil) {
-        [self.playImage.layer removeAllAnimations];
-    } else {
-        self.player.delegate = self;
-        [self.player play];
-    }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSURL *url = [[NSURL alloc]initWithString:self.mp3];
+        NSData * audioData = [NSData dataWithContentsOfURL:url];
+        //将数据保存到本地指定位置
+        NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString *filePath = [NSString stringWithFormat:@"%@/%@.mp3", docDirPath , @"sentencetemp"];
+        [audioData writeToFile:filePath atomically:YES];
+        //播放本地音乐
+        NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
+            if (self.player == nil) {
+                [self.playImage.layer removeAllAnimations];
+            } else {
+                self.player.delegate = self;
+                [self.player play];
+            }
+        });
+    });
+    
 }
 
 #pragma mark - AVAudioPlayerDelegate

@@ -35,7 +35,6 @@
 		4295758B1B02EB1E0064FC69 /* EXTScope.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575891B02EB1E0064FC69 /* EXTScope.m */; };
 		429575911B02EC620064FC69 /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295758E1B02EC620064FC69 /* UIImage+Tint.m */; };
 		429575951B02F7EE0064FC69 /* BEDailyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575941B02F7EE0064FC69 /* BEDailyViewController.m */; };
-		429575991B0335840064FC69 /* SettingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 429575981B0335840064FC69 /* SettingManager.m */; };
 		4295803F1B1FE5E900C759D7 /* PresentingAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295803E1B1FE5E900C759D7 /* PresentingAnimator.m */; };
 		429580421B1FE79100C759D7 /* DismissingAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 429580411B1FE79100C759D7 /* DismissingAnimator.m */; };
 		429580451B2028E100C759D7 /* BEReadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 429580441B2028E100C759D7 /* BEReadViewController.m */; };
@@ -167,8 +166,6 @@
 		4295758E1B02EC620064FC69 /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
 		429575931B02F7EE0064FC69 /* BEDailyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEDailyViewController.h; sourceTree = "<group>"; };
 		429575941B02F7EE0064FC69 /* BEDailyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEDailyViewController.m; sourceTree = "<group>"; };
-		429575971B0335840064FC69 /* SettingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingManager.h; sourceTree = "<group>"; };
-		429575981B0335840064FC69 /* SettingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingManager.m; sourceTree = "<group>"; };
 		4295803D1B1FE5E900C759D7 /* PresentingAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresentingAnimator.h; sourceTree = "<group>"; };
 		4295803E1B1FE5E900C759D7 /* PresentingAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresentingAnimator.m; sourceTree = "<group>"; };
 		429580401B1FE79100C759D7 /* DismissingAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DismissingAnimator.h; sourceTree = "<group>"; };
@@ -542,8 +539,6 @@
 		429575961B0335690064FC69 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				429575971B0335840064FC69 /* SettingManager.h */,
-				429575981B0335840064FC69 /* SettingManager.m */,
 				42E52F071B1449CB00DAADF8 /* CacheManager.h */,
 				42E52F081B1449CB00DAADF8 /* CacheManager.m */,
 				429FE1BB1B40E22D009AC149 /* EnglishDictionaryManager.h */,
@@ -964,7 +959,6 @@
 				42CDD92C1B4D1EC200C8F4DC /* BEPopupTableView.m in Sources */,
 				429580451B2028E100C759D7 /* BEReadViewController.m in Sources */,
 				4204C9121B02088400169446 /* main.m in Sources */,
-				429575991B0335840064FC69 /* SettingManager.m in Sources */,
 				42A2F69D1B3175EE0054ED27 /* NSString+NSString_Tools.m in Sources */,
 				42BA9D8A1B13180B00FB55BF /* MJRefreshHeader.m in Sources */,
 				429FE1BD1B40E22D009AC149 /* EnglishDictionaryManager.m in Sources */,

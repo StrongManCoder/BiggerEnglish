@@ -109,26 +109,7 @@ static CGFloat const kAvatarHeight = 70.0f;
 }
 
 - (void)configureNotifications {
-    /*
-     
-     @weakify(self);
-     [[NSNotificationCenter defaultCenter] addObserverForName:kLoginSuccessNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-     @strongify(self);
-     
-     [self.avatarImageView setImageWithURL:[NSURL URLWithString:[V2DataManager manager].user.member.memberAvatarLarge] placeholderImage:[UIImage imageNamed:@"avatar_default"]];
-     self.avatarImageView.layer.borderColor = RGB(0x8a8a8a, 0.1).CGColor;
-     
-     }];
-     
-     [[NSNotificationCenter defaultCenter] addObserverForName:kLogoutSuccessNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-     @strongify(self);
-     
-     [self.avatarImageView setImageWithURL:[NSURL URLWithString:[V2DataManager manager].user.member.memberAvatarLarge] placeholderImage:[UIImage imageNamed:@"avatar_default"]];
-     self.avatarImageView.layer.borderColor = RGB(0x8a8a8a, 1.0).CGColor;
-     
-     }];
-     
-     */
+
 }
 
 #pragma mark - Layout
@@ -147,7 +128,7 @@ static CGFloat const kAvatarHeight = 70.0f;
     self.tableView.frame = (CGRect){0, 0, self.width, self.height};
     self.settingButton.frame = (CGRect){20, ScreenHeight - 40, 25, 25};
     
-    [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:[SettingManager manager].selectedSectionIndex inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
+    [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
 }
 
 #pragma mark - Setters
